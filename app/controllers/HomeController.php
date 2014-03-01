@@ -7,10 +7,7 @@ class HomeController extends BaseController {
 	 *
 	 * @return void
 	 */
-	protected function before()
-	{
-
-	}
+	protected function before() {}
 
 
 	/**
@@ -24,18 +21,6 @@ class HomeController extends BaseController {
 	}
 
 
-	public function index()
-	{
-		$data = array(
-			'users' => User::all(),
-			'user'  => Auth::user(),
-		);
-
-		$this->layout->content = View::make('common.home', compact('data'))
-			->with('title', 'Home page');
-	}
-
-
 	/**
 	 * Show form for logining in
 	 *
@@ -44,7 +29,7 @@ class HomeController extends BaseController {
 	public function login()
 	{
 		$this->layout->content = View::make('common.login')
-			->with('title', 'Login Page');
+			->with('title', 'Авторизация');
 	}
 
 
@@ -63,7 +48,10 @@ class HomeController extends BaseController {
 		// Validate user input
 		$v = Validator::make($credentials, array(
 			'email' => 'required|email',
-			'password' => 'required|min:5',
+			'password' => 'required',
+		), array(
+			'required' => 'Поле :attribute обязательное для заполнения',
+			'email' => 'Эл. почта введена неверно',
 		));
 
 		if ($v->passes())
@@ -79,7 +67,7 @@ class HomeController extends BaseController {
 				return Redirect::back()
 					->with(
 						'redmine_user_error', 
-						'Password or email is invalid!'
+						'Эл. почта или пароль неправильные!'
 					);
 			}
 		}

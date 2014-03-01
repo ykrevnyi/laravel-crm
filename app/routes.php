@@ -1,24 +1,5 @@
 <?php
 
-
-// $password = 'qwerta123';
-// $salt = '13c71df825089ef46d3e1e1beac824be';
-
-// echo sha1($salt . sha1($password));
-// die();
-
-// // qwerta123
-// // hmhtcu1W2p5x0bE3d8oyEerC6vx56v3abkFNKfaUTMVLWTRY4iKO2
-
-// print_r(DB::connection('redmine')->table('users')->get());
-
-// // redmine
-// // fa576df629ceeb2cc42ae2b1f62ae3f0d3302eeb
-
-
-
-// // die();
-
 /*
  *------------------------------------------------------------
  *------------------------------------------------------------
@@ -28,7 +9,9 @@
  */
 Route::group(array('before' => 'auth'), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
-	Route::get('admin', array('as' => 'admin', 'uses' => 'AdminController@index'));
+	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
+	
+	Route::resource('users', 'UsersController');
 });
 
 
@@ -53,6 +36,4 @@ Route::group(array('before' => 'guest'), function () {
  *------------------------------------------------------------
  *------------------------------------------------------------
  */
-Route::get('/', array('as' => 'home', 'uses' => 'HomeController@index'));
-
-Route::resource('users', 'UsersController');
+// Route::get('/', array('as' => 'home', 'uses' => 'HomeController@index'));

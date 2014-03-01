@@ -1,31 +1,38 @@
-<div class="container">
+<div class="login-wrapper">
+    <a href="http://rm.xmarkup.ru/">
+        <img class="logo" src="/public/img/logo.png" alt="logo">
+    </a>
 
-	{{ Form::open(array('route' => 'attempt', 'class' => 'form-signin')) }}
-		<h2 class="form-signin-heading">Please sign in</h2>
-		
-		{{ Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'Email', 'autofocus')) }}
-		
-		{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password')) }}
+    <div class="box">
+        <div class="content-wrap">
+        	{{ Form::open(array('route' => 'attempt', 'class' => 'form-signin')) }}
+				<h2 class="form-signin-heading">Авторизация</h2>
+				
+				{{ Form::text('email', '', array('class' => 'form-control', 'placeholder' => 'Эл. почта', 'autofocus')) }}
+				
+				{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Пароль')) }}
 
-		<label class="checkbox">
-			{{ Form::hidden('remember', '0') }}
-			{{ Form::checkbox('remember', '1', '0')}} Remember me
-		</label>
+				{{ Form::submit('Войти', array('class' => 'btn-glow primary login', 'type' => 'submit')) }}
+			{{ Form::close() }}
 
-		{{ Form::submit('Sign in', array('class' => 'btn btn-lg btn-primary btn-block', 'type' => 'submit')) }}
-	{{ Form::close() }}
+			@if ($errors->count())
+				<div class="alert alert-danger">
+					<div>{{ $errors->first('email'); }}</div>
+					<div>{{ $errors->first('password'); }}</div>
+				</div>
+			@endif
 
-	
-	@if ($errors->count())
-		<ul>
-			<li>{{ $errors->first('email'); }}</li>
-			<li>{{ $errors->first('password'); }}</li>
-		</ul>
-	@endif
+			{{-- Show if user is not exists --}}
+			@if (Session::has('redmine_user_error'))
+				<div class="alert alert-danger">
+					{{ Session::get('redmine_user_error') }}
+				</div>
+			@endif
+        </div>
+    </div>
 
-	{{-- Show if user is not exists --}}
-	@if (Session::has('redmine_user_error'))
-		{{ Session::get('redmine_user_error') }}
-	@endif
-
+    <div class="no-account">
+        <p>Нет аккаунта?</p>
+        <a href="http://rm.xmarkup.ru/account/register">Зарегистрируйся</a>
+    </div>
 </div>

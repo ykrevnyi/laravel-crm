@@ -15,8 +15,13 @@ class UsersController extends BaseController {
 	{
 		parent::beforeRender();
 
+		// Bind header and footer
+		$this->layout->header = View::make('admin.common.header', $this->page);
+		$this->layout->footer = View::make('admin.common.footer', $this->page);
+
 		$this->page['title'] = 'User list page';
 	}
+
 
 	/**
 	 * Display a listing of the resource.
@@ -25,12 +30,9 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{
-		$data = array(
-			'users' => User::all(),
-			'user'  => Auth::user(),
-		);
+		$users = DB::connection('redmine')->table('users')->paginate(10);
 
-		$this->layout->content = View::make('users.index', compact('data'))
+		$this->layout->content = View::make('users.index', compact('users'))
 			->with('title', $this->page['title']);
 	}
 

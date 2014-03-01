@@ -28,7 +28,7 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li class="active">
-						{{ HTML::linkRoute('admin', 'Home'); }}
+						{{ HTML::linkRoute('home', 'Home'); }}
 					</li>
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>

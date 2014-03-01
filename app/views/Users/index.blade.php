@@ -1,27 +1,23 @@
 <div class="container">
 	<h1>{{ $title }}</h1>
 
-	<!-- If user logged in -->
-	@if ($data['user'])
-		<h3>Hello, {{ $data['user']['name'] }}</h3>
-	@endif
-
-
 	<!-- List all users -->
 	<table class="table">
 		<tr>
-			<th>Name:</th>
-			<th>Password:</th>
-			<th>Active:</th>
+			<th>Login:</th>
+			<th>Full name:</th>
+			<th>Email:</th>
 		</tr>
-		@foreach ($data['users'] as $user)
+		@foreach ($users as $user)
 			<tr>
-				<td>{{ $user->name }}</td>
-				<td>{{ $user->password }}</td>
-				<td>{{ $user->active }}</td>
+				<td>{{ $user->login }}</td>
+				<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
+				<td>{{ $user->mail }}</td>
 			</tr>
 		@endforeach
 	</table>
+
+	{{ $users->links() }}
 
 
 </div>
