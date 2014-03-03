@@ -2,9 +2,7 @@
 
 class UsersController extends BaseController {
 
-	protected function before()
-	{
-	}
+	protected function before() {}
 
 	/**
 	 * Create default view parts
@@ -30,9 +28,9 @@ class UsersController extends BaseController {
 	 */
 	public function index()
 	{
-		$users = DB::connection('redmine')->table('users')->paginate(10);
+		$data = $this->redmineUser->getAllWithPaginations();
 
-		$this->layout->content = View::make('users.index', compact('users'))
+		$this->layout->content = View::make('users.index', compact('data'))
 			->with('title', $this->page['title']);
 	}
 
@@ -86,7 +84,20 @@ class UsersController extends BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		if (RedmineUser::user()->level != 'admin')
+		{
+			return array(
+				'error' => 'Недостаточно прав доступа!'
+			);
+		}
+
+		$user = User::find($id);
+		$user->perm = Input::get('perm');
+		$user->save();
+
+		return array(
+			'success' => 'Права успешно изменены!'
+		);
 	}
 
 	/**

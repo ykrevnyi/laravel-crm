@@ -4,10 +4,14 @@ class BaseController extends Controller {
 
 	protected $layout = 'default';
 	protected $page;
+	protected $redmineUser;
 
 
 	public function __construct()
 	{
+		$this->redmineUser = new RedmineUser();
+		$this->redmineUser->getUserInfo();
+
 		$this->before();
 	}
 

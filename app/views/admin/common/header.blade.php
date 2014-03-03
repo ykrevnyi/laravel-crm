@@ -11,6 +11,10 @@
 		<!-- Bootstrap core CSS -->
 		<link href="/public/css/bootstrap.css" rel="stylesheet">
 		<link href="/public/css/style.css" rel="stylesheet">
+
+		<script type="text/javascript" src="//code.jquery.com/jquery.js"></script>
+		<script type="text/javascript" src="/public/js/noty.js"></script>
+		<script type="text/javascript" src="/public/js/bootstrap.js"></script>
 	</head>
 
 	<body>
@@ -27,11 +31,10 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="active">
-						{{ HTML::linkRoute('home', 'Home'); }}
-					</li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li>
+					<li class="active"><a href="/">home</a></li>
+					<li><a href="/users">users</a></li>
+					<li><a href="/transactions">transactions</a></li>
+					<li><a href="/projects">projects</a></li>
 				</ul>
 			</div><!--/.navbar-collapse -->
 		</div>

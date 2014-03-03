@@ -12,6 +12,7 @@ Route::group(array('before' => 'auth'), function () {
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
 	Route::resource('users', 'UsersController');
+	Route::resource('transactions', 'TransactionController');
 });
 
 

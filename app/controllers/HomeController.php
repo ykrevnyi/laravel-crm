@@ -60,7 +60,7 @@ class HomeController extends BaseController {
 
 			if ($redmineUser->auth($credentials))
 			{
-				return Redirect::route('admin');
+				return Redirect::route('home');
 			}
 			else
 			{
@@ -86,7 +86,7 @@ class HomeController extends BaseController {
 	{
 		Auth::logout();
 
-		Redirect::route('login');
+		return Redirect::route('login');
 	}
 
 }
