@@ -29,6 +29,9 @@ class TransactionController extends BaseController {
 		// Get money accounts
 		$accounts = MoneyAccount::all();
 
+		// Get all purposes
+		$purposes = TransactionPurpose::all();
+
 		// Fetch all the users
 		$users = $this->redmineUser->getAllWithPaginations(99999);
 
@@ -37,6 +40,7 @@ class TransactionController extends BaseController {
 			compact('transactions')
 		)
 		->with('money_accounts', $accounts)
+		->with('purposes', $purposes)
 		->with('users', $users);
 	}
 
@@ -60,7 +64,7 @@ class TransactionController extends BaseController {
 		$rules = array(
 			'is_expense' => 'required',
 			'name' => 'required',
-			'purpose' => 'required',
+			'transaction_purpose_id' => 'required',
 			'price' => 'required',
 			'money_account' => 'required',
 			'relation' => 'required'
@@ -141,7 +145,23 @@ class TransactionController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$transaction = new Transaction();
+
+		// Removed without any problems
+		if ($transaction->removeByID($id))
+		{
+			return json_encode(array(
+				'success' => 'Транзакция удалена!'
+			));
+		}
+
+		// An error occupied
+		else
+		{
+			return json_encode(array(
+				'error' => 'Возникла ошибка во время удаления транзакции.'
+			));
+		}
 	}
 
 }

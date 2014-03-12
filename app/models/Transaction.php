@@ -16,9 +16,16 @@ class Transaction extends Eloquent
 			// join transaction description
 			->join(
 				'transaction_description', 
-				'transaction.transaction_description_id', 
+				'transaction.id', 
 				'=', 
-				'transaction_description.id'
+				'transaction_description.transaction_id'
+			)
+			// join transaction purpose
+			->join(
+				'transaction_purpose', 
+				'transaction_description.transaction_purpose_id', 
+				'=', 
+				'transaction_purpose.id'
 			)
 			// join money account
 			->join(
@@ -29,12 +36,15 @@ class Transaction extends Eloquent
 			)
 			->select(
 				'transaction.id AS trans_id',
+				'transaction.created_at AS trans_created_at',
+				'transaction.updated_at AS trans_updated_at',
 				'transaction_description.name AS trans_name',
 				'transaction_description.value AS trans_value',
 				'transaction_description.is_expense AS trans_is_expense',
-				'transaction_description.purpose AS trans_purpose',
+				'transaction_purpose.name AS trans_purpose',
 				'money_account.name AS money_account_name'
-			);
+			)
+			->orderBy('trans_id', 'desc');
 	}
 
 
@@ -45,27 +55,40 @@ class Transaction extends Eloquent
 	 */
 	public function createTransaction($data)
 	{
-		// Create new transaction description row
-		$transaction_description_id = DB::table('transaction_description')
-			->insertGetId(array(
-				'name' => $data['name'],
-				'value' => $data['price'],
-				'is_expense' => $data['is_expense'],
-				'purpose' => $data['purpose'],
-				'created_at' => new Datetime(),
-				'updated_at' => new Datetime()
-			));
-
 		// Create new transaction and relation between money account/trans_desc
-		DB::table('transaction')
-			->insert(array(
-				'transaction_description_id' => $transaction_description_id,
+		$transaction_id = DB::table('transaction')
+			->insertGetId(array(
 				'transaction_to_money_account_id' => $data['money_account'],
 				'transaction_object_type' => $data['relation'],
 				'transaction_object_id' => $data['object_id'],
 				'created_at' => new Datetime(),
 				'updated_at' => new Datetime()
 			));
+
+		// Create new transaction description row
+		$transaction_description_id = DB::table('transaction_description')
+			->insertGetId(array(
+				'name' => $data['name'],
+				'transaction_id' => $transaction_id,
+				'transaction_purpose_id' => $data['transaction_purpose_id'],
+				'value' => $data['price'],
+				'is_expense' => $data['is_expense'],
+				'created_at' => new Datetime(),
+				'updated_at' => new Datetime()
+			));
+	}
+
+
+	/**
+	 * Remove transaction by id
+	 *
+	 * @return void
+	 */
+	public function removeByID($transaction_id)
+	{
+		// Remove basic transaction
+		// Other transaction info will be removed by cascade strategy
+		return DB::table('transaction')->where('id', '=', $transaction_id)->delete();
 	}
 
 

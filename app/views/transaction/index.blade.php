@@ -7,6 +7,9 @@
 		<th>is expense</th>
 		<th>purpose</th>
 		<th>money account</th>
+		<th>created at</th>
+		<th>updated at</th>
+		<th>delete</th>
 	</tr>
 
 	@foreach ($transactions as $transaction)
@@ -17,6 +20,9 @@
 			<td>{{ $transaction->trans_is_expense }}</td>
 			<td>{{ $transaction->trans_purpose }}</td>
 			<td>{{ $transaction->money_account_name }}</td>
+			<td>{{ $transaction->trans_created_at }}</td>
+			<td>{{ $transaction->trans_updated_at }}</td>
+			<td><a href="#" class="delete-transaction" data-id="{{ $transaction->trans_id }}">remove</a></td>
 		</tr>
 	@endforeach
 
@@ -24,7 +30,9 @@
 
 
 <!-- Large modal -->
-<button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>
+<div class="text-center">
+	<button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Добавить транзакцию</button>
+</div>
 
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
@@ -32,13 +40,13 @@
 			<form class="form-horizontal" id="transaction-form">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Create new transaction</h4>
+					<h4 class="modal-title">Создать новую транзакцию</h4>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="" class="col-sm-4 control-label">Приход/расход</label>
 						<div class="col-sm-8">
-							<select name="is_expense" class="form-control">
+							<select name="is_expense">
 								<option value="0">Приход</option>
 								<option value="1">Расход</option>
 							</select>
@@ -55,10 +63,10 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Назначение</label>
 						<div class="col-sm-8">
-							<select class="form-control" name="purpose">
-								<option>назничение 1</option>
-								<option>назничение 2</option>
-								<option>назничение 3</option>
+							<select name="transaction_purpose_id">
+								@foreach ($purposes as $purpose)
+									<option value="{{ $purpose->id }}">{{ $purpose->name }}</option>
+								@endforeach
 							</select>
 						</div>
 					</div>
@@ -66,7 +74,7 @@
 					<div class="form-group">
 						<label for="" class="col-sm-4 control-label">Тип валюты</label>
 						<div class="col-sm-8">
-							<select name="money_account" class="form-control">
+							<select name="money_account">
 								@foreach ($money_accounts as $account)
 									<option value="{{ $account->id }}">{{ $account->name }}</option>
 								@endforeach
@@ -97,8 +105,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+					<button type="submit" class="btn btn-primary">Сохранить</button>
 				</div>
 			</form>
 		</div>
@@ -113,6 +121,7 @@
 		$('#relation-' + relatedInput).show();
 	});
 
+	// Add new transaction
 	$('#transaction-form').on('submit', function(e) {
 		var form = $(this).serialize(),
 			errorContainer = $('#transaction-error-container'),
@@ -141,11 +150,42 @@
 					type: "success"
 				});
 
-				// Close popup
-				$('.bs-example-modal-lg').modal('hide');
+				// Reload page
+				window.location.reload();
 			};
 
 			btn.button('reset');
+		});
+
+		e.preventDefault();
+	});
+
+	// Remove transaction
+	$('.delete-transaction').on('click', function(e) {
+		var $this = $(this);
+
+		$.ajax({
+			url: '/transactions/' + $this.data('id'),
+			dataType: 'json',
+			method: 'delete'
+		}).done(function(resp) {
+			if (resp.error) {
+				noty({
+					text: resp.error, 
+					timeout: 2500, 
+					layout: "topCenter", 
+					type: "error"
+				});
+			} else {
+				$this.closest('tr').remove();
+
+				noty({
+					text: resp.success, 
+					timeout: 2500, 
+					layout: "topCenter", 
+					type: "success"
+				});
+			}
 		});
 
 		e.preventDefault();

@@ -71,8 +71,6 @@ class RedmineUser extends Eloquent
 		if ($redmineUser->hashed_password === $inputPassword)
 		{
 			$this->authLocalUser($redmineUser);
-			$this->populateUserData($redmineUser);
-			$this->setUserStatuses();
 
 			return true;
 		}
@@ -182,6 +180,13 @@ class RedmineUser extends Eloquent
 	public function getUserInfo()
 	{
 		$localUser = Auth::user();
+
+		// If user is not authed
+		if ( ! $localUser)
+		{
+			return NULL;
+		}
+
 		$remineUser = $this->getRedmineUser($localUser->email);
 
 		$localUser = $this->populateUserData($localUser, $remineUser);
