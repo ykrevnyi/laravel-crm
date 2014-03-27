@@ -2,8 +2,14 @@
 
 class TransactionController extends BaseController {
 
+	private $projects;
+	private $transaction;
 
-	protected function before() {}
+	protected function before() {
+		$this->projects = new Project(new RedmineUser);
+		$this->transaction = new Transaction;
+	}
+
 
 	protected function beforeRender()
 	{
@@ -23,8 +29,7 @@ class TransactionController extends BaseController {
 	 */
 	public function index()
 	{
-		$transaction = new Transaction();
-		$transactions = $transaction->getAll()->get();
+		$transactions = $this->transaction->getAll()->get();
 
 		// Get money accounts
 		$accounts = MoneyAccount::all();
@@ -35,12 +40,16 @@ class TransactionController extends BaseController {
 		// Fetch all the users
 		$users = $this->redmineUser->getAllWithPaginations(99999);
 
+		// Get all the projects
+		$projects = $this->projects->getProjects();
+
 		$this->layout->content = View::make(
 			'transaction.index', 
 			compact('transactions')
 		)
 		->with('money_accounts', $accounts)
 		->with('purposes', $purposes)
+		->with('projects', $projects)
 		->with('users', $users);
 	}
 
@@ -78,6 +87,11 @@ class TransactionController extends BaseController {
 			$input['object_id'] = Input::get('relation_to_user');
 			$rules['object_id'] = 'required';
 		}
+		elseif (Input::get('relation') == 'project')
+		{
+			$input['object_id'] = Input::get('relation_to_project');
+			$rules['object_id'] = 'required';
+		}
 		else
 		{
 			$input['object_id'] = 0;
@@ -89,8 +103,7 @@ class TransactionController extends BaseController {
 		// If our basic validation passes
 		if ($v->passes())
 		{
-			$transaction = new Transaction();
-			$transaction->createTransaction($input);
+			$this->transaction->createTransaction($input);
 
 			return array(
 				'success' => 'Транзакция добавленна!'
@@ -145,10 +158,8 @@ class TransactionController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$transaction = new Transaction();
-
 		// Removed without any problems
-		if ($transaction->removeByID($id))
+		if ($this->transaction->removeByID($id))
 		{
 			return json_encode(array(
 				'success' => 'Транзакция удалена!'

@@ -10,9 +10,9 @@ class Transaction extends Eloquent
 	 *
 	 * @return mixed
 	 */
-	public function getAll()
+	public function getAll($filter = null)
 	{
-		return DB::table('transaction')
+		$transactions = DB::table('transaction')
 			// join transaction description
 			->join(
 				'transaction_description', 
@@ -45,6 +45,13 @@ class Transaction extends Eloquent
 				'money_account.name AS money_account_name'
 			)
 			->orderBy('trans_id', 'desc');
+
+			if ($filter)
+			{
+				$transactions->where($filter);
+			}
+
+			return $transactions;
 	}
 
 

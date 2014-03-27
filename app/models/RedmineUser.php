@@ -23,6 +23,25 @@ class RedmineUser extends Eloquent
 		$redmineUsers = DB::connection('redmine')->table('users')->get();
 
 		// Now we are going to merge users depends on their emails
+		$resultUsers = $this->mergeUserTypes($redmineUsers, $localUsers);
+
+		return array(
+			'users' => $resultUsers,
+			'links' => $localUsers->links()
+		);
+	}
+
+
+	/**
+	 * Merge redmine and local users
+	 * Local user have greater priority then redmine users
+	 *
+	 * @return mixed
+	 */
+	private function mergeUserTypes($redmineUsers = array(), $localUsers)
+	{
+		$resultUsers = array();
+
 		foreach ($localUsers as $key => $localUser)
 		{
 			foreach ($redmineUsers as $redmineUser)
@@ -40,10 +59,7 @@ class RedmineUser extends Eloquent
 			}
 		}
 
-		return array(
-			'users' => $resultUsers,
-			'links' => $localUsers->links()
-		);
+		return $resultUsers;
 	}
 
 
@@ -150,7 +166,7 @@ class RedmineUser extends Eloquent
 	 *
 	 * @return mixed
 	 */
-	private function getRedmineUser($email)
+	public function getRedmineUser($email)
 	{
 		return DB::connection('redmine')
 			->table('users')

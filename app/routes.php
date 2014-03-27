@@ -13,6 +13,7 @@ Route::group(array('before' => 'auth'), function () {
 	
 	Route::resource('users', 'UsersController');
 	Route::resource('transactions', 'TransactionController');
+	Route::resource('projects', 'ProjectsController');
 });
 
 

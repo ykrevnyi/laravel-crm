@@ -95,11 +95,17 @@
 							<select id="relation" name="relation" class="col-md-6">
 								<option value="none" data-relation="none">без привязки</option>
 								<option value="user" data-relation="user">к пользователю</option>
+								<option value="project" data-relation="project">к проекту</option>
 							</select>
 
 							<div id="relation-user" class="col-md-6 relation-field" style="display: none">
 								<input type="text" class="typeahead" id="relation_to_user">
 								<input type="hidden" name="relation_to_user" id="relation_to_user_input" value="">
+							</div>
+
+							<div id="relation-project" class="col-md-6 relation-field" style="display: none">
+								<input type="text" class="typeahead" id="relation_to_project">
+								<input type="hidden" name="relation_to_project" id="relation_to_project_input" value="">
 							</div>
 						</div>
 					</div>
@@ -216,5 +222,31 @@
 		source: numbers.ttAdapter()
 	}).on('typeahead:selected', function(obj, data) {
 		$('#relation_to_user_input').val(data.user_id);
+	});
+</script>
+
+<script type="text/javascript">
+	// instantiate the bloodhound suggestion engine
+	var projects = new Bloodhound({
+		datumTokenizer: function(d) { 
+			return Bloodhound.tokenizers.whitespace(d.projectName);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: [
+			@foreach ($projects as $project)
+				{ projectName: '{{ $project->proj_name }}', project_id: '{{ $project->proj_id }}' },
+			@endforeach
+		]
+	});
+
+	// initialize the bloodhound suggestion engine
+	projects.initialize();
+
+	// instantiate the typeahead UI
+	$('#relation_to_project.typeahead').typeahead(null, {
+		displayKey: 'projectName',
+		source: projects.ttAdapter()
+	}).on('typeahead:selected', function(obj, data) {
+		$('#relation_to_project_input').val(data.project_id);
 	});
 </script>
