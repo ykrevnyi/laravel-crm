@@ -57,9 +57,5 @@
 		{{ Form::select('proj_priority_id', $priorities) }}
 	</p>
 
-	<p>
-		{{ Form::select('related_users[]', $users['all'], array(), array('multiple')) }}
-	</p>
-
 	{{ Form::submit('save project') }}
 {{ Form::close() }}

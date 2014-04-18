@@ -49,7 +49,7 @@ class ProjectsController extends BaseController {
 
 		// Fetch all the users
 		$all_users = $this->redmineUser->getAllWithPaginations();
-		$users = $this->getSelectedUsers($all_users['users'], array());
+		$users = $this->getRelatedUsers($all_users['users'], array());
 
 		$this->layout->content = View::make('projects.create')
 			->with('users', $users)
@@ -63,9 +63,9 @@ class ProjectsController extends BaseController {
 	 */
 	public function store()
 	{
-		$this->project->createProject(Input::all());
+		$project_id = $this->project->createProject(Input::all());
 		
-		return Redirect::route('projects.index');
+		return Redirect::route('projects.edit', $project_id);
 	}
 
 	/**
@@ -109,17 +109,24 @@ class ProjectsController extends BaseController {
 		$related_users = $this->project->getRelatedUsers($project_id);
 
 		// Fetch all the users
-		$all_users = $this->redmineUser->getAllWithPaginations();
-		$users = $this->getSelectedUsers($all_users['users'], $related_users);
+		$all_users = $this->redmineUser->getAllWithPaginations(9999);
+		$all_users_selectable = User::convertToSelectable($all_users['users']);
+
+		$related_users = $this->getRelatedUsers($all_users['users'], $related_users);
 		
 		// Get related transactions
 		$related_transactions = $this->project->getRelatedTransacitons($project_id);
 
+		// Get user roles
+		$user_roles = UserRole::allForSelect();
+
 		$this->layout->content = View::make('projects.edit')
 			->with('project', $project)
-			->with('users', $users)
+			->with('users', $all_users_selectable)
+			->with('related_users', $related_users)
 			->with('priorities', $priorities)
-			->with('transactions', $related_transactions);
+			->with('transactions', $related_transactions)
+			->with('user_roles', $user_roles);
 	}
 
 	/**
@@ -154,28 +161,108 @@ class ProjectsController extends BaseController {
 	 *
 	 * @return mixed
 	 */
-	private function getSelectedUsers($all_users = array(), $related_users = array())
+	private function getRelatedUsers($all_users = array(), $related_users = array())
 	{
-		$all_users_ids = array();
-		$selected_users_ids = array();
+		$selected_users = array();
 
 		foreach ($all_users as $user)
 		{
-			$all_users_ids[$user->id] = $user->firstname . ' ' . $user->lastname;
-
 			foreach ($related_users as $related_user)
 			{
 				if ($user->id == $related_user->id)
 				{
-					$selected_users_ids[] = $user->id;
+					$selected_users[] = array(
+						'id' => $related_user->id,
+						'firstname' => $related_user->firstname,
+						'lastname' => $related_user->lastname,
+						'fullname' => $related_user->firstname . ' ' .$related_user->lastname,
+						'mail' => $related_user->mail,
+						'login' => $related_user->login,
+						'user_role_id' => $related_user->user_role_id
+					);
 				}
 			}
 		}
 
-		return array(
-			'all' => $all_users_ids,
-			'selected' => $selected_users_ids
+		return $selected_users;
+	}
+
+
+	/**
+	 * Add user to the project
+	 *
+	 * @return mixed
+	 */
+	public function addUser($project_id)
+	{
+		$result = array();
+
+		$project_id = (int) $project_id;
+		$user_id = (int) Input::get('user_id', 0);
+		$user_role_id = (int) Input::get('user_role_id', 0);
+
+		$result['status'] = $this->project->addUserToProject($project_id, $user_id, $user_role_id);
+
+		// Get user info and create an HTML form to edit user relation to project
+		$user = RedmineUser::GetById($user_id);
+		$user->user_role_id = $user_role_id;
+
+		// Get user roles
+		$user_roles = UserRole::allForSelect();
+
+		$view = View::make('projects.user_to_project_form')
+			->with('user', $user)
+			->with('user_roles', $user_roles);
+
+		// Set output
+		$result['user'] = $user;
+		$result['view'] = htmlentities($view);
+
+		return $result;
+	}
+
+
+	/**
+	 * Remove user from the project
+	 *
+	 * @return mixed
+	 */
+	public function removeUser($project_id)
+	{
+		$result = array();
+
+		$project_id = (int) $project_id;
+		$user_id = (int) Input::get('user_id', 0);
+		$user_role_id = (int) Input::get('user_role_id', 0);
+
+		$result['status'] = $this->project->removeUserFromProject($project_id, $user_id, $user_role_id);
+
+		return json_encode($result);
+	}
+
+
+	/**
+	 * Change user role of the project
+	 *
+	 * @return void
+	 */
+	public function changeUserRole($project_id)
+	{
+		$result = array();
+
+		$project_id = (int) $project_id;
+		$user_id = (int) Input::get('user_id', 0);
+		$user_role_id = (int) Input::get('user_role_id', 0);
+		$prev_user_role_id = (int) Input::get('prev_user_role_id', 0);
+
+		$result['status'] = $this->project->changeUserProjectRole(
+			$project_id, 
+			$user_id, 
+			$user_role_id, 
+			$prev_user_role_id
 		);
+
+		return json_encode($result);
 	}
 
 }

@@ -1,5 +1,5 @@
 .login-bg {
-  background: url("http://teil-crm.dev/public/img/landscape.jpg") no-repeat center center fixed;
+  background: url("/public/img/landscape.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

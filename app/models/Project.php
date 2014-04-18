@@ -117,9 +117,10 @@ class Project extends Eloquent
 	 */
 	public function getRelatedUsers($project_id)
 	{
+		// Get related user ids + related role ids
 		$related_user_ids = DB::table('user_to_project')
 			->where('project_id', '=', $project_id)
-			->select('user_id')
+			->select('user_id', 'user_role_id')
 			->get();
 
 		// Get users information
@@ -130,10 +131,11 @@ class Project extends Eloquent
 			$local_user = User::find($user->user_id);
 			$newUser = $this->redmineUser->getRedmineUser($local_user->email);
 			$newUser->id = $local_user->id;
+			$newUser->user_role_id = $user->user_role_id;
 			
 			$users[] = $newUser;
 		}
-
+		
 		return $users;
 	}
 
@@ -177,7 +179,7 @@ class Project extends Eloquent
 	/**
 	 * Create new project
 	 *
-	 * @return void
+	 * @return int
 	 */
 	public function createProject($project_info = array())
 	{
@@ -220,6 +222,8 @@ class Project extends Eloquent
 
 			DB::table('user_to_project')->insert($users_to_append);
 		}
+
+		return $project_id;
 	}
 
 
@@ -253,28 +257,6 @@ class Project extends Eloquent
 				'desctiption_short' => $project_info['proj_desc_short'],
 				'description' => $project_info['proj_desc']
 			));
-
-		// Remove all the related users
-		DB::table('user_to_project')
-			->where('project_id', '=', $project_id)
-			->delete();
-
-		// Aaaand re-append new users to the project
-		$users_to_append = array();
-
-		// Check if users are specified
-		if ( ! empty($project_info['related_users']))
-		{
-			foreach ($project_info['related_users'] as $related_user_id)
-			{
-				$users_to_append[] = array(
-					'project_id' => $project_id,
-					'user_id' => $related_user_id
-				);
-			}
-
-			DB::table('user_to_project')->insert($users_to_append);
-		}
 	}
 
 
@@ -287,5 +269,93 @@ class Project extends Eloquent
 	{
 		DB::table('project')->where('id', $project_id)->delete();
 	}
+
+
+	/**
+	 * Add user to the project
+	 *
+	 * @return void
+	 */
+	public function addUserToProject($project_id, $user_id, $user_role_id)
+	{
+		if ($this->findUserWithParams($project_id, $user_id, $user_role_id) 
+			OR ! $project_id OR ! $user_id OR ! $user_role_id)
+		{
+			return false;
+		}
+
+		DB::table('user_to_project')->insert(array(
+			'project_id' => $project_id,
+			'user_id' => $user_id,
+			'user_role_id' => $user_role_id
+		));
+
+		return true;
+	}
+
+
+	/**
+	 * Remove user from the project
+	 *
+	 * @return void
+	 */
+	public function removeUserFromProject($project_id, $user_id, $user_role_id)
+	{
+		if ( ! $project_id OR ! $user_id OR ! $user_role_id)
+		{
+			return false;
+		}
+
+		DB::table('user_to_project')
+			->where('project_id', '=', $project_id)
+			->where('user_id', '=', $user_id)
+			->where('user_role_id', '=', $user_role_id)
+			->delete();
+
+		return true;
+	}
+
+
+	/**
+	 * Change user to project role
+	 *
+	 * @return void
+	 */
+	public function changeUserProjectRole($project_id, $user_id, $user_role_id, $prev_user_role_id)
+	{
+		if ($this->findUserWithParams($project_id, $user_id, $user_role_id) 
+			OR ! $project_id OR ! $user_id OR ! $user_role_id OR ! $prev_user_role_id)
+		{
+			return false;
+		}
+
+		DB::table('user_to_project')
+			->where('project_id', '=', $project_id)
+			->where('user_id', '=', $user_id)
+			->where('user_role_id', '=', $prev_user_role_id)
+			->update(array(
+				'user_role_id' => $user_role_id
+			));
+
+		return true;
+	}
+
+
+	/**
+	 * Here we are going to check if user (in project) with passed data already exists
+	 *
+	 * @return bool
+	 */
+	private function findUserWithParams($project_id, $user_id, $user_role_id)
+	{
+		$result = DB::table('user_to_project')
+			->where('project_id', '=', $project_id)
+			->where('user_id', '=', $user_id)
+			->where('user_role_id', '=', $user_role_id)
+			->first();
+
+		return !! $result;
+	}
+
 
 }

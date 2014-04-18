@@ -49,4 +49,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
+
+	public function scopeConvertToSelectable($obj, $users)
+	{
+		$result = array();
+
+		foreach ($users as $key => $user)
+		{
+			$result[$user->id] = $user->firstname . ' ' . $user->lastname;
+		}
+
+		return $result;
+	}
+
 }

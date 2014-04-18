@@ -10,6 +10,15 @@ class RedmineUser extends Eloquent
 	public static $userData = NULL;
 
 
+	public function scopeGetById($obj, $user_id)
+	{
+		$locaUserInfo = DB::table('users')->where('id', '=', $user_id)->first();
+		$redmineUser = $this->getRedmineUser($locaUserInfo->email);
+
+		return $redmineUser;
+	}
+
+
 	/**
 	 * Simply get list of all the users in system (redmine and local db)
 	 *
