@@ -28,6 +28,7 @@
 				@if (Session::has('success'))
 					<div class="alert alert-success">
 						{{ Session::get('success') }}
+						<?php Session::remove('success') ?>
 					</div>
 				@endif
 

@@ -215,9 +215,6 @@ class TransactionController extends BaseController {
 
 	public function createTransaction()
 	{
-		// Clear prev. success messages
-		Session::remove('success');
-
 		$input = Input::all();
 
 		$filter = array(

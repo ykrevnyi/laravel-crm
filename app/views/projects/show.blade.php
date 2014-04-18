@@ -1,5 +1,24 @@
 <h1>{{$project->proj_name}}</h1>
 
+<div class="row">
+	<div class="col-lg-12">
+		<a id="add-transaction" href="#" class="btn btn-info">Add transaction</a>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#add-transaction').on('click', function(e) {
+		$.fancybox.open({
+			href: '/transactions/modal',
+			type: 'iframe',
+			padding: 0,
+			maxWidth: 780
+		});
+
+		e.preventDefault();
+	});
+</script>
+
 <table class="table table-bordered">
 	<tr>
 		<td>priority</td>
