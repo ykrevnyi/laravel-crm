@@ -1,135 +1,183 @@
-<h1>{{$project->proj_name}}</h1>
+<h1 class="text-center">{{$project->proj_name}}</h1>
 
-{{ Form::open(array('method'=>'DELETE', 'route'=>array('projects.destroy', $project->proj_id))) }}
-	{{ Form::submit('remove project', array('onclick' => 'return confirm("Are you sure?")')) }}
-{{ Form::close() }}
+<div class="container">
 
-{{ Form::open(array('route' => array('projects.update', $project->proj_id), 'method' => 'put')) }}
-	
-	<p>
-		{{ Form::label('proj_id', 'proj_id') }}
-		{{ Form::text('proj_id', $project->proj_id, array('disabled')) }}
-	</p>
+	<div class="row">
+		<div class="col-lg-12">
 
-	<p>
-		{{ Form::label('proj_status', 'proj_status') }}
-		{{ Form::select('proj_status', array(0 => 'В работе', 1 => 'Готов'), $project->proj_status) }}
-	</p>
+			<div class="form-horizontal">
+				{{ Form::open(array('route' => array('projects.update', $project->proj_id), 'method' => 'put')) }}
 
-	<p>
-		{{ Form::label('proj_name', 'proj_name') }}
-		{{ Form::text('proj_name', $project->proj_name) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_id', '№', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-9">
+							{{ Form::text('proj_id', $project->proj_id, array('disabled'), array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_desc_short', 'proj_desc_short') }}
-		{{ Form::textarea('proj_desc_short', $project->proj_desc_short) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_status', 'Статус проекта', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-9">
+							{{ Form::select('proj_status', array(0 => 'В работе', 1 => 'Готов'), $project->proj_status) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_desc', 'proj_desc') }}
-		{{ Form::textarea('proj_desc', $project->proj_desc) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_name', 'Название', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-9">
+							{{ Form::text('proj_name', $project->proj_name, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_persents', 'proj_persents') }}
-		{{ Form::text('proj_persents', $project->proj_persents) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_desc_short', 'Короткое описание', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-9">
+							{{ Form::textarea('proj_desc_short', $project->proj_desc_short, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_price', 'proj_price') }}
-		{{ Form::text('proj_price', $project->proj_price) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_desc', 'Детальное описание', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-9">
+							{{ Form::textarea('proj_desc', $project->proj_desc, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_price_per_hour', 'proj_price_per_hour') }}
-		{{ Form::text('proj_price_per_hour', $project->proj_price_per_hour) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_persents', 'Выполнено (%)', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_persents', $project->proj_persents, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_billed_hours', 'proj_billed_hours') }}
-		{{ Form::text('proj_billed_hours', $project->proj_billed_hours) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_price', 'Цена', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_price', $project->proj_price, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_actual_hours', 'proj_actual_hours') }}
-		{{ Form::text('proj_actual_hours', $project->proj_actual_hours) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_price_per_hour', 'Цена в час', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_price_per_hour', $project->proj_price_per_hour, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		{{ Form::label('proj_end_date', 'proj_end_date') }}
-		{{ Form::text('proj_end_date', $project->proj_end_date) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_billed_hours', 'Проплаченых часов', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_billed_hours', $project->proj_billed_hours, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	<p>
-		Priority: 
-		{{ Form::select('proj_priority_id', $priorities, $project->proj_priority_id) }}
-	</p>
+					<div class="form-group">
+						{{ Form::label('proj_actual_hours', 'Реальное затраченое время', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_actual_hours', $project->proj_actual_hours, array('class' => 'form-control')) }}
+						</div>
+					</div>
 
-	{{ Form::submit('save project') }}
-{{ Form::close() }}
+					<div class="form-group">
+						{{ Form::label('proj_end_date', 'Дата сдачи', array('class' => 'col-sm-3 control-label')) }}
+						<div class="col-sm-3">
+							{{ Form::text('proj_end_date', $project->proj_end_date, array('class' => 'form-control datepicker')) }}
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Приоритет:</label>
+						<div class="col-sm-9">
+							{{ Form::select('proj_priority_id', $priorities, $project->proj_priority_id) }}
+						</div>
+					</div>
+
+					<div class="text-center">
+						{{ Form::submit('Сохранить', array('class' => 'btn btn-success')) }}
+					</div>
+				{{ Form::close() }}
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="text-center">
+				{{ Form::open(array('method'=>'DELETE', 'route'=>array('projects.destroy', $project->proj_id))) }}
+					{{ Form::submit('Удалить проект', array('onclick' => 'return confirm("Are you sure?")', 'class' => 'btn btn-danger')) }}
+				{{ Form::close() }}
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<!-- Related users -->
+	<div class="panel panel-default">
+		<div class="panel-heading">Пользователи</div>
+
+		<div class="panel-body text-center">
+			<div id="user-select-form">
+				Имя: 
+				{{ Form::select('related_users_list', $users, 0, array('class' => 'user-id')) }}
+
+				Должность: 
+				{{ Form::select('related_user_role_list', $user_roles, 0, array('class' => 'user-role-id')) }}
+
+				<a id="submit-user-for-project" href="#" class="btn btn-xs btn-success">
+					<span class="glyphicon glyphicon-plus"></span>
+				</a>
+			</div>
+		</div>
+
+		<ul class="list-group" id="user-selected-list">
+			@foreach ($related_users as $user)
+				<li class="list-group-item">
+					<b>{{ $user['fullname'] }}</b> - 
+					{{ Form::select('user_role_id', $user_roles, $user['user_role_id'], array('class' => 'user-role-id', 'data-current-val' => $user['user_role_id'], 'data-user-id' => $user['id'])) }} 
+
+					<span class="remove-user-prom-project btn btn-danger btn-xs" data-user-id="{{ $user['id'] }}">
+						<span class="glyphicon glyphicon-remove"></span>
+					</span>
+				</li>
+			@endforeach
+		</ul>
+	</div>
 
 
-<!-- Related users -->
-<h3>Related users</h3>
+	<!-- Transactions -->
+	<h4>Transaction list</h4>
 
-<ul id="user-selected-list">
-	@foreach ($related_users as $user)
-		<li>
-			{{ $user['fullname'] }} 
-			Role: 
-			{{ Form::select('user_role_id', $user_roles, $user['user_role_id'], array('class' => 'user-role-id', 'data-current-val' => $user['user_role_id'], 'data-user-id' => $user['id'])) }} 
-
-			<span class="remove-user-prom-project btn btn-danger btn-xs" data-user-id="{{ $user['id'] }}">
-				<span class="glyphicon glyphicon-remove"></span>
-			</span>
-		</li>
-	@endforeach
-</ul>
-
-<div id="user-select-form">
-	User: 
-	{{ Form::select('related_users_list', $users, 0, array('class' => 'user-id')) }}
-
-	Role: 
-	{{ Form::select('related_user_role_list', $user_roles, 0, array('class' => 'user-role-id')) }}
-
-	<a id="submit-user-for-project" href="#" class="btn btn-xs btn-success">
-		<span class="glyphicon glyphicon-plus"></span>
-	</a>
-</div>
-
-
-<!-- Transactions -->
-<h4>Transaction list</h4>
-
-<table class="table">
-	<tr>
-		<th>id</th>
-		<th>name</th>
-		<th>value</th>
-		<th>is expense</th>
-		<th>purpose</th>
-		<th>money account</th>
-		<th>created at</th>
-		<th>updated at</th>
-		<th>delete</th>
-	</tr>
-
-	@foreach ($transactions as $transaction)
+	<table class="table">
 		<tr>
-			<td>{{ $transaction->trans_id }}</td>
-			<td>{{ $transaction->trans_name }}</td>
-			<td>{{ $transaction->trans_value }}</td>
-			<td>{{ $transaction->trans_is_expense }}</td>
-			<td>{{ $transaction->trans_purpose }}</td>
-			<td>{{ $transaction->money_account_name }}</td>
-			<td>{{ $transaction->trans_created_at }}</td>
-			<td>{{ $transaction->trans_updated_at }}</td>
-			<td><a href="#" class="delete-transaction" data-id="{{ $transaction->trans_id }}">remove</a></td>
+			<th>id</th>
+			<th>name</th>
+			<th>value</th>
+			<th>is expense</th>
+			<th>purpose</th>
+			<th>money account</th>
+			<th>created at</th>
+			<th>updated at</th>
+			<th>delete</th>
 		</tr>
-	@endforeach
-</table>
+
+		@foreach ($transactions as $transaction)
+			<tr>
+				<td>{{ $transaction->trans_id }}</td>
+				<td>{{ $transaction->trans_name }}</td>
+				<td>{{ $transaction->trans_value }}</td>
+				<td>{{ $transaction->trans_is_expense }}</td>
+				<td>{{ $transaction->trans_purpose }}</td>
+				<td>{{ $transaction->money_account_name }}</td>
+				<td>{{ $transaction->trans_created_at }}</td>
+				<td>{{ $transaction->trans_updated_at }}</td>
+				<td><a href="#" class="delete-transaction" data-id="{{ $transaction->trans_id }}">remove</a></td>
+			</tr>
+		@endforeach
+	</table>
+</div>
 
 
 <script type="text/javascript">

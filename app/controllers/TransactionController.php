@@ -175,4 +175,97 @@ class TransactionController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * Show modal form to create new transaction
+	 *
+	 * @return mixed
+	 */
+	public function modal()
+	{
+		// Get money accounts
+		$accounts = MoneyAccount::all();
+
+		// Get all purposes
+		$purposes = TransactionPurpose::all();
+
+		// Fetch all the users
+		$users = $this->redmineUser->getAllWithPaginations(99999);
+		$users = User::convertToSelectable($users['users']);
+
+		// Get all the projects
+		$projects = $this->projects->getProjects();
+		$projects = Tools::convertProjectToSelectable($projects);
+
+		// List of relation types
+		$relation_types = array(
+			'none' => 'без привязки',
+			'user' => 'к пользователю',
+			'project' => 'к проекту'
+		);
+
+		return View::make('transaction.form')
+			->with('relation_types', $relation_types)
+			->with('money_accounts', $accounts)
+			->with('purposes', $purposes)
+			->with('projects', $projects)
+			->with('users', $users);
+	}
+
+
+	public function createTransaction()
+	{
+		// Clear prev. success messages
+		Session::remove('success');
+
+		$input = Input::all();
+
+		$filter = array(
+			'is_expense' => 'required',
+			'name' => 'required|min:5',
+			'transaction_purpose_id' => 'required',
+			'money_account' => 'required',
+			'price' => 'required|numeric',
+			'relation' => 'required'
+		);
+
+		// No relation here
+		if (Input::get('relation') == 'none')
+		{
+			$input['object_id'] = 0;
+		}
+
+		// Relation to user
+		elseif (Input::get('relation') == 'user')
+		{
+			$input['object_id'] = Input::get('relation_to_user');
+			$filter['relation_to_user'] = 'required';
+		}
+
+		// Relation to project
+		elseif (Input::get('relation') == 'project')
+		{
+			$input['object_id'] = Input::get('relation_to_project');
+			$filter['relation_to_user'] = 'required';
+		}
+
+		$validator = Validator::make(
+			$input,
+			$filter
+		);
+
+		if ($validator->fails())
+		{
+			return Redirect::route('transactionModal')
+				->withInput()
+				->withErrors($validator);
+		}
+
+		$this->transaction->createTransaction($input);
+		Session::put('success', 'Транзакция добавлена!');
+
+		return Redirect::route('transactionModal');
+	}
+
+
 }

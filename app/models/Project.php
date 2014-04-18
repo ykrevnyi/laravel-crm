@@ -10,6 +10,7 @@ class Project extends Eloquent
 		$this->redmineUser = $user;
 	}
 
+
 	/**
 	 * Get all project list
 	 *
