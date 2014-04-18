@@ -11,10 +11,12 @@
 		<!-- Bootstrap core CSS -->
 		<link href="/public/css/bootstrap.css" rel="stylesheet">
 		<link href="/public/css/style.css" rel="stylesheet">
+		<link href="/public/css/select2.css" rel="stylesheet">
 
 		<script type="text/javascript" src="//code.jquery.com/jquery.js"></script>
 		<script type="text/javascript" src="/public/js/noty.js"></script>
 		<script type="text/javascript" src="/public/js/bootstrap.js"></script>
+		<script type="text/javascript" src="/public/js/select2.min.js"></script>
 	</head>
 
 	<body>

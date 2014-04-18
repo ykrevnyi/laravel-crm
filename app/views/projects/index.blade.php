@@ -23,7 +23,9 @@
 			<td style="background: {{$project->proj_priority_color}};"></td>
 			<td>{{$project->proj_id}}</td>
 			<td>{{$project->proj_status}}</td>
-			<td>{{$project->proj_name}}</td>
+			<td>
+				{{ HTML::linkRoute('projects.show', $project->proj_name, array('id' => $project->proj_id)) }}
+			</td>
 			<td>{{$project->proj_desc_short}}</td>
 			<td>{{$project->proj_persents}}</td>
 			<td>{{$project->proj_price}}</td>
