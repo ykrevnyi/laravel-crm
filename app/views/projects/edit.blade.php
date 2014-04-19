@@ -181,6 +181,8 @@
 
 
 <script type="text/javascript">
+	$('select').select2();
+
 	var $userSelectList = $('#user-selected-list'),
 		$form = $('#user-select-form'),
 		userCnt = 0;
@@ -188,7 +190,7 @@
 	// Add user to the project
 	$('#submit-user-for-project').on('click', function(e) {
 		var $this = $(this),
-			url = "{{ URL::route('addUserToProject', $project->proj_id) }}";
+			url = "{{ URL::route('addUserToProject', $project_id) }}";
 
 		$this.addClass('.active').attr('disabled', 'disabled');
 
@@ -233,9 +235,10 @@
 	// Remove user from the project
 	$('body').on('click', '.remove-user-prom-project', function(e) {
 		var $this = $(this),
-			url = "{{ URL::route('removeUserFromProject', $project->proj_id) }}";
+			url = "{{ URL::route('removeUserFromProject', $project_id) }}";
 
 		$this.addClass('.active').attr('disabled', 'disabled');
+		$this.siblings('.user-role-id').attr('disabled', 'disabled');
 
 		$.ajax({
 			url: url,
@@ -261,11 +264,11 @@
 
 
 	// Change user role
-	$('#user-selected-list .user-role-id').on('change', function(e) {
+	$('body').on('change', '#user-selected-list .user-role-id', function(e) {
 		var $this = $(this),
 			currentVal = $this.select2('val'),
 			prevVal = $this.data('current-val'),
-			url = "{{ URL::route('changeUserProjectRole', $project->proj_id) }}";
+			url = "{{ URL::route('changeUserProjectRole', $project_id) }}";
 
 		$this.data('current-val', currentVal);
 		$this.attr('disabled', 'disabled');

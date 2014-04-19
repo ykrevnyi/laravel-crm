@@ -22,9 +22,9 @@ body.loading::after {
   display: none;
 }
 .form-signin {
-	max-width: 330px;
-	padding: 15px;
-	margin: 0 auto;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
 }
 .typeahead,
 .tt-query,
@@ -48,10 +48,10 @@ body.loading::after {
 }
 
 .tt-dropdown-menu {
-	width: 150px;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border: 1px solid rgba(0, 0, 0, 0.2);
+  width: 150px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .tt-suggestion {
@@ -69,4 +69,59 @@ body.loading::after {
 }
 .select2-container {
   text-align: left;
+}
+
+.project-create-wizzard {
+    margin-top: -20px;
+}
+.project-create-wizzard .project-submit-btn {
+  z-index: 1001;
+  position: relative;
+}
+.project-create-wizzard .project-form-data {
+  position: relative;
+}
+.project-create-wizzard .project-form-data::after {
+  transition: all 0.3s linear;
+}
+.project-create-wizzard.disable .project-form-data::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  background: rgba(255, 255, 255, 0.44);
+  z-index: 999;
+}
+.project-create-wizzard > .container {
+  transition: all 0.5s linear;
+  z-index: 10;
+  margin-top: 0;
+}
+.project-create-wizzard > h1 {
+  z-index: 100;
+  position: relative;
+  background: #fff;
+}
+.project-create-wizzard.step-2 > .container {
+  position: relative;
+  /*margin-top: -700px;*/
+}
+.project-create-wizzard #related-users-container-ajax {
+  transition: all 0.5s linear;
+  overflow: hidden;
+  opacity: 0;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 1000;
+}
+.project-create-wizzard.step-2 #related-users-container-ajax {
+  display: block;
+  opacity: 1;
+  bottom: 30px;
 }

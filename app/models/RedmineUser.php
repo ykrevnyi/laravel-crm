@@ -15,6 +15,12 @@ class RedmineUser extends Eloquent
 		$locaUserInfo = DB::table('users')->where('id', '=', $user_id)->first();
 		$redmineUser = $this->getRedmineUser($locaUserInfo->email);
 
+		// Set needle params
+		$redmineUser->perm = $locaUserInfo->perm;
+		$redmineUser->id = $locaUserInfo->id;
+
+		$redmineUser = $this->setUserStatuses($redmineUser);
+
 		return $redmineUser;
 	}
 
