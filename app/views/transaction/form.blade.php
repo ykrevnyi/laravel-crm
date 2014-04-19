@@ -151,8 +151,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-				<button type="submit" class="btn btn-primary">Сохранить</button>
+				<button type="button" class="btn btn-default" onclick="parent.$.fancybox.close();">Закрыть</button>
+				<button type="submit" class="btn btn-primary" onclick="$('body').addClass('loading');">Сохранить</button>
 			</div>
 		</form>
 
