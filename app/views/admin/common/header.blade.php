@@ -25,7 +25,7 @@
 	</head>
 
 	<body>
-
+	
 	<div class="navbar navbar-inverse">
 		<div class="container">
 			<div class="navbar-header">
@@ -38,10 +38,33 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="/">home</a></li>
-					<li><a href="/users">users</a></li>
-					<li><a href="/transactions">transactions</a></li>
-					<li><a href="/projects">projects</a></li>
+					@if (preg_match("/^home.*/i", Route::currentRouteName()))
+						<li class="active">
+					@else
+						<li>
+					@endif
+						<a href="/">home</a></li>
+
+					@if (preg_match("/^users\..+/i", Route::currentRouteName()))
+						<li class="active">
+					@else
+						<li>
+					@endif
+						<a href="/users">users</a></li>
+
+					@if (preg_match("/^transactions\..+/i", Route::currentRouteName()))
+						<li class="active">
+					@else
+						<li>
+					@endif
+						<a href="/transactions">transactions</a></li>
+
+					@if (preg_match("/^projects\..+/i", Route::currentRouteName()))
+						<li class="active">
+					@else
+						<li>
+					@endif
+						<a href="/projects">projects</a></li>
 				</ul>
 			</div><!--/.navbar-collapse -->
 		</div>

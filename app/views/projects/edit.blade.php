@@ -145,38 +145,7 @@
 			@endforeach
 		</ul>
 	</div>
-
-
-	<!-- Transactions -->
-	<h4>Transaction list</h4>
-
-	<table class="table">
-		<tr>
-			<th>id</th>
-			<th>name</th>
-			<th>value</th>
-			<th>is expense</th>
-			<th>purpose</th>
-			<th>money account</th>
-			<th>created at</th>
-			<th>updated at</th>
-			<th>delete</th>
-		</tr>
-
-		@foreach ($transactions as $transaction)
-			<tr>
-				<td>{{ $transaction->trans_id }}</td>
-				<td>{{ $transaction->trans_name }}</td>
-				<td>{{ $transaction->trans_value }}</td>
-				<td>{{ $transaction->trans_is_expense }}</td>
-				<td>{{ $transaction->trans_purpose }}</td>
-				<td>{{ $transaction->money_account_name }}</td>
-				<td>{{ $transaction->trans_created_at }}</td>
-				<td>{{ $transaction->trans_updated_at }}</td>
-				<td><a href="#" class="delete-transaction" data-id="{{ $transaction->trans_id }}">remove</a></td>
-			</tr>
-		@endforeach
-	</table>
+	
 </div>
 
 
@@ -190,7 +159,7 @@
 	// Add user to the project
 	$('#submit-user-for-project').on('click', function(e) {
 		var $this = $(this),
-			url = "{{ URL::route('addUserToProject', $project_id) }}";
+			url = "{{ URL::route('addUserToProject', $project->proj_id) }}";
 
 		$this.addClass('.active').attr('disabled', 'disabled');
 
@@ -235,7 +204,7 @@
 	// Remove user from the project
 	$('body').on('click', '.remove-user-prom-project', function(e) {
 		var $this = $(this),
-			url = "{{ URL::route('removeUserFromProject', $project_id) }}";
+			url = "{{ URL::route('removeUserFromProject', $project->proj_id) }}";
 
 		$this.addClass('.active').attr('disabled', 'disabled');
 		$this.siblings('.user-role-id').attr('disabled', 'disabled');
@@ -268,7 +237,7 @@
 		var $this = $(this),
 			currentVal = $this.select2('val'),
 			prevVal = $this.data('current-val'),
-			url = "{{ URL::route('changeUserProjectRole', $project_id) }}";
+			url = "{{ URL::route('changeUserProjectRole', $project->proj_id) }}";
 
 		$this.data('current-val', currentVal);
 		$this.attr('disabled', 'disabled');
