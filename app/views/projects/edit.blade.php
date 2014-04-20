@@ -126,6 +126,8 @@
 				Должность: 
 				{{ Form::select('related_user_role_list', $user_roles, 0, array('class' => 'user-role-id')) }}
 
+				{{ Form::text('user_payed_hours', '', array('class' => 'user-payed-hours form-control input-sm')) }} ч.
+
 				<a id="submit-user-for-project" href="#" class="btn btn-xs btn-success">
 					<span class="glyphicon glyphicon-plus"></span>
 				</a>
@@ -135,8 +137,10 @@
 		<ul class="list-group" id="user-selected-list">
 			@foreach ($related_users as $user)
 				<li class="list-group-item">
-					<b>{{ $user['fullname'] }}</b> - 
+					<b>{{ $user['fullname'] }}</b> 
 					{{ Form::select('user_role_id', $user_roles, $user['user_role_id'], array('class' => 'user-role-id', 'data-current-val' => $user['user_role_id'], 'data-user-id' => $user['id'])) }} 
+
+					{{ Form::text('user_payed_hours', $user['payed_hours'], array('class' => 'update-user-payed-hours user-payed-hours form-control input-sm', 'data-user-id' => $user['id'])) }} ч.
 
 					<span class="remove-user-prom-project btn btn-danger btn-xs" data-user-id="{{ $user['id'] }}">
 						<span class="glyphicon glyphicon-remove"></span>
@@ -169,7 +173,8 @@
 			dataType: 'json',
 			data: {
 				user_id: $form.find('.select2-container.user-id').select2('val'),
-				user_role_id: $form.find('.select2-container.user-role-id').select2('val')
+				user_role_id: $form.find('.select2-container.user-role-id').select2('val'),
+				user_payed_hours: $form.find('.user-payed-hours').val()
 			}
 		})
 		.done(function(data) {
@@ -266,6 +271,36 @@
 			};
 
 			$this.removeAttr('disabled');
+			$this.siblings('.remove-user-prom-project').removeAttr('disabled');
+		});
+
+		e.preventDefault();
+	});
+
+
+	// Change user payed hours
+	$('body').on('change', '#user-selected-list .update-user-payed-hours', function(e) {
+		var $this = $(this),
+			$select = $this.siblings('select.user-role-id'),
+			url = "{{ URL::route('changeUserProjectPayedHours', $project->proj_id) }}";
+
+		$this.attr('disabled', 'disabled');
+		$select.attr('disabled', 'disabled');
+		$this.siblings('.remove-user-prom-project').attr('disabled', 'disabled');
+
+		$.ajax({
+			url: url,
+			type: 'post',
+			dataType: 'json',
+			data: {
+				user_id: $this.data('user-id'),
+				user_role_id: $select.val(),
+				user_payed_hours: $this.val()
+			}
+		})
+		.done(function(data) {
+			$this.removeAttr('disabled');
+			$select.removeAttr('disabled');
 			$this.siblings('.remove-user-prom-project').removeAttr('disabled');
 		});
 

@@ -10,6 +10,8 @@
 			Должность: 
 			{{ Form::select('related_user_role_list', $user_roles, 0, array('class' => 'user-role-id')) }}
 
+			{{ Form::text('user_payed_hours', '', array('class' => 'user-payed-hours form-control input-sm')) }} ч.
+
 			<a id="submit-user-for-project" href="#" class="btn btn-xs btn-success">
 				<span class="glyphicon glyphicon-plus"></span>
 			</a>
@@ -18,7 +20,7 @@
 
 	<ul class="list-group" id="user-selected-list"></ul>
 </div>
-				
+
 
 <script type="text/javascript">
 	$('select').select2();
@@ -40,7 +42,8 @@
 			dataType: 'json',
 			data: {
 				user_id: $form.find('.select2-container.user-id').select2('val'),
-				user_role_id: $form.find('.select2-container.user-role-id').select2('val')
+				user_role_id: $form.find('.select2-container.user-role-id').select2('val'),
+				user_payed_hours: $form.find('.user-payed-hours').val()
 			}
 		})
 		.done(function(data) {
@@ -137,6 +140,36 @@
 			};
 
 			$this.removeAttr('disabled');
+			$this.siblings('.remove-user-prom-project').removeAttr('disabled');
+		});
+
+		e.preventDefault();
+	});
+
+
+	// Change user payed hours
+	$('body').on('change', '#user-selected-list .update-user-payed-hours', function(e) {
+		var $this = $(this),
+			$select = $this.siblings('select.user-role-id'),
+			url = "{{ URL::route('changeUserProjectPayedHours', $project_id) }}";
+
+		$this.attr('disabled', 'disabled');
+		$select.attr('disabled', 'disabled');
+		$this.siblings('.remove-user-prom-project').attr('disabled', 'disabled');
+
+		$.ajax({
+			url: url,
+			type: 'post',
+			dataType: 'json',
+			data: {
+				user_id: $this.data('user-id'),
+				user_role_id: $select.val(),
+				user_payed_hours: $this.val()
+			}
+		})
+		.done(function(data) {
+			$this.removeAttr('disabled');
+			$select.removeAttr('disabled');
 			$this.siblings('.remove-user-prom-project').removeAttr('disabled');
 		});
 

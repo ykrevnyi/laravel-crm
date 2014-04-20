@@ -200,6 +200,7 @@ class ProjectsController extends BaseController {
 						'fullname' => $related_user->firstname . ' ' .$related_user->lastname,
 						'mail' => $related_user->mail,
 						'login' => $related_user->login,
+						'payed_hours' => $related_user->payed_hours,
 						'user_role_id' => $related_user->user_role_id
 					);
 				}
@@ -222,12 +223,14 @@ class ProjectsController extends BaseController {
 		$project_id = (int) $project_id;
 		$user_id = (int) Input::get('user_id', 0);
 		$user_role_id = (int) Input::get('user_role_id', 0);
+		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
 
-		$result['status'] = $this->project->addUserToProject($project_id, $user_id, $user_role_id);
+		$result['status'] = $this->project->addUserToProject($project_id, $user_id, $user_role_id, $user_payed_hours);
 
 		// Get user info and create an HTML form to edit user relation to project
 		$user = RedmineUser::GetById($user_id);
 		$user->user_role_id = $user_role_id;
+		$user->payed_hours = $user_payed_hours;
 
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
@@ -276,12 +279,39 @@ class ProjectsController extends BaseController {
 		$user_id = (int) Input::get('user_id', 0);
 		$user_role_id = (int) Input::get('user_role_id', 0);
 		$prev_user_role_id = (int) Input::get('prev_user_role_id', 0);
+		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
 
 		$result['status'] = $this->project->changeUserProjectRole(
 			$project_id, 
 			$user_id, 
 			$user_role_id, 
-			$prev_user_role_id
+			$prev_user_role_id,
+			$user_payed_hours
+		);
+
+		return json_encode($result);
+	}
+
+
+	/**
+	 * Change user payed hours
+	 *
+	 * @return void
+	 */
+	public function changeUserPayedHours($project_id)
+	{
+		$result = array();
+
+		$project_id = (int) $project_id;
+		$user_id = (int) Input::get('user_id', 0);
+		$user_role_id = (int) Input::get('user_role_id', 0);
+		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
+
+		$result['status'] = $this->project->changeUserProjectPayedHours(
+			$project_id, 
+			$user_id, 
+			$user_role_id, 
+			$user_payed_hours
 		);
 
 		return json_encode($result);

@@ -121,7 +121,7 @@ class Project extends Eloquent
 		// Get related user ids + related role ids
 		$related_user_ids = DB::table('user_to_project')
 			->where('project_id', '=', $project_id)
-			->select('user_id', 'user_role_id')
+			->select('user_id', 'user_role_id', 'payed_hours')
 			->get();
 
 		// Get users information
@@ -132,6 +132,7 @@ class Project extends Eloquent
 			$local_user = User::find($user->user_id);
 			$newUser = $this->redmineUser->getRedmineUser($local_user->email);
 			$newUser->id = $local_user->id;
+			$newUser->payed_hours = $user->payed_hours;
 			$newUser->user_role_id = $user->user_role_id;
 			
 			$users[] = $newUser;
@@ -277,7 +278,7 @@ class Project extends Eloquent
 	 *
 	 * @return void
 	 */
-	public function addUserToProject($project_id, $user_id, $user_role_id)
+	public function addUserToProject($project_id, $user_id, $user_role_id, $user_payed_hours)
 	{
 		if ($this->findUserWithParams($project_id, $user_id, $user_role_id) 
 			OR ! $project_id OR ! $user_id OR ! $user_role_id)
@@ -288,6 +289,7 @@ class Project extends Eloquent
 		DB::table('user_to_project')->insert(array(
 			'project_id' => $project_id,
 			'user_id' => $user_id,
+			'payed_hours' => $user_payed_hours,
 			'user_role_id' => $user_role_id
 		));
 
@@ -336,6 +338,30 @@ class Project extends Eloquent
 			->where('user_role_id', '=', $prev_user_role_id)
 			->update(array(
 				'user_role_id' => $user_role_id
+			));
+
+		return true;
+	}
+
+
+	/**
+	 * Change user payed hours
+	 *
+	 * @return void
+	 */
+	public function changeUserProjectPayedHours($project_id, $user_id, $user_role_id, $user_payed_hours)
+	{
+		if ($user_payed_hours < 0)
+		{
+			$user_payed_hours = 0;
+		}
+
+		DB::table('user_to_project')
+			->where('project_id', '=', $project_id)
+			->where('user_id', '=', $user_id)
+			->where('user_role_id', '=', $user_role_id)
+			->update(array(
+				'payed_hours' => $user_payed_hours
 			));
 
 		return true;

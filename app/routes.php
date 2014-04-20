@@ -22,6 +22,7 @@ Route::group(array('before' => 'auth'), function () {
 	Route::post("/projects/{id}/addUser", array('as' => 'addUserToProject', 'uses' => 'ProjectsController@addUser'));
 	Route::post("/projects/{id}/removeUser", array('as' => 'removeUserFromProject', 'uses' => 'ProjectsController@removeUser'));
 	Route::post("/projects/{id}/changeUserRole", array('as' => 'changeUserProjectRole', 'uses' => 'ProjectsController@changeUserRole'));
+	Route::post("/projects/{id}/changeUserPayedHours", array('as' => 'changeUserProjectPayedHours', 'uses' => 'ProjectsController@changeUserPayedHours'));
 });
 
 

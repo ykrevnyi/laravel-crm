@@ -125,3 +125,26 @@ body.loading::after {
   opacity: 1;
   bottom: 30px;
 }
+#user-selected-list li .user-payed-hours {
+  width: 5%;
+  display: inline-block;
+}
+#user-selected-list li .user-role-id {
+  display: inline-block;
+}
+#user-selected-list li > b {
+  display: inline-block;
+  width: 150px;
+}
+#user-select-form .user-payed-hours {
+  display: inline-block;
+  width: 5%;
+  margin-left: 5px;
+}
+#user-select-form #submit-user-for-project {
+  margin-left: 5px;
+  display: inline-block;
+}
+#user-selected-list li .remove-user-prom-project {
+  margin-left: 5px;
+}

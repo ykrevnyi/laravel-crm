@@ -81,10 +81,11 @@
 			<tr>
 				<th>Пользователь</th>
 				<th>Статус</th>
+				<th>Время, ч.</th>
 			</tr>
 			@foreach ($related_users as $user)
 				<tr>
-					<td>{{ $user->firstname }}</td>
+					<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
 					<td>
 						@foreach ($user_roles as $role_key => $role)
 							@if ($role_key == $user->user_role_id)
@@ -92,6 +93,7 @@
 							@endif
 						@endforeach
 					</td>
+					<td>{{ $user->payed_hours }}</td>
 				</tr>
 			@endforeach
 		</table>
