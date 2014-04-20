@@ -16,6 +16,15 @@
 	<!-- Basic project information -->
 	<div class="row">
 		<div class="col-lg-12">
+			<h4>Описание</h4>
+			{{ $project->proj_desc }}
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="row">
+		<div class="col-lg-12">
 			<h4>Общая информация</h4>
 
 			<table class="table table-bordered">
@@ -39,16 +48,34 @@
 
 			<table class="table table-bordered">
 				<tr>
-					<th>Цена</th>
+					<th>Название</th>
 					<th>Цена в час</th>
-					<th>Проплаченых часов</th>
 					<th>Затраченое время</th>
+					<th>Сума</th>
 				</tr>
+
+				@foreach ($hours as $hour)
+					<tr>
+						<td>{{ $hour->name }}</td>
+						<td>{{ $hour->price_per_hour }} $</td>
+						<td>{{ $hour->total_hours }} ч.</td>
+						<td>{{ $hour->total_price }} $</td>
+					</tr>
+				@endforeach
+
 				<tr>
-					<td>{{$project->proj_price}}</td>
-					<td>{{$project->proj_price_per_hour}}</td>
-					<td>{{$project->proj_billed_hours}}</td>
-					<td>{{$project->proj_actual_hours}}</td>
+					<td class="text-right" colspan="3">Итого, за проект:</td>
+					<td><b>{{ $total_project_price }} $</b></td>
+				</tr>
+
+				<tr>
+					<td class="text-right" colspan="3">Оплачено:</td>
+					<td><b>{{ $total_transaction_price }} $</b></td>
+				</tr>
+
+				<tr>
+					<td class="text-right" colspan="3">Итого:</td>
+					<td><b>{{ $project_balance }} $</b></td>
 				</tr>
 			</table>
 		</div>
@@ -81,7 +108,7 @@
 			<tr>
 				<th>Пользователь</th>
 				<th>Статус</th>
-				<th>Время, ч.</th>
+				<th>Время</th>
 			</tr>
 			@foreach ($related_users as $user)
 				<tr>
@@ -93,7 +120,7 @@
 							@endif
 						@endforeach
 					</td>
-					<td>{{ $user->payed_hours }}</td>
+					<td>{{ $user->payed_hours }} ч.</td>
 				</tr>
 			@endforeach
 		</table>

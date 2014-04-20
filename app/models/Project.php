@@ -41,9 +41,6 @@ class Project extends Eloquent
 				'P.id as proj_id',
 				'P.status as proj_status',
 				'P.done_percents as proj_persents',
-				'P.price as proj_price',
-				'P.price_per_hour as proj_price_per_hour',
-				'P.billed_hours as proj_billed_hours',
 				'P.actual_hours as proj_actual_hours',
 				'P.end_date as proj_end_date',
 				'P.created_at as proj_created_at',
@@ -90,9 +87,6 @@ class Project extends Eloquent
 				'P.id as proj_id',
 				'P.status as proj_status',
 				'P.done_percents as proj_persents',
-				'P.price as proj_price',
-				'P.price_per_hour as proj_price_per_hour',
-				'P.billed_hours as proj_billed_hours',
 				'P.actual_hours as proj_actual_hours',
 				'P.end_date as proj_end_date',
 				'P.created_at as proj_created_at',
@@ -108,6 +102,62 @@ class Project extends Eloquent
 			)
 			->where('P.id', '=', $project_id)
 			->first();
+	}
+
+
+	/**
+	 * Get hours of the project
+	 *
+	 * @return mixed
+	 */
+	public function getBilledHours($project_id)
+	{
+		return DB::table('user_to_project as UTP')
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTP.user_role_id'
+			)
+
+			// Join user role prices
+			->join(
+				'user_role_price as URP',
+				'URP.user_role_id',
+				'=',
+				'UR.id'
+			)
+
+			// Get selected info
+			->select(
+				'UR.*',
+				'URP.*',
+				'UTP.user_role_id',
+				DB::raw('SUM(UTP.payed_hours) as total_hours'),
+				DB::raw('(SUM(UTP.payed_hours) * URP.price_per_hour) as total_price')
+			)
+			->where('UTP.project_id', '=', $project_id)
+			->groupBy('UTP.user_role_id')
+			->get();
+	}
+
+
+	/**
+	 * Get the total price of the project
+	 *
+	 * @return int
+	 */
+	public function calculateTotalPrice($hours)
+	{
+		$total = 0;
+
+		foreach ($hours as $hour)
+		{
+			$total += $hour->total_price;
+		}
+
+		return $total;
 	}
 
 
@@ -179,6 +229,31 @@ class Project extends Eloquent
 
 
 	/**
+	 * Get total price of all the transactions
+	 *
+	 * @return void
+	 */
+	public function calculateTotalTransactionPrice($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ($transaction->trans_is_expense)
+			{
+				$total -= $transaction->trans_value;
+			}
+			else
+			{
+				$total += $transaction->trans_value;
+			}
+		}
+
+		return $total;
+	}
+
+
+	/**
 	 * Create new project
 	 *
 	 * @return int
@@ -191,9 +266,6 @@ class Project extends Eloquent
 				'status' => $project_info['proj_status'],
 				'project_priority_id' => $project_info['proj_priority_id'],
 				'done_percents' => $project_info['proj_persents'],
-				'price' => $project_info['proj_price'],
-				'price_per_hour' => $project_info['proj_price_per_hour'],
-				'billed_hours' => $project_info['proj_billed_hours'],
 				'actual_hours' => $project_info['proj_actual_hours'],
 				'end_date' => $project_info['proj_end_date'],
 				'updated_at' => \Carbon\Carbon::now()
@@ -243,9 +315,6 @@ class Project extends Eloquent
 				'status' => $project_info['proj_status'],
 				'project_priority_id' => $project_info['proj_priority_id'],
 				'done_percents' => $project_info['proj_persents'],
-				'price' => $project_info['proj_price'],
-				'price_per_hour' => $project_info['proj_price_per_hour'],
-				'billed_hours' => $project_info['proj_billed_hours'],
 				'actual_hours' => $project_info['proj_actual_hours'],
 				'end_date' => $project_info['proj_end_date'],
 				'updated_at' => \Carbon\Carbon::now()
