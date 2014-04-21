@@ -148,3 +148,32 @@ body.loading::after {
 #user-selected-list li .remove-user-prom-project {
   margin-left: 5px;
 }
+#reportrange {
+  background: #ffffff;
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1);
+  color: #333333;
+  padding: 8px;
+  line-height: 18px;
+  cursor: pointer;
+}
+#reportrange .caret {
+}
+#reportrange span {
+  padding-left: 3px;
+}
+.page-filter {}
+.page-filter .filter-name-field {
+  display: inline-block;
+  width: 200px;
+}
+.page-filter .filter-name-field-label {
+  display: inline-block;
+}
+.page-filter .filter-name-container {
+  margin-right: 10px;
+}
+.page-filter .filter-search-btn {
+  margin-left: 10px;
+}

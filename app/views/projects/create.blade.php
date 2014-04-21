@@ -46,27 +46,6 @@
 						</div>
 
 						<div class="form-group">
-							{{ Form::label('proj_price', 'Цена', array('class' => 'col-sm-3 control-label')) }}
-							<div class="col-sm-3">
-								{{ Form::text('proj_price', '', array('class' => 'form-control')) }}
-							</div>
-						</div>
-
-						<div class="form-group">
-							{{ Form::label('proj_price_per_hour', 'Цена в час', array('class' => 'col-sm-3 control-label')) }}
-							<div class="col-sm-3">
-								{{ Form::text('proj_price_per_hour', '', array('class' => 'form-control')) }}
-							</div>
-						</div>
-
-						<div class="form-group">
-							{{ Form::label('proj_billed_hours', 'Проплаченых часов', array('class' => 'col-sm-3 control-label')) }}
-							<div class="col-sm-3">
-								{{ Form::text('proj_billed_hours', '', array('class' => 'form-control')) }}
-							</div>
-						</div>
-
-						<div class="form-group">
 							{{ Form::label('proj_actual_hours', 'Реальное затраченое время', array('class' => 'col-sm-3 control-label')) }}
 							<div class="col-sm-3">
 								{{ Form::text('proj_actual_hours', '', array('class' => 'form-control')) }}

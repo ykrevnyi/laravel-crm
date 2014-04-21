@@ -4,7 +4,8 @@ class ProjectsController extends BaseController {
 
 	protected $project, $redmineUser;
 
-	public function before() {
+	public function before()
+	{
 		$this->redmineUser = new RedmineUser;
 		$this->project = new Project($this->redmineUser);
 	}
@@ -32,9 +33,27 @@ class ProjectsController extends BaseController {
 	 */
 	public function index()
 	{
-		$project_list = $this->project->getProjects();
+		// Get projects from specified dates.
+		// Or from last month (by default)
+		$date_from = Input::get('date_from', date("d-m-Y", strtotime('-29 day')));
+		$date_to = Input::get('date_to', date('d-m-Y', time()));
+		$filter_name = Input::get('filter_name', '');
 
-		$this->layout->content = View::make('projects.index', compact('project_list'));
+		$date_from_formated = new DateTime($date_from);
+		$date_to_formated = new DateTime($date_to);
+
+		$project_list = $this->project->getProjects(
+			$date_from_formated, 
+			$date_to_formated, 
+			$filter_name
+		);
+
+		$this->layout->content = View::make('projects.index')
+			->with('project_list', $project_list)
+			->with('date_from', $date_from)
+			->with('date_to', $date_to)
+			->with('date_from_formated', $date_from_formated)
+			->with('date_to_formated', $date_to_formated);
 	}
 
 	/**

@@ -16,7 +16,7 @@ class Project extends Eloquent
 	 *
 	 * @return void
 	 */
-	public function getProjects()
+	public function getProjects($date_from, $date_to, $filter_name)
 	{
 		return DB::table('project as P')
 
@@ -54,6 +54,9 @@ class Project extends Eloquent
 				'PP.color as proj_priority_color'
 			)
 			->orderBy('P.created_at', 'desc')
+			->where('P.created_at', '>=', $date_from->format('Y-m-d'))
+			->where('P.created_at', '<=', $date_to->format('Y-m-d'))
+			->where('PD.name', 'LIKE', '%' . $filter_name . '%')
 			->get();
 	}
 
@@ -113,6 +116,14 @@ class Project extends Eloquent
 	public function getBilledHours($project_id)
 	{
 		return DB::table('user_to_project as UTP')
+			// Join project info in case to get project creating date
+			->join(
+				'project as P',
+				'P.id',
+				'=',
+				'UTP.project_id'
+			)
+
 			// Join user role info
 			->join(
 				'user_role as UR',
@@ -133,11 +144,20 @@ class Project extends Eloquent
 			->select(
 				'UR.*',
 				'URP.*',
+				'P.created_at as project_creation_date',
 				'UTP.user_role_id',
 				DB::raw('SUM(UTP.payed_hours) as total_hours'),
 				DB::raw('(SUM(UTP.payed_hours) * URP.price_per_hour) as total_price')
 			)
 			->where('UTP.project_id', '=', $project_id)
+
+			// Filter by dates
+			// ->where('URP.created_at', '<=', 'P.created_at')
+			// ->where('URP.deprecated_at', '>', 'P.created_at')
+
+			->whereRaw('P.created_at >= URP.created_at')
+			->whereRaw('P.created_at < URP.deprecated_at')
+			
 			->groupBy('UTP.user_role_id')
 			->get();
 	}
@@ -268,6 +288,7 @@ class Project extends Eloquent
 				'done_percents' => $project_info['proj_persents'],
 				'actual_hours' => $project_info['proj_actual_hours'],
 				'end_date' => $project_info['proj_end_date'],
+				'created_at' => \Carbon\Carbon::now(),
 				'updated_at' => \Carbon\Carbon::now()
 			));
 
