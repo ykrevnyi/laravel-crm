@@ -6,7 +6,6 @@ class Task extends Eloquent
 	protected $table = 'task';
 
 
-
 	/**
 	 * Simply store new task
 	 *
@@ -134,6 +133,111 @@ class Task extends Eloquent
 			->first();
 
 		return !! $result;
+	}
+
+
+	/**
+	 * Get list of the tasks related to the project
+	 *
+	 * @return mixed
+	 */
+	public function getList($project_id)
+	{
+		// Get all of the tasks related to the project
+		$task_list = DB::table('task')
+			->where('project_id', '=', $project_id)
+			->get();
+
+		foreach ($task_list as & $task)
+		{
+			$related_users = $this->getTaskInvoice($task->id);
+			$task->total_task_price = $this->calculateTotalPrice($related_users);
+			$task->related_users = $related_users;
+
+			// Get users information (in our case only fname, lname)
+			foreach ($task->related_users as & $user)
+			{
+				$local_user = User::find($user->user_id);
+				$redmine_user = RedmineUser::getRedmineUser($local_user->email);
+
+				$user->firstname = $redmine_user->firstname;
+				$user->lastname = $redmine_user->lastname;
+			}
+		}
+		
+		return $task_list;
+	}
+
+
+	/**
+	 * Get descriptive hours of the task
+	 *
+	 * @return mixed
+	 */
+	private function getTaskInvoice($task_id)
+	{
+		return DB::table('user_to_task as UTT')
+			// Join project info in case to get project creating date
+			->join(
+				'task as T',
+				'T.id',
+				'=',
+				'UTT.task_id'
+			)
+
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			// Join user role prices
+			->join(
+				'user_role_price as URP',
+				'URP.user_role_id',
+				'=',
+				'UR.id'
+			)
+
+			// Get selected info
+			->select(
+				'UR.name as role_name',
+				'URP.user_role_id',
+				'URP.price_per_hour',
+				'URP.created_at as user_role_price_created_at',
+				'URP.deprecated_at as user_role_price_deprecated_at',
+				'T.created_at as task_created_at',
+				'UTT.user_id',
+				'UTT.payed_hours',
+				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total_price')
+			)
+			->where('UTT.task_id', '=', $task_id)
+
+			// Filter by dates (get price depending on creating date)
+			->whereRaw('T.created_at >= URP.created_at')
+			->whereRaw('T.created_at < URP.deprecated_at')
+
+			->get();
+	}
+
+
+	/**
+	 * Get the total price of the task
+	 *
+	 * @return int
+	 */
+	private function calculateTotalPrice($task_related_users)
+	{
+		$total = 0;
+
+		foreach ($task_related_users as $related_user)
+		{
+			$total += $related_user->total_price;
+		}
+
+		return $total;
 	}
 
 }

@@ -131,7 +131,11 @@ class ProjectsController extends BaseController {
 		// Get the rest balance of the payments
 		$total_project_price = $this->project->calculateTotalPrice($hours);
 		$total_transaction_price = $this->project->calculateTotalTransactionPrice($related_transactions);
-		$project_balance	 = $total_project_price - $total_transaction_price;
+		$project_balance = $total_project_price - $total_transaction_price;
+
+		// Get related tasks
+		$task = new Task;
+		$related_tasks = $task->getList($project_id);
 
 		$this->layout->content = View::make('projects.show')
 			->with('project', $project)
@@ -141,7 +145,8 @@ class ProjectsController extends BaseController {
 			->with('hours', $hours)
 			->with('total_project_price', $total_project_price)
 			->with('total_transaction_price', $total_transaction_price)
-			->with('project_balance', $project_balance);
+			->with('project_balance', $project_balance)
+			->with('related_tasks', $related_tasks);
 	}
 
 	/**

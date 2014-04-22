@@ -13,7 +13,7 @@ class RedmineUser extends Eloquent
 	public function scopeGetById($obj, $user_id)
 	{
 		$locaUserInfo = DB::table('users')->where('id', '=', $user_id)->first();
-		$redmineUser = $this->getRedmineUser($locaUserInfo->email);
+		$redmineUser = self::getRedmineUser($locaUserInfo->email);
 
 		// Set needle params
 		$redmineUser->perm = $locaUserInfo->perm;
@@ -86,7 +86,7 @@ class RedmineUser extends Eloquent
 	public function auth($credentials)
 	{
 		// Get redmine user info
-		$redmineUser = $this->getRedmineUser($credentials['email']);
+		$redmineUser = self::getRedmineUser($credentials['email']);
 
 		// There no user in redmine at all
 		if (empty($redmineUser))
@@ -181,7 +181,7 @@ class RedmineUser extends Eloquent
 	 *
 	 * @return mixed
 	 */
-	public function getRedmineUser($email)
+	public function scopeGetRedmineUser($query, $email)
 	{
 		return DB::connection('redmine')
 			->table('users')
@@ -218,7 +218,7 @@ class RedmineUser extends Eloquent
 			return NULL;
 		}
 
-		$remineUser = $this->getRedmineUser($localUser->email);
+		$remineUser = self::getRedmineUser($localUser->email);
 
 		$localUser = $this->populateUserData($localUser, $remineUser);
 		$localUser = $this->setUserStatuses($localUser);

@@ -166,10 +166,7 @@ class Project extends Eloquent
 			)
 			->where('UTP.project_id', '=', $project_id)
 
-			// Filter by dates
-			// ->where('URP.created_at', '<=', 'P.created_at')
-			// ->where('URP.deprecated_at', '>', 'P.created_at')
-
+			// Filter by dates (get price depending on creating date)
 			->whereRaw('P.created_at >= URP.created_at')
 			->whereRaw('P.created_at < URP.deprecated_at')
 			
@@ -215,7 +212,7 @@ class Project extends Eloquent
 		foreach ($related_user_ids as $user)
 		{
 			$local_user = User::find($user->user_id);
-			$newUser = $this->redmineUser->getRedmineUser($local_user->email);
+			$newUser = RedmineUser::getRedmineUser($local_user->email);
 			$newUser->id = $local_user->id;
 			$newUser->payed_hours = $user->payed_hours;
 			$newUser->user_role_id = $user->user_role_id;

@@ -22,7 +22,7 @@
 			<span class="help-block"></span>
 		</div>
 
-		{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left show-task-form-btn')) }}
+		{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left close-task-form-btn')) }}
 		<button class="create-task-btn btn btn-success pull-right">
 			Далее
 			<span class="glyphicon glyphicon-chevron-right"></span>
@@ -34,7 +34,7 @@
 
 
 <script type="text/javascript">
-	$('.show-task-form-btn').on('click', window.toggleTaskForm);
+	window.init2wayBinding();
 
 	// Create new task
 	var submitTaskForm = function(e) {
@@ -68,6 +68,11 @@
 				$('#related-users-container-ajax').html(decoded);
 				$('.task-create-wizzard').addClass('step-2');
 
+				// Disable all the fields
+				$('#create-task-form')
+					.find('input[type=text], textarea')
+					.attr('disabled', 'disabled');
+
 				// Close form on click `.create-task-btn`
 				$this.find('.create-task-btn')
 					.removeAttr('disabled')
@@ -94,15 +99,13 @@
 		$('#create-task-form').submit();
 
 		e.preventDefault();
-	}
-
-	$('#create-task-form').on('submit', submitTaskForm);
-	$('.create-task-btn').on('click', submitTaskFormCaller);
+	};
 
 	// Clear task form data and closes it
 	var closeTask = function(e) {
-		// Clear form
-		$('#create-task-form').find('input[type=text], textarea').val('');
+		$('#create-task-form').off('submit');
+		$('.create-task-btn').off('click');
+		$('.close-task-form-btn').off('click');
 
 		// Remove users form
 		$('#related-users-container-ajax').html('');
@@ -113,5 +116,9 @@
 
 		e.preventDefault();
 	};
+
+	$('#create-task-form').on('submit', submitTaskForm);
+	$('.create-task-btn').on('click', submitTaskFormCaller);
+	$('.close-task-form-btn').on('click', closeTask);
 
 </script>

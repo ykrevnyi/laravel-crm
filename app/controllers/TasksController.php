@@ -37,10 +37,10 @@ class TasksController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create($project_id)
 	{
 		return View::make('tasks.create')
-			->with('project_id', Input::get('project_id', 0));
+			->with('project_id', $project_id);
 	}
 
 	/**
