@@ -1,6 +1,6 @@
 <div class="project-create-wizzard">
 
-	<h1 class="text-center">creating new project</h1>
+	<h1 class="text-center">Создание нового проекта</h1>
 
 	<div class="container">
 

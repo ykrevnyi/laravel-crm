@@ -1,13 +1,15 @@
+<!-- New task form -->
+<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right slow-loader" id="task-form"></nav>
+
+<button class="show-task-form-btn">Show/Hide Left Push Menu</button>
+
+<!-- Project info -->
 <div class="container">
 
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="text-center">
+			<h1 class="text-center" style="color: {{$project->proj_priority_color}};">
 				{{$project->proj_name}}
-				<span 
-					class="label label-default" 
-					style="background: {{$project->proj_priority_color}};"
-				> </span>
 			</h1>
 			<hr>
 		</div>
@@ -25,84 +27,92 @@
 
 	<div class="row">
 		<div class="col-lg-12">
-			<h4>Общая информация</h4>
+			<ul class="nav nav-tabs">
+			    <li class="active"><a href="#basic" data-toggle="tab">Общая информация</a>
+			    </li>
+			    <li><a href="#price" data-toggle="tab">Учет цены/времени</a>
+			    </li>
+			    <li><a href="#timing" data-toggle="tab">Даты</a>
+			    </li>
+			</ul>
 
-			<table class="table table-bordered">
-				<tr>
-					<th>№</th>
-					<th>Статус проекта</th>
-					<th>Готово (%)</th>
-				</tr>
-				<tr>
-					<td>{{$project->proj_id}}</td>
-					<td>{{$project->proj_status}}</td>
-					<td>{{$project->proj_persents}}</td>
-				</tr>
-			</table>
-		</div>
-	</div>
+			<!-- Tab panes -->
+			<div class="tab-content">
+			    <!-- Basic info tab -->
+			    <div class="tab-pane active" id="basic">
+			    	<table class="table table-bordered">
+						<tr>
+							<th>№</th>
+							<th>Статус проекта</th>
+							<th>Готово (%)</th>
+						</tr>
+						<tr>
+							<td>{{$project->proj_id}}</td>
+							<td>{{$project->proj_status}}</td>
+							<td>{{$project->proj_persents}}</td>
+						</tr>
+					</table>
+			    </div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<h4>Учет цены/времени</h4>
+			    <!-- Price table tab -->
+			    <div class="tab-pane" id="price">
+			    	<table class="table table-bordered">
+						<tr>
+							<th>Название</th>
+							<th>Цена в час</th>
+							<th>Затраченое время</th>
+							<th>Сума</th>
+						</tr>
 
-			<table class="table table-bordered">
-				<tr>
-					<th>Название</th>
-					<th>Цена в час</th>
-					<th>Затраченое время</th>
-					<th>Сума</th>
-				</tr>
+						@foreach ($hours as $hour)
+							<tr>
+								<td>{{ $hour->name }}</td>
+								<td>{{ $hour->price_per_hour }} $</td>
+								<td>{{ $hour->total_hours }} ч.</td>
+								<td>{{ $hour->total_price }} $</td>
+							</tr>
+						@endforeach
 
-				@foreach ($hours as $hour)
-					<tr>
-						<td>{{ $hour->name }}</td>
-						<td>{{ $hour->price_per_hour }} $</td>
-						<td>{{ $hour->total_hours }} ч.</td>
-						<td>{{ $hour->total_price }} $</td>
-					</tr>
-				@endforeach
+						<tr>
+							<td class="text-right" colspan="3">Итого, за проект:</td>
+							<td><b>{{ $total_project_price }} $</b></td>
+						</tr>
 
-				<tr>
-					<td class="text-right" colspan="3">Итого, за проект:</td>
-					<td><b>{{ $total_project_price }} $</b></td>
-				</tr>
+						<tr>
+							<td class="text-right" colspan="3">Оплачено:</td>
+							<td><b>{{ $total_transaction_price }} $</b></td>
+						</tr>
 
-				<tr>
-					<td class="text-right" colspan="3">Оплачено:</td>
-					<td><b>{{ $total_transaction_price }} $</b></td>
-				</tr>
+						<tr>
+							<td class="text-right" colspan="3">Итого:</td>
+							<td><b>{{ $project_balance }} $</b></td>
+						</tr>
+					</table>
+			    </div>
 
-				<tr>
-					<td class="text-right" colspan="3">Итого:</td>
-					<td><b>{{ $project_balance }} $</b></td>
-				</tr>
-			</table>
-		</div>
-	</div>
+			    <!-- Timing tab -->
+			    <div class="tab-pane" id="timing">
+			    	<table class="table table-bordered">
+						<tr>
+							<th>Дата сдачи</th>
+							<th>Дата создания</th>
+							<th>Обновлено</th>
+						</tr>
+						<tr>
+							<td>{{$project->proj_end_date}}</td>
+							<td>{{$project->proj_created_at}}</td>
+							<td>{{$project->proj_updated_at}}</td>
+						</tr>
+					</table>
+			    </div>
+			</div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<h4>Даты</h4>
-
-			<table class="table table-bordered">
-				<tr>
-					<th>Дата сдачи</th>
-					<th>Дата создания</th>
-					<th>Обновлено</th>
-				</tr>
-				<tr>
-					<td>{{$project->proj_end_date}}</td>
-					<td>{{$project->proj_created_at}}</td>
-					<td>{{$project->proj_updated_at}}</td>
-				</tr>
-			</table>
 		</div>
 	</div>
 
 	<!-- Related users -->
 	<div class="panel panel-default">
-		<div class="panel-heading">Пользователи</div>
+		<div class="panel-heading">Связанные пользователи</div>
 
 		<table class="table table-bordered">
 			<tr>
@@ -133,41 +143,45 @@
 			<a id="add-transaction" href="#" class="btn btn-info pull-right">Добавить</a>
 		</div>
 
-		<table class="vertical-aligned table table-bordered">
-			<tr>
-				<th></th>
-				<th>№</th>
-				<th>Название</th>
-				<th>Кол-во</th>
-				<th>Цель</th>
-				<th>Счет</th>
-				<th>Создана</th>
-				<th>Обновлена</th>
-				<th>Удалить</th>
-			</tr>
-
-			@foreach ($transactions as $transaction)
-				@if ($transaction->trans_is_expense)
-					<tr class="active">
-						<td><span class="glyphicon glyphicon-arrow-left"></span></td>
-				@else
-					<tr class="success">
-						<td><span class="glyphicon glyphicon-arrow-right"></span></td>
-				@endif
-					
-					<td>{{ $transaction->trans_id }}</td>
-					<td>{{ $transaction->trans_name }}</td>
-					<td>{{ $transaction->trans_value }}</td>
-					<td>{{ $transaction->trans_purpose }}</td>
-					<td>{{ $transaction->money_account_name }}</td>
-					<td>{{ $transaction->trans_created_at }}</td>
-					<td>{{ $transaction->trans_updated_at }}</td>
-					<td>
-						<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}">Удалить</a>
-					</td>
+		@if ( ! count($transactions))
+			<h3 class="text-center">Нет транзакций :.(</h3>
+		@else
+			<table class="vertical-aligned table table-bordered">
+				<tr>
+					<th></th>
+					<th>№</th>
+					<th>Название</th>
+					<th>Кол-во</th>
+					<th>Цель</th>
+					<th>Счет</th>
+					<th>Создана</th>
+					<th>Обновлена</th>
+					<th>Удалить</th>
 				</tr>
-			@endforeach
-		</table>
+
+				@foreach ($transactions as $transaction)
+					@if ($transaction->trans_is_expense)
+						<tr class="active">
+							<td class="text-center"><span class="glyphicon glyphicon-arrow-left"></span></td>
+					@else
+						<tr class="success">
+							<td class="text-center"><span class="glyphicon glyphicon-arrow-right"></span></td>
+					@endif
+						
+						<td>{{ $transaction->trans_id }}</td>
+						<td>{{ $transaction->trans_name }}</td>
+						<td>{{ $transaction->trans_value }}</td>
+						<td>{{ $transaction->trans_purpose }}</td>
+						<td>{{ $transaction->money_account_name }}</td>
+						<td>{{ $transaction->trans_created_at }}</td>
+						<td>{{ $transaction->trans_updated_at }}</td>
+						<td class="text-center">
+							<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
+						</td>
+					</tr>
+				@endforeach
+			</table>
+		@endif
 	</div>
 
 </div>
@@ -209,12 +223,42 @@
 		e.preventDefault();
 	});
 
+	// Open new transaction form in popup
 	$('#add-transaction').on('click', function(e) {
 		$.fancybox.open({
 			href: '/transactions/modal',
 			type: 'iframe',
 			padding: 0,
 			maxWidth: 780
+		});
+
+		e.preventDefault();
+	});
+
+	// Show form for creating new task
+	var $taskForm = $('#task-form');
+
+	// Show form for creating new task
+	window.toggleTaskForm = function(e) {
+		$('body').toggleClass('cbp-spmenu-push-toleft');
+		$taskForm.toggleClass('cbp-spmenu-open');
+
+		if (e != undefined) {
+			e.preventDefault();
+		};
+	};
+
+	// Load task form
+	$('.show-task-form-btn').on('click', function(e) {
+		toggleTaskForm();
+
+		$.ajax({
+			url: '/projects/{{ $project->proj_id }}/tasks/create',
+			type: 'get',
+			dataType: 'html'
+		})
+		.done(function(html) {
+			$taskForm.removeClass('slow-loader').html(html);
 		});
 
 		e.preventDefault();

@@ -16,10 +16,9 @@ class Project extends Eloquent
 	 *
 	 * @return void
 	 */
-	public function getProjects($date_from, $date_to, $filter_name)
+	public function getProjects($date_from = NULL, $date_to = NULL, $filter_name = NULL)
 	{
-		return DB::table('project as P')
-
+		$result = DB::table('project as P')
 			// Join project description
 			->join(
 				'project_description as PD',
@@ -53,11 +52,27 @@ class Project extends Eloquent
 				'PP.name as proj_priority_name',
 				'PP.color as proj_priority_color'
 			)
-			->orderBy('P.created_at', 'desc')
-			->where('P.created_at', '>=', $date_from->format('Y-m-d'))
-			->where('P.created_at', '<=', $date_to->format('Y-m-d'))
-			->where('PD.name', 'LIKE', '%' . $filter_name . '%')
-			->get();
+			->orderBy('P.created_at', 'desc');
+
+		// Filter `date from`
+		if ( ! is_null($date_from))
+		{
+			$result->where('P.created_at', '>=', $date_from->format('Y-m-d'));
+		}
+
+		// Filter `date to`
+		if ( ! is_null($date_to))
+		{
+			$result->where('P.created_at', '<=', $date_to->format('Y-m-d'));
+		}
+
+		// Filter `project name`
+		if ( ! is_null($filter_name))
+		{
+			$result->where('PD.name', 'LIKE', '%' . $filter_name . '%');
+		}
+
+		return $result->get();
 	}
 
 

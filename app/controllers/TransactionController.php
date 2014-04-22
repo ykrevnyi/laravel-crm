@@ -29,7 +29,23 @@ class TransactionController extends BaseController {
 	 */
 	public function index()
 	{
-		$transactions = $this->transaction->getAll()->get();
+		// Get projects from specified dates.
+		// Or from last month (by default)
+		$date_from = Input::get('date_from', date("d-m-Y", strtotime('-29 day')));
+		$date_to = Input::get('date_to', date('d-m-Y', time()));
+		$filter_name = Input::get('filter_name', '');
+
+		$date_from_formated = new DateTime($date_from);
+		$date_to_formated = new DateTime($date_to);
+
+		$transactions = $this->transaction->getAll(
+			function($query) use ($date_from_formated, $date_to_formated, $filter_name) {
+				return $query
+					->where('transaction.created_at', '>=', $date_from_formated->format('Y-m-d'))
+					->where('transaction.created_at', '<=', $date_to_formated->format('Y-m-d'))
+					->where('transaction_description.name', 'LIKE', '%' . $filter_name . '%');
+			}
+		)->get();
 
 		// Get money accounts
 		$accounts = MoneyAccount::all();
@@ -43,14 +59,21 @@ class TransactionController extends BaseController {
 		// Get all the projects
 		$projects = $this->projects->getProjects();
 
-		$this->layout->content = View::make(
-			'transaction.index', 
-			compact('transactions')
-		)
-		->with('money_accounts', $accounts)
-		->with('purposes', $purposes)
-		->with('projects', $projects)
-		->with('users', $users);
+		$this->layout->content = View::make('transaction.index')
+			// Basic info
+			->with('transactions', $transactions)
+			->with('money_accounts', $accounts)
+			->with('purposes', $purposes)
+			->with('projects', $projects)
+
+			// Dates
+			->with('date_from', $date_from)
+			->with('date_to', $date_to)
+			->with('date_from_formated', $date_from_formated)
+			->with('date_to_formated', $date_to_formated)
+
+			// Users
+			->with('users', $users);
 	}
 
 	/**

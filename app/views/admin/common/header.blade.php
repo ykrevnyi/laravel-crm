@@ -10,11 +10,12 @@
 
 		<!-- Bootstrap core CSS -->
 		<link href="/public/css/bootstrap.css" rel="stylesheet">
-		<link href="/public/css/style.css" rel="stylesheet">
 		<link href="/public/css/select2.css" rel="stylesheet">
 		<link href="/public/css/datepicker.css" rel="stylesheet">
 		<link href="/public/css/jquery.fancybox.css" rel="stylesheet">
 		<link href="/public/css/daterangepicker-bs3.css" rel="stylesheet">
+		<link href="/public/css/push-menu.css" rel="stylesheet">
+		<link href="/public/css/style.css" rel="stylesheet">
 
 		<script type="text/javascript" src="//code.jquery.com/jquery.js"></script>
 		<script type="text/javascript" src="/public/js/jquery.fancybox.pack.js"></script>
@@ -27,7 +28,7 @@
 		<script type="text/javascript" src="/public/js/common.js"></script>
 	</head>
 
-	<body>
+	<body class="cbp-spmenu-push">
 	
 	<div class="navbar navbar-inverse">
 		<div class="container">
@@ -37,7 +38,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Admin</a>
+				<a class="navbar-brand" href="/">CRM</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -46,28 +47,28 @@
 					@else
 						<li>
 					@endif
-						<a href="/">home</a></li>
+						<a href="/">Главная</a></li>
 
 					@if (preg_match("/^users\..+/i", Route::currentRouteName()))
 						<li class="active">
 					@else
 						<li>
 					@endif
-						<a href="/users">users</a></li>
+						<a href="/users">Пользователи</a></li>
 
 					@if (preg_match("/^transactions\..+/i", Route::currentRouteName()))
 						<li class="active">
 					@else
 						<li>
 					@endif
-						<a href="/transactions">transactions</a></li>
+						<a href="/transactions">Транзакции</a></li>
 
 					@if (preg_match("/^projects\..+/i", Route::currentRouteName()))
 						<li class="active">
 					@else
 						<li>
 					@endif
-						<a href="/projects">projects</a></li>
+						<a href="/projects">Проекты</a></li>
 				</ul>
 			</div><!--/.navbar-collapse -->
 		</div>
