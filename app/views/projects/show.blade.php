@@ -151,10 +151,9 @@
 					<th>№</th>
 					<th>Название {{empty($related_tasks)}}</th>
 					<th>Короткое описание</th>
-					<th>Обновлена</th>
 					<th>Создана</th>
 					<th>Учет времени</th>
-					<th>Действие</th>
+					<th></th>
 				</tr>
 
 				@foreach ($related_tasks as $task)
@@ -162,37 +161,40 @@
 						<td>{{ $task->id }}</td>
 						<td>{{ $task->name }}</td>
 						<td>{{ $task->short_description }}</td>
-						<td>{{ $task->updated_at }}</td>
-						<td>{{ $task->created_at }}</td>
+						<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($task->created_at))->diffForHumans() }}</td>
 						
-						<td>
-							<table class="table table-bordered">
-								<tr>
-									<th>Имя</th>
-									<th>Должность</th>
-									<th>Цена за час</th>
-									<th>Часов</th>
-									<th>Сума</th>
-								</tr>
-								@foreach ($task->related_users as $task_user)
+						<td class="table-container-td">
+							@if (count($task->related_users))
+								<table class="table table-bordered">
 									<tr>
-										<td>{{ $task_user->firstname }} {{ $task_user->lastname }}</td>
-										<td>{{ $task_user->role_name }}</td>
-										<td>{{ $task_user->price_per_hour }} $</td>
-										<td>{{ $task_user->payed_hours }} ч.</td>
-										<td>{{ $task_user->total_price }} $</td>
+										<th>Имя</th>
+										<th>Должность</th>
+										<th>Цена за час</th>
+										<th>Часов</th>
+										<th>Сума</th>
 									</tr>
-								@endforeach
+									@foreach ($task->related_users as $task_user)
+										<tr>
+											<td>{{ $task_user->firstname }} {{ $task_user->lastname }}</td>
+											<td>{{ $task_user->role_name }}</td>
+											<td>{{ $task_user->price_per_hour }} $</td>
+											<td>{{ $task_user->payed_hours }} ч.</td>
+											<td>{{ $task_user->total_price }} $</td>
+										</tr>
+									@endforeach
 
-								<tr>
-									<th colspan="4" class="text-right">Итого</th>
-									<th>{{ $task->total_task_price }} $</th>
-								</tr>
-							</table>
+									<tr>
+										<th colspan="4" class="text-right">Итого</th>
+										<th>{{ $task->total_task_price }} $</th>
+									</tr>
+								</table>
+							@else
+								-
+							@endif
 						</td>
 						
 						<td class="text-center">
-							<a href="#" class="delete-transaction btn btn-danger" data-id=""><span class="glyphicon glyphicon-remove"></span></a>
+							<a href="#" class="delete-transaction btn btn-danger btn-sm" data-id=""><span class="glyphicon glyphicon-remove"></span></a>
 						</td>
 					</tr>
 				@endforeach

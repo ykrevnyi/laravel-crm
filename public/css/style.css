@@ -208,3 +208,9 @@ body.loading::after, .slow-loader::after {
     bottom: 15px;  left: 50%;  
     margin-left: -2px;
 }
+.table-container-td {
+    padding: 0 !important;
+}
+.table-container-td table {
+    margin: 0;
+}

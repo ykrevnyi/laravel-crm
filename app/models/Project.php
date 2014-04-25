@@ -180,13 +180,13 @@ class Project extends Eloquent
 	 *
 	 * @return int
 	 */
-	public function calculateTotalPrice($hours)
+	public function calculateTotalTaskPrice($related_tasks)
 	{
 		$total = 0;
 
-		foreach ($hours as $hour)
+		foreach ($related_tasks as $task)
 		{
-			$total += $hour->total_price;
+			$total += $task->total_task_price;
 		}
 
 		return $total;
