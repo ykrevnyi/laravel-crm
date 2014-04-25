@@ -41,8 +41,13 @@ class TransactionController extends BaseController {
 		$transactions = $this->transaction->getAll(
 			function($query) use ($date_from_formated, $date_to_formated, $filter_name) {
 				return $query
-					->where('transaction.created_at', '>=', $date_from_formated->format('Y-m-d'))
-					->where('transaction.created_at', '<=', $date_to_formated->format('Y-m-d'))
+					->whereBetween(
+						'transaction.created_at', 
+						array(
+							$date_from_formated->format('Y-m-d'),
+							$date_to_formated->format('Y-m-d')
+						)
+					)
 					->where('transaction_description.name', 'LIKE', '%' . $filter_name . '%');
 			}
 		)->get();
@@ -204,8 +209,13 @@ class TransactionController extends BaseController {
 	 *
 	 * @return mixed
 	 */
-	public function modal()
+	public function modal($relation_object_type = 'none', $relation_object_type_id = NULL)
 	{
+		if (empty($relation_object_type))
+		{
+			$relation_object_type = 'none';
+		}
+
 		// Get money accounts
 		$accounts = MoneyAccount::all();
 
@@ -227,7 +237,41 @@ class TransactionController extends BaseController {
 			'project' => 'к проекту'
 		);
 
+		// Get current relation type
+		if (Input::has('relation'))
+		{
+			$current_relation_object_type = Input::get('relation');
+		}
+		else
+		{
+			$current_relation_object_type = $relation_object_type;
+		}
+
+		// Get current relation type to project
+		if (Input::old('relation_to_project') AND $current_relation_object_type == 'project')
+		{
+			$current_relation_object_type_id = Input::get('relation_to_project');
+		}
+		else
+		{
+			$current_relation_object_type_id = $relation_object_type_id;
+		}
+
+		// Get current relation type to user
+		if (Input::old('relation_to_user') AND $current_relation_object_type == 'user')
+		{
+			$current_relation_object_type_id = Input::get('relation_to_user');
+		}
+		else
+		{
+			$current_relation_object_type_id = $relation_object_type_id;
+		}
+
+
 		return View::make('transaction.form')
+			->with('relation_object_type', $relation_object_type)
+			->with('current_relation_object_type', $current_relation_object_type)
+			->with('current_relation_object_type_id', $current_relation_object_type_id)
 			->with('relation_types', $relation_types)
 			->with('money_accounts', $accounts)
 			->with('purposes', $purposes)

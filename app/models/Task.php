@@ -7,6 +7,36 @@ class Task extends Eloquent
 
 
 	/**
+	 * Get information of the task by id
+	 *
+	 * @return mixed
+	 */
+	public function getInfo($task_id)
+	{
+		// Get all of the tasks related to the project
+		$task = DB::table('task')
+			->where('id', $task_id)
+			->first();
+
+		$related_users = $this->getTaskInvoice($task->id);
+		$task->total_task_price = $this->calculateTotalPrice($related_users);
+		$task->related_users = $related_users;
+
+		// Get users information (in our case only fname, lname)
+		foreach ($task->related_users as & $user)
+		{
+			$local_user = User::find($user->user_id);
+			$redmine_user = RedmineUser::getRedmineUser($local_user->email);
+
+			$user->firstname = $redmine_user->firstname;
+			$user->lastname = $redmine_user->lastname;
+		}
+		
+		return $task;
+	}
+
+
+	/**
 	 * Simply store new task
 	 *
 	 * @return int
@@ -21,6 +51,25 @@ class Task extends Eloquent
 			'created_at' => \Carbon\Carbon::now(),
 			'updated_at' => \Carbon\Carbon::now()
 		));
+	}
+
+
+	/**
+	 * Simply update task
+	 *
+	 * @return int
+	 */
+	public function scopeUpdateTask($query, $task_id, $data)
+	{
+		return DB::table('task')
+			->where('id', $task_id)
+			->update(array(
+				'name' => $data['name'],
+				'short_description' => $data['short_description'],
+				'description' => $data['description'],
+				'created_at' => \Carbon\Carbon::now(),
+				'updated_at' => \Carbon\Carbon::now()
+			));
 	}
 
 
@@ -238,6 +287,56 @@ class Task extends Eloquent
 		}
 
 		return $total;
+	}
+
+
+	/**
+	 * Get users related to the task
+	 *
+	 * @return mixed
+	 */
+	public function getRelatedUsers($task_id)
+	{
+		$related_users = DB::table('task as T')
+			// Join related users
+			->join('user_to_task as UTT', 'UTT.task_id', '=', 'T.id')
+
+			// Join user info
+			->join('users as U', 'U.id', '=', 'UTT.user_id')
+
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			->select(
+				'UTT.user_id',
+				'UTT.user_role_id',
+				'UTT.payed_hours',
+				'U.email AS user_email',
+				'U.email AS user_email',
+				'UR.name as role_name'
+			)
+			->where('T.id', '=', $task_id)
+
+			->get();
+
+		// Get users information
+		$users = array();
+
+
+		foreach ($related_users as & $user)
+		{
+			$redmineUser = RedmineUser::getRedmineUser($user->user_email);
+
+			$user->firstname = $redmineUser->firstname;
+			$user->lastname = $redmineUser->lastname;
+		}
+		
+		return $related_users;
 	}
 
 }

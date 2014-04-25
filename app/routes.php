@@ -13,8 +13,8 @@ Route::group(array('before' => 'auth'), function () {
 	
 	Route::resource('users', 'UsersController');
 	
-	Route::post("/transactions/modal", array('as' => 'transactionModalPost', 'uses' => 'TransactionController@createTransaction'));
-	Route::get("/transactions/modal", array('as' => 'transactionModal', 'uses' => 'TransactionController@modal'));
+	Route::post("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModalPost', 'uses' => 'TransactionController@createTransaction'));
+	Route::get("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModal', 'uses' => 'TransactionController@modal'));
 	Route::resource('transactions', 'TransactionController');
 
 	Route::resource('projects', 'ProjectsController');
@@ -26,7 +26,9 @@ Route::group(array('before' => 'auth'), function () {
 	// Route::resource('tasks', 'TasksController');
 	Route::delete("/projects/{project_id}/tasks/{task_id}", array('as' => 'task.destroy', 'uses' => 'TasksController@destroy'));
 	Route::get("/projects/{id}/tasks/create", array('as' => 'task.create', 'uses' => 'TasksController@create'));
-	Route::post("/projects/{id}/TasksController", array('as' => 'task.store', 'uses' => 'TasksController@store'));
+	Route::get("/projects/{project_id}/tasks/{task_id}/edit", array('as' => 'task.edit', 'uses' => 'TasksController@edit'));
+	Route::post("/projects/{id}", array('as' => 'task.store', 'uses' => 'TasksController@store'));
+	Route::put("/projects/{project_id}/tasks/{task_id}", array('as' => 'task.update', 'uses' => 'TasksController@update'));
 
 	Route::post("/tasks/{id}/addUser", array('as' => 'addUserToTask', 'uses' => 'TasksController@addUser'));
 	Route::post("/tasks/{id}/removeUser", array('as' => 'removeUserFromTask', 'uses' => 'TasksController@removeUser'));

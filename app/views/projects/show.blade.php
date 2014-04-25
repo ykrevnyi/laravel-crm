@@ -1,5 +1,5 @@
 <!-- New task form -->
-<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right slow-loader" id="task-form"></nav>
+<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="task-form"></nav>
 
 <!-- Project info -->
 <div class="container">
@@ -74,6 +74,16 @@
 							<tr>
 								<th class="text-right">Итого:</th>
 								<th>{{ $total_project_price }} $</th>
+							</tr>
+
+							<tr>
+								<th class="text-right">Оплачено:</th>
+								<th>{{ $total_transaction_price }} $</th>
+							</tr>
+
+							<tr>
+								<th class="text-right">Остаток:</th>
+								<th>{{ $project_balance }} $</th>
 							</tr>
 						</table>
 					@else
@@ -155,7 +165,7 @@
 			<table class="vertical-aligned table table-bordered">
 				<tr>
 					<th>№</th>
-					<th>Название {{empty($related_tasks)}}</th>
+					<th>Название</th>
 					<th>Короткое описание</th>
 					<th>Создана</th>
 					<th>Учет времени</th>
@@ -165,7 +175,9 @@
 				@foreach ($related_tasks as $task)
 					<tr>
 						<td>{{ $task->id }}</td>
-						<td>{{ $task->name }}</td>
+						<td>
+							<a href="#" class="edit-task-action" data-id="{{ $task->id }}">{{ $task->name }}</a>
+						</td>
 						<td>{{ $task->short_description }}</td>
 						<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($task->created_at))->diffForHumans() }}</td>
 						
@@ -212,7 +224,7 @@
 	<div class="panel panel-default">
 		<div class="panel-heading clearfix">
 			<h5 class="pull-left">Транзакции</h5>
-			<a id="add-transaction" href="#" class="btn btn-info pull-right">Добавить</a>
+			<a id="add-transaction" data-transaction-object-type="project" href="#" class="btn btn-info pull-right">Добавить</a>
 		</div>
 
 		@if ( ! count($transactions))
@@ -248,7 +260,7 @@
 						<td>{{ $transaction->trans_created_at }}</td>
 						<td>{{ $transaction->trans_updated_at }}</td>
 						<td class="text-center">
-							<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
+							<a href="#" class="delete-transaction btn btn-danger btn-sm" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
 						</td>
 					</tr>
 				@endforeach
@@ -260,6 +272,100 @@
 
 
 <script type="text/javascript">
+	// Show form for creating new task
+	var $taskForm = $('#task-form');
+
+	// Create new task
+	var submitTaskForm = function(e) {
+		var $this = $(this);
+
+		$taskForm.addClass('slow-loader');
+		$this.find('.create-task-btn').attr('disabled', 'disabled');
+
+		$.ajax({
+			url: $this.attr('action'),
+			type: $this.data('method') || 'post',
+			dataType: 'json',
+			data: {
+				project_id: "{{ $project->proj_id }}",
+				data: $this.serialize()
+			}
+		})
+		.done(function(json) {
+			$taskForm.removeClass('slow-loader');
+
+			// Clear all the messages and `has-error` classes
+			$this.find('.form-group').removeClass('has-error');
+			$this.find('.help-block').html('');
+			$this.find('.create-task-btn').removeAttr('disabled')
+
+			// Validation completed
+			if (json.status) {
+				// If it was PUT request (update task)
+				// we will simply close the window without doing anything
+				if ($this.data('method') =='put') {
+					closeTask();
+				} else {
+					// Append and show users form
+					var decoded = $('<div/>').html(json.view).text();
+
+					$('#related-users-container-ajax').html(decoded);
+					$('.task-create-wizzard').addClass('step-2');
+
+					// Disable all the fields
+					$('#create-task-form')
+						.find('input[type=text], textarea')
+						.attr('disabled', 'disabled');
+
+					// Close form on click `.create-task-btn`
+					$this.find('.create-task-btn')
+						.removeAttr('disabled')
+						.html('Сохранить')
+						.off('click')
+						.on('click', closeTask);
+				};
+			} else {
+				$.each(json.messages, function(index, val) {
+					// Add error classes and append error messages
+					$this.find('*[name=' + index + ']')
+						.closest('.form-group').addClass('has-error')
+						.find('.help-block').html(val[0]);
+				});
+			};
+		});
+
+		e.preventDefault();
+	};
+
+	// Here we bind new execution context to the "Save" button
+	// 1st time - submit form
+	// 2nd time - close it
+	var submitTaskFormCaller = function(e) {
+		$('#create-task-form').submit();
+
+		e.preventDefault();
+	};
+
+	// Clear task form data and closes it
+	var closeTask = function(e) {
+		$('#create-task-form').off('submit');
+		$('.create-task-btn').off('click');
+		$('.close-task-form-btn').off('click');
+
+		// Remove users form
+		$('#related-users-container-ajax').html('');
+		$taskForm.html('');
+
+		// Close form and clear binding (from title)
+		window.toggleTaskForm();
+		window.drop2wayBinding();
+
+		if (e != undefined) {
+			e.preventDefault();
+		};
+	};
+
+
 	// Remove transaction
 	$('.delete-transaction').on('click', function(e) {
 		var $this = $(this);
@@ -297,8 +403,10 @@
 
 	// Open new transaction form in popup
 	$('#add-transaction').on('click', function(e) {
+		var relationType = $(this).data('transaction-object-type') || 'none';
+
 		$.fancybox.open({
-			href: '/transactions/modal',
+			href: "/transactions/modal/" + relationType + "/{{ $project->proj_id }}",
 			type: 'iframe',
 			padding: 0,
 			maxWidth: 780
@@ -308,12 +416,12 @@
 	});
 
 	// Show form for creating new task
-	var $taskForm = $('#task-form');
-
-	// Show form for creating new task
 	window.toggleTaskForm = function(e) {
 		$('body').toggleClass('cbp-spmenu-push-toleft');
 		$taskForm.toggleClass('cbp-spmenu-open');
+
+		// Set loading state
+		$taskForm.addClass('slow-loader');
 
 		if (e != undefined) {
 			e.preventDefault();
@@ -326,6 +434,22 @@
 
 		$.ajax({
 			url: '/projects/{{ $project->proj_id }}/tasks/create',
+			type: 'get',
+			dataType: 'html'
+		})
+		.done(function(html) {
+			$taskForm.removeClass('slow-loader').html(html);
+		});
+
+		e.preventDefault();
+	});
+
+	// Load task form
+	$('.edit-task-action').on('click', function(e) {
+		toggleTaskForm();
+
+		$.ajax({
+			url: '/projects/{{ $project->proj_id }}/tasks/' + $(this).data('id') + '/edit',
 			type: 'get',
 			dataType: 'html'
 		})

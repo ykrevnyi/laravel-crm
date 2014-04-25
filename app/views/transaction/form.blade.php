@@ -124,12 +124,12 @@
 				@endif
 					<label class="col-sm-4 control-label">Привязка</label>
 					<div class="col-sm-8">
-						{{ Form::select('relation', $relation_types, Input::old('relation'), array('id' => 'relation')); }}
+						{{ Form::select('relation', $relation_types, $current_relation_object_type, array('id' => 'relation')); }}
 
 						<!-- Show link to user select -->
-						@if (Input::old('relation') == 'user')
+						@if (Input::old('relation') == 'user' OR $relation_object_type == 'user')
 							<div id="relation-user" class="col-md-6 relation-field">
-								{{ Form::select('relation_to_user', $users, Input::old('relation_to_user')) }}
+								{{ Form::select('relation_to_user', $users, $current_relation_object_type_id) }}
 							</div>
 						@else
 							<div id="relation-user" class="col-md-6 relation-field" style="display: none">
@@ -138,9 +138,9 @@
 						@endif
 
 						<!-- Show link to project select -->
-						@if (Input::old('relation') == 'project')
+						@if (Input::old('relation') == 'project' OR $relation_object_type == 'project')
 							<div id="relation-project" class="col-md-6 relation-field">
-								{{ Form::select('relation_to_project', $projects, Input::old('relation_to_project')) }}
+								{{ Form::select('relation_to_project', $projects, $current_relation_object_type_id) }}
 							</div>
 						@else
 							<div id="relation-project" class="col-md-6 relation-field" style="display: none">

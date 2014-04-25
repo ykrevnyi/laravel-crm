@@ -109,9 +109,29 @@ class TasksController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit($project_id, $task_id)
 	{
-		//
+		// Get basic task info
+		$task = new Task;
+		$taskInfo = $task->getInfo($task_id);
+
+		// Get related users
+		$related_users = $task->getRelatedUsers($task_id);
+
+		// Fetch all the users
+		$all_users = $this->redmineUser->getAllWithPaginations(9999);
+		$all_users_selectable = User::convertToSelectable($all_users['users']);
+
+		// Get user roles
+		$user_roles = UserRole::allForSelect();
+
+		return View::make('tasks.edit')
+			->with('project_id', $project_id)
+			->with('users', $all_users_selectable)
+			->with('related_users', $related_users)
+			->with('user_roles', $user_roles)
+			->with('task_id', $task_id)
+			->with('task', $taskInfo);
 	}
 
 	/**
@@ -120,9 +140,33 @@ class TasksController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($project_id, $task_id)
 	{
-		//
+		$result = array( 'status' => true );
+		$rules = array(
+			'name' => 'required',
+			'short_description' => 'required',
+			'description' => 'required'
+		);
+
+		// Parse serialized (jQuery) data
+		parse_str(Input::get('data'), $input);
+
+		$v = Validator::make($input, $rules);
+
+		// Validate data
+		if ($v->fails())
+		{
+			$result['status'] = false;
+			$result['messages'] = json_decode($v->messages()->toJson());
+
+			return json_encode($result, true);
+		}
+
+		// Create new task and get the id
+		Task::updateTask($task_id, $input);
+
+		return json_encode($result, true);
 	}
 
 	/**
