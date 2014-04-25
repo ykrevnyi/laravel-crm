@@ -2,7 +2,9 @@
 
 class UsersController extends BaseController {
 
-	protected function before() {}
+	public function before()
+	{
+	}
 
 	/**
 	 * Create default view parts
@@ -62,7 +64,28 @@ class UsersController extends BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		// Get projects from specified dates.
+		// Or from last month (by default)
+		$date_from = Input::get('date_from', date('01-m-Y', strtotime('this month')));
+		$date_to = Input::get('date_to', date('t-m-Y', strtotime('this month')));
+
+		$date_from_formated = new DateTime($date_from);
+		$date_to_formated = new DateTime($date_to);
+
+		$user = new User;
+		$projects = $user->getUserProjects($id);
+
+		// Get user info
+		$user_info = RedmineUser::getById($id);
+
+		$this->layout->content = View::make('users.show')
+			->with('date_from', $date_from)
+			->with('date_to', $date_to)
+			->with('date_from_formated', $date_from_formated)
+			->with('date_to_formated', $date_to_formated)
+			
+			->with('user', $user_info)
+			->with('projects', $projects);
 	}
 
 	/**

@@ -230,7 +230,7 @@
 		@if ( ! count($transactions))
 			<h3 class="text-center">Нет транзакций :.(</h3>
 		@else
-			<table class="vertical-aligned table table-bordered">
+			<table class="vertical-aligned table table-bordered" id="transaction-container">
 				<tr>
 					<th></th>
 					<th>№</th>

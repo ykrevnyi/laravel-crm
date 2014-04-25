@@ -1,3 +1,11 @@
+/* Animate basic elements */
+.btn, a, button, input {
+    transition: all 0.3s linear;
+}
+
+body {
+    margin-bottom: 180px;
+}
 body.loading::after, .slow-loader::after {
     content:'';
     display: block;
@@ -226,4 +234,8 @@ body.loading::after, .slow-loader::after {
 .no-users > span {
     margin: 6px 0 0;
     font-size: 3em;
+}
+form.user-filter-form {
+    margin: 0 auto;
+    width: 340px;
 }

@@ -76,10 +76,12 @@
 							</td>
 							<td>{{$project->proj_desc_short}}</td>
 
-							<td>{{$project->proj_created_at}}</td>
-							<td>{{$project->proj_end_date}}</td>
+							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_created_at))->diffForHumans() }}</td>
+							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_end_date))->diffForHumans() }}</td>
 
-							<td>{{ HTML::linkRoute('projects.edit', 'Редактировать', array('id' => $project->proj_id)) }}</td>
+							<td class="text-right">
+								{{ HTML::linkRoute('projects.edit', 'Редактировать', array('id' => $project->proj_id), array('class' => 'btn btn-default')) }}
+							</td>
 						</tr>
 					@endforeach
 				</table>

@@ -164,29 +164,14 @@ class ProjectsController extends BaseController {
 
 		// Get all the project priorities
 		$priorities = ProjectPriority::getAllConvertedToView();
-
-		// Get related users
-		$related_users = $this->project->getRelatedUsers($project_id);
-
-		// Fetch all the users
-		$all_users = $this->redmineUser->getAllWithPaginations(9999);
-		$all_users_selectable = User::convertToSelectable($all_users['users']);
-
-		$related_users = $this->getRelatedUsers($all_users['users'], $related_users);
 		
 		// Get related transactions
 		$related_transactions = $this->project->getRelatedTransacitons($project_id);
 
-		// Get user roles
-		$user_roles = UserRole::allForSelect();
-
 		$this->layout->content = View::make('projects.edit')
 			->with('project', $project)
-			->with('users', $all_users_selectable)
-			->with('related_users', $related_users)
 			->with('priorities', $priorities)
-			->with('transactions', $related_transactions)
-			->with('user_roles', $user_roles);
+			->with('transactions', $related_transactions);
 	}
 
 	/**
