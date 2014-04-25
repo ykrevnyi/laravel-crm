@@ -131,9 +131,15 @@ class TasksController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy($project_id, $task_id)
 	{
-		//
+		$result = array( 'status' => true );
+
+		$result['status'] = DB::table('task')
+			->where('id', '=', $task_id)
+			->delete();
+
+		return json_encode($result);
 	}
 
 

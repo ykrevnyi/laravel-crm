@@ -214,3 +214,16 @@ body.loading::after, .slow-loader::after {
 .table-container-td table {
     margin: 0;
 }
+.no-users {
+    border: 1px solid #ccc;
+    margin: 0 0 20px;
+    border-top: 0;
+    padding-top: 5px;
+}
+.no-users h3 {
+    margin: 0 0 5px;
+}
+.no-users > span {
+    margin: 6px 0 0;
+    font-size: 3em;
+}

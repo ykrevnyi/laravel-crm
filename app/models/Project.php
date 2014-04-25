@@ -176,7 +176,7 @@ class Project extends Eloquent
 
 
 	/**
-	 * Get the total price of the project
+	 * Get the total price of all of the tasks
 	 *
 	 * @return int
 	 */
@@ -194,33 +194,134 @@ class Project extends Eloquent
 
 
 	/**
-	 * Get users that are related to the project
+	 * Get users that are related to the project with all hours related
 	 *
 	 * @return mixed
 	 */
 	public function getRelatedUsers($project_id)
 	{
-		// Get related user ids + related role ids
-		$related_user_ids = DB::table('user_to_project')
-			->where('project_id', '=', $project_id)
-			->select('user_id', 'user_role_id', 'payed_hours')
+		$related_users = DB::table('task as T')
+			// Join related users
+			->join('user_to_task as UTT', 'UTT.task_id', '=', 'T.id')
+
+			// Join user info
+			->join('users as U', 'U.id', '=', 'UTT.user_id')
+
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			// Join user role prices
+			->join(
+				'user_role_price as URP',
+				'URP.user_role_id',
+				'=',
+				'UR.id'
+			)
+
+			->select(
+				'UTT.user_id',
+				'UTT.user_role_id',
+				'UTT.payed_hours',
+				'U.email AS user_email',
+				'U.email AS user_email',
+				'UR.name as role_name',
+				'URP.price_per_hour as period_price_per_hour',
+				DB::raw('(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				'URP.created_at as period_created_at',
+				'URP.deprecated_at as period_deprecated_at'
+			)
+			->where('T.project_id', '=', $project_id)
+
+			->whereRaw('T.created_at >= URP.created_at')
+			->whereRaw('T.created_at < URP.deprecated_at')
+
 			->get();
 
 		// Get users information
 		$users = array();
 
-		foreach ($related_user_ids as $user)
+
+		foreach ($related_users as & $user)
 		{
-			$local_user = User::find($user->user_id);
-			$newUser = RedmineUser::getRedmineUser($local_user->email);
-			$newUser->id = $local_user->id;
-			$newUser->payed_hours = $user->payed_hours;
-			$newUser->user_role_id = $user->user_role_id;
-			
-			$users[] = $newUser;
+			$redmineUser = RedmineUser::getRedmineUser($user->user_email);
+
+			$user->firstname = $redmineUser->firstname;
+			$user->lastname = $redmineUser->lastname;
 		}
 		
-		return $users;
+		return $related_users;
+	}
+
+
+	/**
+	 * Get the total hours of all the related users
+	 *
+	 * @return mixed
+	 */
+	public function getRelatedUsersTotal($project_id)
+	{
+		$related_users = DB::table('task as T')
+			// Join related users
+			->join('user_to_task as UTT', 'UTT.task_id', '=', 'T.id')
+
+			// Join user info
+			->join('users as U', 'U.id', '=', 'UTT.user_id')
+
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			// Join user role prices
+			->join(
+				'user_role_price as URP',
+				'URP.user_role_id',
+				'=',
+				'UR.id'
+			)
+
+			->select(
+				'UTT.user_id',
+				'UTT.user_role_id',
+				'UTT.payed_hours',
+				'U.email AS user_email',
+				'U.email AS user_email',
+				'UR.name as role_name',
+				'URP.price_per_hour as period_price_per_hour',
+				DB::raw('SUM(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				'URP.created_at as period_created_at',
+				'URP.deprecated_at as period_deprecated_at'
+			)
+			->where('T.project_id', '=', $project_id)
+
+			->whereRaw('T.created_at >= URP.created_at')
+			->whereRaw('T.created_at < URP.deprecated_at')
+
+			->groupBy('UTT.user_role_id')
+
+			->get();
+
+		// Get users information
+		$users = array();
+
+
+		foreach ($related_users as & $user)
+		{
+			$redmineUser = RedmineUser::getRedmineUser($user->user_email);
+
+			$user->firstname = $redmineUser->firstname;
+			$user->lastname = $redmineUser->lastname;
+		}
+		
+		return $related_users;
 	}
 
 

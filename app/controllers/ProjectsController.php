@@ -116,8 +116,9 @@ class ProjectsController extends BaseController {
 		// Basic project info
 		$project = $this->project->getProjectInfo($project_id);
 
-		// Get related users
+		// Get total related users (with total project price)
 		$related_users = $this->project->getRelatedUsers($project_id);
+		$related_users_totals = $this->project->getRelatedUsersTotal($project_id);
 		
 		// Get related transactions
 		$related_transactions = $this->project->getRelatedTransacitons($project_id);
@@ -140,6 +141,7 @@ class ProjectsController extends BaseController {
 		$this->layout->content = View::make('projects.show')
 			->with('project', $project)
 			->with('related_users', $related_users)
+			->with('related_users_totals', $related_users_totals)
 			->with('transactions', $related_transactions)
 			->with('user_roles', $user_roles)
 			->with('hours', $hours)

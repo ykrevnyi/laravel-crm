@@ -1,8 +1,6 @@
 <!-- New task form -->
 <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right slow-loader" id="task-form"></nav>
 
-<button class="show-task-form-btn">Show/Hide Left Push Menu</button>
-
 <!-- Project info -->
 <div class="container">
 
@@ -30,7 +28,8 @@
 			<ul class="nav nav-tabs">
 			    <li class="active"><a href="#basic" data-toggle="tab">Общая информация</a>
 			    </li>
-			    <li><a href="#price" data-toggle="tab">Учет цены/времени</a>
+			    <li><a href="#price" data-toggle="tab">Учет цены</a>
+			    <li><a href="#related-users" data-toggle="tab">Связанные пользователи</a>
 			    </li>
 			    <li><a href="#timing" data-toggle="tab">Даты</a>
 			    </li>
@@ -56,41 +55,73 @@
 
 			    <!-- Price table tab -->
 			    <div class="tab-pane" id="price">
-			    	<table class="table table-bordered">
-						<tr>
-							<th>Название</th>
-							<th>Цена в час</th>
-							<th>Затраченое время</th>
-							<th>Сума</th>
-						</tr>
-
-						@foreach ($hours as $hour)
+			    	@if (count($related_users_totals))
+						<table class="table table-bordered">
 							<tr>
-								<td>{{ $hour->name }}</td>
-								<td>{{ $hour->price_per_hour }} $</td>
-								<td>{{ $hour->total_hours }} ч.</td>
-								<td>{{ $hour->total_price }} $</td>
+								<th>Должность</th>
+								<th>Сума</th>
 							</tr>
-						@endforeach
 
-						<tr>
-							<td class="text-right" colspan="3">Итого, за проект:</td>
-							<td><b>{{ $total_project_price }} $</b></td>
-						</tr>
+							@foreach ($related_users_totals as $user)
+								@if ($user->period_total_price)
+									<tr>
+										<td>{{ $user->role_name }}</td>
+										<td>{{ $user->period_total_price }} $</td>
+									</tr>
+								@endif
+							@endforeach
 
-						<tr>
-							<td class="text-right" colspan="3">Оплачено:</td>
-							<td><b>{{ $total_transaction_price }} $</b></td>
-						</tr>
-
-						<tr>
-							<td class="text-right" colspan="3">Итого:</td>
-							<td><b>{{ $project_balance }} $</b></td>
-						</tr>
-					</table>
+							<tr>
+								<th class="text-right">Итого:</th>
+								<th>{{ $total_project_price }} $</th>
+							</tr>
+						</table>
+					@else
+						<div class="no-users text-center">
+							<span class="glyphicon glyphicon-user"></span>
+							<h3>Нет пользователей</h3>
+						</div>
+					@endif
 			    </div>
 
-			    <!-- Timing tab -->
+			    <!-- Related users tab -->
+			    <div class="tab-pane" id="related-users">
+			    	@if (count($related_users))
+						<table class="table table-bordered">
+							<tr>
+								<th>Пользователь</th>
+								<th>Должность</th>
+								<th>Период действия цены</th>
+								<th>Цена в час</th>
+								<th>Время</th>
+								<th>Сума</th>
+							</tr>
+
+							@foreach ($related_users as $user)
+								<tr>
+									<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
+									<td>{{ $user->role_name }}</td>
+									<td>с <i>{{ $user->period_created_at }}</i> по <i>{{ $user->period_deprecated_at }}</i></td>
+									<td>{{ $user->period_price_per_hour }} $</td>
+									<td>{{ $user->payed_hours }} ч.</td>
+									<td>{{ $user->period_total_price }} $</td>
+								</tr>
+							@endforeach
+
+							<tr>
+								<th colspan="5" class="text-right">Итого:</th>
+								<th>{{ $total_project_price }} $</th>
+							</tr>
+						</table>
+					@else
+						<div class="no-users text-center">
+							<span class="glyphicon glyphicon-user"></span>
+							<h3>Нет пользователей</h3>
+						</div>
+					@endif
+			    </div>
+
+			    <!-- Dates tab -->
 			    <div class="tab-pane" id="timing">
 			    	<table class="table table-bordered">
 						<tr>
@@ -99,9 +130,9 @@
 							<th>Обновлено</th>
 						</tr>
 						<tr>
-							<td>{{$project->proj_end_date}}</td>
-							<td>{{$project->proj_created_at}}</td>
-							<td>{{$project->proj_updated_at}}</td>
+							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_end_date))->diffForHumans() }} <i>({{ $project->proj_end_date }})</i></td>
+							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_created_at))->diffForHumans() }} <i>({{ $project->proj_created_at }})</i></td>
+							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_updated_at))->diffForHumans() }} <i>({{ $project->proj_updated_at }})</i></td>
 						</tr>
 					</table>
 			    </div>
@@ -110,37 +141,12 @@
 		</div>
 	</div>
 
-	<!-- Related users -->
-	<div class="panel panel-default">
-		<div class="panel-heading">Связанные пользователи</div>
-
-		<table class="table table-bordered">
-			<tr>
-				<th>Пользователь</th>
-				<th>Статус</th>
-				<th>Время</th>
-			</tr>
-			@foreach ($related_users as $user)
-				<tr>
-					<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
-					<td>
-						@foreach ($user_roles as $role_key => $role)
-							@if ($role_key == $user->user_role_id)
-								{{ $role }}
-							@endif
-						@endforeach
-					</td>
-					<td>{{ $user->payed_hours }} ч.</td>
-				</tr>
-			@endforeach
-		</table>
-	</div>
 
 	<!-- Related tasks -->
 	<div class="panel panel-default">
 		<div class="panel-heading clearfix">
 			<h5 class="pull-left">Задачи</h5>
-			<a id="add-transaction" href="#" class="btn btn-info pull-right">Добавить</a>
+			<a href="#" class="show-task-form-btn btn btn-info pull-right">Добавить</a>
 		</div>
 
 		@if (empty($related_tasks))
@@ -194,7 +200,7 @@
 						</td>
 						
 						<td class="text-center">
-							<a href="#" class="delete-transaction btn btn-danger btn-sm" data-id=""><span class="glyphicon glyphicon-remove"></span></a>
+							<a href="#" class="delete-task btn btn-danger btn-sm" data-id="{{ $task->id }}"><span class="glyphicon glyphicon-remove"></span></a>
 						</td>
 					</tr>
 				@endforeach
@@ -325,6 +331,41 @@
 		})
 		.done(function(html) {
 			$taskForm.removeClass('slow-loader').html(html);
+		});
+
+		e.preventDefault();
+	});
+
+	// Remove task
+	$('.delete-task').on('click', function(e) {
+		var $this = $(this);
+
+		$this.attr('disabled', 'disabled');
+
+		$.ajax({
+			url: '/projects/{{ $project->proj_id }}/tasks/' + $this.data('id'),
+			dataType: 'json',
+			method: 'delete'
+		}).done(function(resp) {
+			if (resp.status) {
+				$this.closest('tr').remove();
+
+				noty({
+					text: "Задача удалена", 
+					timeout: 2500, 
+					layout: "topCenter", 
+					type: "success"
+				});
+			} else {
+				noty({
+					text: "Ошибка удаления задачи", 
+					timeout: 2500, 
+					layout: "topCenter", 
+					type: "error"
+				});
+			}
+
+			$this.removeAttr('disabled', 'disabled');
 		});
 
 		e.preventDefault();

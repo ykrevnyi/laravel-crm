@@ -24,6 +24,7 @@ Route::group(array('before' => 'auth'), function () {
 	// Route::post("/projects/{id}/changeUserPayedHours", array('as' => 'changeUserProjectPayedHours', 'uses' => 'ProjectsController@changeUserPayedHours'));
 	
 	// Route::resource('tasks', 'TasksController');
+	Route::delete("/projects/{project_id}/tasks/{task_id}", array('as' => 'task.destroy', 'uses' => 'TasksController@destroy'));
 	Route::get("/projects/{id}/tasks/create", array('as' => 'task.create', 'uses' => 'TasksController@create'));
 	Route::post("/projects/{id}/TasksController", array('as' => 'task.store', 'uses' => 'TasksController@store'));
 
