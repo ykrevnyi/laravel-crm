@@ -68,9 +68,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getUserProjects($user_id)
+	public function getUserProjects($user_id, $filter = NULL)
 	{
-		$user_related_projects = DB::table('user_to_task as UTT')
+		$result = DB::table('user_to_task as UTT')
 			// Get task info
 			->join(
 				'task as T',
@@ -91,9 +91,22 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'PD.project_id',
 				'PD.name'
 			)
-			->where('UTT.user_id', $user_id)
+
+			// Apply filters
+			->where('UTT.user_id', $user_id);
+
+		if ($filter)
+		{
+			$result = $result->where($filter);
+		}
+
+		// Group and order
+		$result = $result
+			->orderBy('T.project_id', 'desc')
 			->groupBy('T.project_id')
 			->get();
+
+		$user_related_projects = $result;
 
 		// Get detail project info
 		foreach ($user_related_projects as & $project)
@@ -176,6 +189,108 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 			->groupBy('UTT.user_role_id', 'URP.id')
 			->get();
+	}
+
+
+	/**
+	 * Get all the tasks related to the user
+	 *
+	 * @return mixed
+	 */
+	public function getTasks($user_id, $filter = NULL)
+	{
+		$result = DB::table('task as T')
+
+			// Joint task info
+			->join(
+				'user_to_task AS UTT',
+				'UTT.task_id',
+				'=',
+				'T.id'
+			)
+
+			// Joint user role info
+			->join(
+				'user_role AS UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			// Joint user role prices info
+			->join(
+				'user_role_price AS URP',
+				'URP.user_role_id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			->select(
+				'T.name',
+				'T.created_at',
+				'UTT.user_role_id',
+				'UTT.payed_hours',
+				'UR.name AS role_name',
+				'URP.price_per_hour_payable',
+				DB::raw('SUM(UTT.payed_hours) as total_hours'),
+				DB::raw('(SUM(UTT.payed_hours) * URP.price_per_hour_payable) as total')
+			)
+
+			->where('UTT.user_id', $user_id);
+
+		if ($filter)
+		{
+			$result = $result->where($filter);
+		}
+
+		$result = $result
+			->groupBy('UTT.user_role_id', 'URP.id')
+			->get();
+
+		return $result;
+	}
+
+
+	/**
+	 * Get total price of all the tasks
+	 *
+	 * @return float
+	 */
+	public function calculateTotalTasksPrice($tasks)
+	{
+		$total = 0;
+
+		foreach ($tasks as $task)
+		{
+			$total += $task->total;
+		}
+
+		return $total;
+	}
+
+
+	/**
+	 * Get total price of all the transactions
+	 *
+	 * @return void
+	 */
+	public function calculateTotalTransactionPrice($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ($transaction->trans_is_expense)
+			{
+				$total += $transaction->trans_value;
+			}
+			else
+			{
+				$total -= $transaction->trans_value;
+			}
+		}
+
+		return $total;
 	}
 
 }

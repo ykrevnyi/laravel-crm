@@ -73,10 +73,60 @@ class UsersController extends BaseController {
 		$date_to_formated = new DateTime($date_to);
 
 		$user = new User;
-		$projects = $user->getUserProjects($id);
+
+		// Get all the projects related to the user
+		$projects = $user->getUserProjects($id, 
+			function($query) use ($date_from_formated, $date_to_formated) {
+				return $query
+					->whereBetween(
+						'T.created_at', 
+						array(
+							$date_from_formated->format('Y-m-d'),
+							$date_to_formated->format('Y-m-d')
+						)
+					);
+			}
+		);
+
+		// Get all the tasks related to the user
+		$tasks = $user->getTasks($id, 
+			function($query) use ($date_from_formated, $date_to_formated) {
+				return $query
+					->whereBetween(
+						'T.created_at', 
+						array(
+							$date_from_formated->format('Y-m-d'),
+							$date_to_formated->format('Y-m-d')
+						)
+					);
+			}
+		);
 
 		// Get user info
 		$user_info = RedmineUser::getById($id);
+
+		// Get all the transactions
+		$transaction = new Transaction;
+		$transactions = $transaction->getAll(
+			function($query) use ($id, $date_from_formated, $date_to_formated) {
+				return $query
+					->where('transaction.transaction_object_type', 'user')
+					->where('transaction.transaction_object_id', $id)
+					->whereBetween(
+						'transaction.created_at', 
+						array(
+							$date_from_formated->format('Y-m-d'),
+							$date_to_formated->format('Y-m-d')
+						)
+					);
+			}
+		)->get();
+
+		// Get totals
+		// Get total price of all of the tasks
+		$total_price = $user->calculateTotalTasksPrice($tasks);
+		$total_transaction_price = $user->calculateTotalTransactionPrice($transactions);
+		$user_balance = $total_price - $total_transaction_price;
 
 		$this->layout->content = View::make('users.show')
 			->with('date_from', $date_from)
@@ -84,8 +134,14 @@ class UsersController extends BaseController {
 			->with('date_from_formated', $date_from_formated)
 			->with('date_to_formated', $date_to_formated)
 			
+			->with('total_price', $total_price)
+			->with('total_transaction_price', $total_transaction_price)
+			->with('user_balance', $user_balance)
+
 			->with('user', $user_info)
-			->with('projects', $projects);
+			->with('tasks', $tasks)
+			->with('projects', $projects)
+			->with('transactions', $transactions);
 	}
 
 	/**

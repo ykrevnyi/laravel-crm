@@ -82,27 +82,13 @@ class ProjectsController extends BaseController {
 	public function store()
 	{
 		$result = array();
-
-		parse_str(Input::get('data'), $data);
+		$data = Input::all();
 
 		$project_id = $this->project->createProject($data);
-
-		// Fetch all the users
-		$all_users = $this->redmineUser->getAllWithPaginations(9999);
-		$all_users_selectable = User::convertToSelectable($all_users['users']);
-
-		// Get user roles
-		$user_roles = UserRole::allForSelect();
 		
-		$view = View::make('projects.form_to_add_users')
-			->with('project_id', $project_id)
-			->with('users', $all_users_selectable)
-			->with('user_roles', $user_roles);
-
-		$result['view'] = htmlentities($view);
 		$result['link_to_project'] = URL::route('projects.show', $project_id);
 
-		return json_encode($result);
+		return Redirect::route('projects.show', array('id' => $project_id));
 	}
 
 	/**

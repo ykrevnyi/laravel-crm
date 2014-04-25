@@ -63,37 +63,155 @@
 		</div>
 	</div>
 
-	<!-- Related projects -->
-	@if ($projects)
-		@foreach ($projects as $project)
-			<hr>
-			
-			<table class="table table-bordered">
-				<caption><b>{{ $project->name }}</b></caption>
-				<tr>
-					<th>Должность</th>
-					<th>Часов</th>
-					<th>Цена в час</th>
-					<th>Сума</th>
-				</tr>
-				@foreach ($project->info as $info)
-					<tr>
-						<td>{{ $info->name }}</td>
-						<td>{{ $info->total_payed_hours }} ч.</td>
-						<td>{{ $info->price_per_hour_payable }} $</td>
-						<td>{{ $info->total }} $</td>
-					</tr>
-				@endforeach
+	<ul class="nav nav-tabs">
+		<li class="active">
+			<a href="#basic" data-toggle="tab">Информация</a>
+	    </li>
+	    <li>
+	    	<a href="#related-transactions" data-toggle="tab">
+	    		Транзакции
+	    		<span class="badge">{{ count($transactions) }}</span>
+    		</a>
+	    </li>
+	    <li>
+	    	<a href="#related-projects" data-toggle="tab">
+	    		Проекты
+	    		<span class="badge">{{ count($projects) }}</span>
+    		</a>
+	    </li>
+	    <li>
+	    	<a href="#related-tasks" data-toggle="tab">
+	    		Задания
+	    		<span class="badge">{{ count($tasks) }}</span>
+    		</a>
+	    </li>
+	</ul>
 
-				<tr>
-					<th class="text-right" colspan="3">Итого</th>
-					<th>{{ $project->total_price }} $</th>
-				</tr>
-			</table>
-		@endforeach
-	@else
-		Пусто
-	@endif
+	<!-- Tab panes -->
+	<div class="tab-content">
+
+	    <!-- Basic info -->
+	    <div class="tab-pane active" id="basic">
+	    	<table class="table table-bordered">
+	    		<tr>
+	    			<td class="text-right" width="50%"><b>Сума</b></td>
+	    			<td>{{ $total_price }} $</td>
+	    		</tr>
+	    		<tr>
+	    			<td class="text-right" width="50%"><b>Оплачено</b></td>
+	    			<td>{{ $total_transaction_price }} $</td>
+	    		</tr>
+	    		<tr>
+	    			<td class="text-right" width="50%"><b>
+	    				@if ($user_balance > 0)
+	    					Кредит
+	    				@elseif ($user_balance == 0)
+	    					Остаток
+	    				@else
+	    					Дебет
+	    				@endif
+	    			</b></td>
+	    			<td>{{ abs($user_balance) }} $</td>
+	    		</tr>
+	    	</table>
+	    </div>
+
+	    <!-- Related transactions -->
+	    <div class="tab-pane" id="related-transactions">
+	    	@if ( ! count($transactions))
+				<h3 class="text-center">Нет транзакций :.(</h3>
+			@else
+				<table class="vertical-aligned table table-bordered">
+					<tr>
+						<th></th>
+						<th>№</th>
+						<th>Название</th>
+						<th>Кол-во</th>
+						<th>Цель</th>
+						<th>Счет</th>
+						<th>Создана</th>
+						<th>Обновлена</th>
+						<th></th>
+					</tr>
+
+					@foreach ($transactions as $transaction)
+						@if ($transaction->trans_is_expense)
+							<tr class="active">
+								<td class="text-center"><span class="glyphicon glyphicon-arrow-left"></span></td>
+						@else
+							<tr class="success">
+								<td class="text-center"><span class="glyphicon glyphicon-arrow-right"></span></td>
+						@endif
+							
+							<td>{{ $transaction->trans_id }}</td>
+							<td>{{ $transaction->trans_name }}</td>
+							<td>{{ $transaction->trans_value }}</td>
+							<td>{{ $transaction->trans_purpose }}</td>
+							<td>{{ $transaction->money_account_name }}</td>
+							<td>{{ $transaction->trans_created_at }}</td>
+							<td>{{ $transaction->trans_updated_at }}</td>
+							<td class="text-center">
+								<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
+							</td>
+						</tr>
+					@endforeach
+				</table>
+			@endif
+	    </div>
+
+	    <!-- Related projects -->
+	    <div class="tab-pane" id="related-projects">
+	    	@if ($projects)
+				@foreach ($projects as $project)
+					<table class="table table-bordered">
+						<tr>
+							<th class="text-center active" colspan="4">{{ $project->name }}</th>
+						</tr>
+						<tr>
+							<th>Должность</th>
+							<th>Часов</th>
+							<th>Цена в час</th>
+							<th>Сума</th>
+						</tr>
+						@foreach ($project->info as $info)
+							<tr>
+								<td>{{ $info->name }}</td>
+								<td>{{ $info->total_payed_hours }} ч.</td>
+								<td>{{ $info->price_per_hour_payable }} $</td>
+								<td>{{ $info->total }} $</td>
+							</tr>
+						@endforeach
+
+						<tr>
+							<th class="text-right" colspan="3">Итого</th>
+							<th>{{ $project->total_price }} $</th>
+						</tr>
+					</table>
+				@endforeach
+			@else
+				Пусто
+			@endif
+	    </div>
+
+	    <!-- Related tasks -->
+	    <div class="tab-pane" id="related-tasks">
+	    	@if ($tasks)
+	    		<table class="table table-bordered">
+					@foreach ($tasks as $task)
+						<tr>
+							<td>{{ $task->name }}</td>
+							<td>{{ $task->role_name }}</td>
+							<td>{{ $task->total_hours }} ч.</td>
+							<td>{{ $task->total }} $</td>
+						</tr>
+					@endforeach
+	    		</table>
+			@else
+				Пусто
+			@endif
+	    </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
