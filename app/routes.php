@@ -11,25 +11,24 @@ Route::group(array('before' => 'auth'), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
+	// Users
 	Route::resource('users', 'UsersController');
 	
+	// Transactions
 	Route::post("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModalPost', 'uses' => 'TransactionController@createTransaction'));
 	Route::get("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModal', 'uses' => 'TransactionController@modal'));
 	Route::resource('transactions', 'TransactionController');
 
+	// Projects
 	Route::resource('projects', 'ProjectsController');
-	// Route::post("/projects/{id}/addUser", array('as' => 'addUserToProject', 'uses' => 'ProjectsController@addUser'));
-	// Route::post("/projects/{id}/removeUser", array('as' => 'removeUserFromProject', 'uses' => 'ProjectsController@removeUser'));
-	// Route::post("/projects/{id}/changeUserRole", array('as' => 'changeUserProjectRole', 'uses' => 'ProjectsController@changeUserRole'));
-	// Route::post("/projects/{id}/changeUserPayedHours", array('as' => 'changeUserProjectPayedHours', 'uses' => 'ProjectsController@changeUserPayedHours'));
 	
-	// Route::resource('tasks', 'TasksController');
 	Route::delete("/projects/{project_id}/tasks/{task_id}", array('as' => 'task.destroy', 'uses' => 'TasksController@destroy'));
 	Route::get("/projects/{id}/tasks/create", array('as' => 'task.create', 'uses' => 'TasksController@create'));
 	Route::get("/projects/{project_id}/tasks/{task_id}/edit", array('as' => 'task.edit', 'uses' => 'TasksController@edit'));
 	Route::post("/projects/{id}", array('as' => 'task.store', 'uses' => 'TasksController@store'));
 	Route::put("/projects/{project_id}/tasks/{task_id}", array('as' => 'task.update', 'uses' => 'TasksController@update'));
 
+	// Tasks
 	Route::post("/tasks/{id}/addUser", array('as' => 'addUserToTask', 'uses' => 'TasksController@addUser'));
 	Route::post("/tasks/{id}/removeUser", array('as' => 'removeUserFromTask', 'uses' => 'TasksController@removeUser'));
 	Route::post("/tasks/{id}/changeUserRole", array('as' => 'changeUserTaskRole', 'uses' => 'TasksController@changeUserRole'));

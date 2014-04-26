@@ -2,13 +2,8 @@
 
 class Project extends Eloquent
 {
-	
-	private $redmineUser;
 
-
-	function __construct(RedmineUser $user) {
-		$this->redmineUser = $user;
-	}
+	function __construct() {}
 
 
 	/**
@@ -54,6 +49,8 @@ class Project extends Eloquent
 			)
 			->orderBy('P.created_at', 'desc');
 
+
+		// TODO: add filter via Closure (like in transactions)
 		// Filter `date from`
 		if ( ! is_null($date_from))
 		{
@@ -124,77 +121,8 @@ class Project extends Eloquent
 
 
 	/**
-	 * Get hours of the project
-	 *
-	 * @return mixed
-	 */
-	public function getBilledHours($project_id)
-	{
-		return DB::table('user_to_project as UTP')
-			// Join project info in case to get project creating date
-			->join(
-				'project as P',
-				'P.id',
-				'=',
-				'UTP.project_id'
-			)
-
-			// Join user role info
-			->join(
-				'user_role as UR',
-				'UR.id',
-				'=',
-				'UTP.user_role_id'
-			)
-
-			// Join user role prices
-			->join(
-				'user_role_price as URP',
-				'URP.user_role_id',
-				'=',
-				'UR.id'
-			)
-
-			// Get selected info
-			->select(
-				'UR.*',
-				'URP.*',
-				'P.created_at as project_creation_date',
-				'UTP.user_role_id',
-				DB::raw('SUM(UTP.payed_hours) as total_hours'),
-				DB::raw('(SUM(UTP.payed_hours) * URP.price_per_hour) as total_price')
-			)
-			->where('UTP.project_id', '=', $project_id)
-
-			// Filter by dates (get price depending on creating date)
-			->whereRaw('P.created_at >= URP.created_at')
-			->whereRaw('P.created_at < URP.deprecated_at')
-			
-			->groupBy('UTP.user_role_id')
-			->get();
-	}
-
-
-	/**
-	 * Get the total price of all of the tasks
-	 *
-	 * @return int
-	 */
-	public function calculateTotalTaskPrice($related_tasks)
-	{
-		$total = 0;
-
-		foreach ($related_tasks as $task)
-		{
-			$total += $task->total_task_price;
-		}
-
-		return $total;
-	}
-
-
-	/**
-	 * Get users that are related to the project with all hours related
+	 * Get users that are related to the project with all hours
+	 * `projects.show` 3rd tab.
 	 *
 	 * @return mixed
 	 */
@@ -245,7 +173,6 @@ class Project extends Eloquent
 		// Get users information
 		$users = array();
 
-
 		foreach ($related_users as & $user)
 		{
 			$redmineUser = RedmineUser::getRedmineUser($user->user_email);
@@ -259,7 +186,12 @@ class Project extends Eloquent
 
 
 	/**
-	 * Get the total hours of all the related users
+	 * Get the total hours of all the related users roles
+	 * 
+	 * Senior developer -> 200$ (total to the project)
+	 * Developer -> 300$ (total to the project)
+	 * 
+	 * `projects.show` 2nd tab.
 	 *
 	 * @return mixed
 	 */
@@ -312,7 +244,6 @@ class Project extends Eloquent
 		// Get users information
 		$users = array();
 
-
 		foreach ($related_users as & $user)
 		{
 			$redmineUser = RedmineUser::getRedmineUser($user->user_email);
@@ -354,35 +285,9 @@ class Project extends Eloquent
 			function($query) use ($transaction_ids) {
 				return $query->whereIn('transaction.id', $transaction_ids);
 			}
-		)
-		->get();
+		)->get();
 
 		return $transaction_list;
-	}
-
-
-	/**
-	 * Get total price of all the transactions
-	 *
-	 * @return void
-	 */
-	public function calculateTotalTransactionPrice($transactions)
-	{
-		$total = 0;
-
-		foreach ($transactions as $transaction)
-		{
-			if ($transaction->trans_is_expense)
-			{
-				$total -= $transaction->trans_value;
-			}
-			else
-			{
-				$total += $transaction->trans_value;
-			}
-		}
-
-		return $total;
 	}
 
 

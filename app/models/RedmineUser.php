@@ -10,6 +10,11 @@ class RedmineUser extends Eloquent
 	public static $userData = NULL;
 
 
+	/**
+	 * Simply get user by id
+	 *
+	 * @return mixed
+	 */
 	public function scopeGetById($obj, $user_id)
 	{
 		$locaUserInfo = DB::table('users')->where('id', '=', $user_id)->first();
@@ -26,7 +31,7 @@ class RedmineUser extends Eloquent
 
 
 	/**
-	 * Simply get list of all the users in system (redmine and local db)
+	 * Get list of all the users in system (redmine and local db)
 	 *
 	 * @return mixed
 	 */

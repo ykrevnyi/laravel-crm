@@ -7,6 +7,24 @@ class Task extends Eloquent
 
 
 	/**
+	 * Get the total price of all of the tasks
+	 *
+	 * @return int
+	 */
+	public function calculateTotal($task_list)
+	{
+		$total = 0;
+
+		foreach ($task_list as $task)
+		{
+			$total += $task->total_task_price;
+		}
+
+		return $total;
+	}
+
+
+	/**
 	 * Get information of the task by id
 	 *
 	 * @return mixed
@@ -18,12 +36,12 @@ class Task extends Eloquent
 			->where('id', $task_id)
 			->first();
 
-		$related_users = $this->getTaskInvoice($task->id);
-		$task->total_task_price = $this->calculateTotalPrice($related_users);
-		$task->related_users = $related_users;
+		$related_user_roles = $this->getTaskInvoice($task->id);
+		$task->total_task_price = $this->calculateTaskUserRoles($related_user_roles);
+		$task->related_user_roles = $related_user_roles;
 
 		// Get users information (in our case only fname, lname)
-		foreach ($task->related_users as & $user)
+		foreach ($task->related_user_roles as & $user)
 		{
 			$local_user = User::find($user->user_id);
 			$redmine_user = RedmineUser::getRedmineUser($local_user->email);
@@ -67,7 +85,6 @@ class Task extends Eloquent
 				'name' => $data['name'],
 				'short_description' => $data['short_description'],
 				'description' => $data['description'],
-				'created_at' => \Carbon\Carbon::now(),
 				'updated_at' => \Carbon\Carbon::now()
 			));
 	}
@@ -201,7 +218,7 @@ class Task extends Eloquent
 		foreach ($task_list as & $task)
 		{
 			$related_users = $this->getTaskInvoice($task->id);
-			$task->total_task_price = $this->calculateTotalPrice($related_users);
+			$task->total_task_price = $this->calculateTaskUserRoles($related_users);
 			$task->related_users = $related_users;
 
 			// Get users information (in our case only fname, lname)
@@ -274,24 +291,6 @@ class Task extends Eloquent
 
 
 	/**
-	 * Get the total price of the task
-	 *
-	 * @return int
-	 */
-	private function calculateTotalPrice($task_related_users)
-	{
-		$total = 0;
-
-		foreach ($task_related_users as $related_user)
-		{
-			$total += $related_user->total_price;
-		}
-
-		return $total;
-	}
-
-
-	/**
 	 * Get users related to the task
 	 *
 	 * @return mixed
@@ -338,6 +337,24 @@ class Task extends Eloquent
 		}
 		
 		return $related_users;
+	}
+
+
+	/**
+	 * Get total price of all of the users related
+	 *
+	 * @return int
+	 */
+	private function calculateTaskUserRoles($task_related_users)
+	{
+		$total = 0;
+
+		foreach ($task_related_users as $related_user)
+		{
+			$total += $related_user->total_price;
+		}
+
+		return $total;
 	}
 
 }

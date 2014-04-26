@@ -99,4 +99,29 @@ class Transaction extends Eloquent
 	}
 
 
+	/**
+	 * Get total price of al the transactions
+	 *
+	 * @return void
+	 */
+	public function calculateTotal($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ($transaction->trans_is_expense)
+			{
+				$total -= $transaction->trans_value;
+			}
+			else
+			{
+				$total += $transaction->trans_value;
+			}
+		}
+
+		return $total;
+	}
+
+
 }

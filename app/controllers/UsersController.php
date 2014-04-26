@@ -2,9 +2,8 @@
 
 class UsersController extends BaseController {
 
-	public function before()
-	{
-	}
+	public function before() {}
+
 
 	/**
 	 * Create default view parts
@@ -36,25 +35,6 @@ class UsersController extends BaseController {
 			->with('title', $this->page['title']);
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
 
 	/**
 	 * Display the specified resource.
@@ -64,6 +44,8 @@ class UsersController extends BaseController {
 	 */
 	public function show($id)
 	{
+		$task = new Task;
+
 		// Get projects from specified dates.
 		// Or from last month (by default)
 		$date_from = Input::get('date_from', date('01-m-Y', strtotime('this month')));
@@ -102,8 +84,6 @@ class UsersController extends BaseController {
 			}
 		);
 
-		// print_r($tasks); die();
-
 		// Get user info
 		$user_info = RedmineUser::getById($id);
 
@@ -126,8 +106,8 @@ class UsersController extends BaseController {
 
 		// Get totals
 		// Get total price of all of the tasks
-		$total_price = $user->calculateTotalTasksPrice($tasks);
-		$total_transaction_price = $user->calculateTotalTransactionPrice($transactions);
+		$total_price = $task->calculateTotal($tasks);
+		$total_transaction_price = abs($transaction->calculateTotal($transactions));
 		$user_balance = $total_price - $total_transaction_price;
 
 		$this->layout->content = View::make('users.show')
@@ -146,16 +126,6 @@ class UsersController extends BaseController {
 			->with('transactions', $transactions);
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
 
 	/**
 	 * Update the specified resource in storage.
@@ -181,6 +151,7 @@ class UsersController extends BaseController {
 		);
 	}
 
+
 	/**
 	 * Remove the specified resource from storage.
 	 *
@@ -191,5 +162,40 @@ class UsersController extends BaseController {
 	{
 		//
 	}
+
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		//
+	}
+
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		//
+	}
+
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
+	
 
 }

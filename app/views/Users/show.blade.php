@@ -130,7 +130,7 @@
 						<th>№</th>
 						<th>Название</th>
 						<th>Кол-во</th>
-						<th>Цель</th>
+						<th>Назначение</th>
 						<th>Счет</th>
 						<th>Создана</th>
 						<th>Обновлена</th>
@@ -216,7 +216,7 @@
 							<td>{{ $task->role_name }}</td>
 							<td>{{ $task->payed_hours }} ч.</td>
 							<td>{{ $task->period_price_per_hour }} $</td>
-							<td>{{ $task->total }} $</td>
+							<td>{{ $task->total_task_price }} $</td>
 						</tr>
 					@endforeach
 	    		</table>

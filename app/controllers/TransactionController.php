@@ -2,8 +2,9 @@
 
 class TransactionController extends BaseController {
 
-	private $projects;
-	private $transaction;
+
+	private $projects, $transaction;
+
 
 	protected function before() {
 		$this->projects = new Project(new RedmineUser);
@@ -19,8 +20,9 @@ class TransactionController extends BaseController {
 		$this->layout->header = View::make('admin.common.header', $this->page);
 		$this->layout->footer = View::make('admin.common.footer', $this->page);
 
-		$this->page['title'] = 'User list page';
+		$this->page['title'] = 'Список транзакций';
 	}
+
 
 	/**
 	 * Display a listing of the resource.
@@ -81,6 +83,7 @@ class TransactionController extends BaseController {
 			->with('users', $users);
 	}
 
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -90,6 +93,7 @@ class TransactionController extends BaseController {
 	{
 		//
 	}
+
 
 	/**
 	 * Store a newly created resource in storage.
@@ -145,38 +149,6 @@ class TransactionController extends BaseController {
 		}
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
 
 	/**
 	 * Remove the specified resource from storage.
@@ -280,6 +252,11 @@ class TransactionController extends BaseController {
 	}
 
 
+	/**
+	 * Store newly created transaction
+	 *
+	 * @return void
+	 */
 	public function createTransaction()
 	{
 		$input = Input::all();
@@ -329,6 +306,42 @@ class TransactionController extends BaseController {
 		Session::put('success', 'Транзакция добавлена!');
 
 		return Redirect::route('transactionModal');
+	}
+
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		//
+	}
+
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		//
+	}
+
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update($id)
+	{
+		//
 	}
 
 

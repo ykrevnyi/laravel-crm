@@ -2,13 +2,14 @@
 
 class ProjectsController extends BaseController {
 
-	protected $project, $redmineUser;
+	protected $project;
+
 
 	public function before()
 	{
-		$this->redmineUser = new RedmineUser;
-		$this->project = new Project($this->redmineUser);
+		$this->project = new Project(new RedmineUser);
 	}
+
 
 	/**
 	 * Create default view parts
@@ -23,8 +24,9 @@ class ProjectsController extends BaseController {
 		$this->layout->header = View::make('admin.common.header', $this->page);
 		$this->layout->footer = View::make('admin.common.footer', $this->page);
 
-		$this->page['title'] = 'User list page';
+		$this->page['title'] = 'Список проектов';
 	}
+
 
 	/**
 	 * Display a listing of the resource.
@@ -56,6 +58,7 @@ class ProjectsController extends BaseController {
 			->with('date_to_formated', $date_to_formated);
 	}
 
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -74,6 +77,7 @@ class ProjectsController extends BaseController {
 			->with('user_roles', $user_roles);
 	}
 
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -91,6 +95,7 @@ class ProjectsController extends BaseController {
 		return Redirect::route('projects.show', array('id' => $project_id));
 	}
 
+
 	/**
 	 * Display the specified resource.
 	 *
@@ -99,6 +104,9 @@ class ProjectsController extends BaseController {
 	 */
 	public function show($project_id)
 	{
+		$transaction = new Transaction;
+		$task = new Task;
+
 		// Basic project info
 		$project = $this->project->getProjectInfo($project_id);
 
@@ -112,16 +120,12 @@ class ProjectsController extends BaseController {
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
 
-		// Get project billed hours
-		$hours = $this->project->getBilledHours($project_id);
-
 		// Get related tasks
-		$task = new Task;
 		$related_tasks = $task->getList($project_id);
 
 		// Get the rest balance of the payments
-		$total_project_price = $this->project->calculateTotalTaskPrice($related_tasks);
-		$total_transaction_price = $this->project->calculateTotalTransactionPrice($related_transactions);
+		$total_project_price = $task->calculateTotal($related_tasks);
+		$total_transaction_price = $transaction->calculateTotal($related_transactions);
 		$project_balance = $total_project_price - $total_transaction_price;
 
 		$this->layout->content = View::make('projects.show')
@@ -130,12 +134,12 @@ class ProjectsController extends BaseController {
 			->with('related_users_totals', $related_users_totals)
 			->with('transactions', $related_transactions)
 			->with('user_roles', $user_roles)
-			->with('hours', $hours)
 			->with('total_project_price', $total_project_price)
 			->with('total_transaction_price', $total_transaction_price)
 			->with('project_balance', $project_balance)
 			->with('related_tasks', $related_tasks);
 	}
+
 
 	/**
 	 * Show the form for editing the specified resource.
@@ -150,15 +154,12 @@ class ProjectsController extends BaseController {
 
 		// Get all the project priorities
 		$priorities = ProjectPriority::getAllConvertedToView();
-		
-		// Get related transactions
-		$related_transactions = $this->project->getRelatedTransacitons($project_id);
 
 		$this->layout->content = View::make('projects.edit')
 			->with('project', $project)
-			->with('priorities', $priorities)
-			->with('transactions', $related_transactions);
+			->with('priorities', $priorities);
 	}
+
 
 	/**
 	 * Update the specified resource in storage.
@@ -168,11 +169,11 @@ class ProjectsController extends BaseController {
 	 */
 	public function update($project_id)
 	{
-		// print_r(Input::all()); die();
 		$this->project->saveProject(Input::all(), $project_id);
 		
 		return Redirect::back();
 	}
+	
 
 	/**
 	 * Remove the specified resource from storage.
@@ -187,8 +188,15 @@ class ProjectsController extends BaseController {
 		return Redirect::route('projects.index');
 	}
 
+
 	/**
 	 * Get selected users
+	 *
+	 * Here we have two arrays
+	 * 1st one has all users information
+	 * 2d has only selected `user_id`s
+	 *
+	 * Then we age going to simply merge this stuff
 	 *
 	 * @return mixed
 	 */
@@ -219,111 +227,5 @@ class ProjectsController extends BaseController {
 		return $selected_users;
 	}
 
-
-	/**
-	 * Add user to the project
-	 *
-	 * @return mixed
-	 */
-	public function addUser($project_id)
-	{
-		$result = array();
-
-		$project_id = (int) $project_id;
-		$user_id = (int) Input::get('user_id', 0);
-		$user_role_id = (int) Input::get('user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
-
-		$result['status'] = $this->project->addUserToProject($project_id, $user_id, $user_role_id, $user_payed_hours);
-
-		// Get user info and create an HTML form to edit user relation to project
-		$user = RedmineUser::GetById($user_id);
-		$user->user_role_id = $user_role_id;
-		$user->payed_hours = $user_payed_hours;
-
-		// Get user roles
-		$user_roles = UserRole::allForSelect();
-
-		$view = View::make('projects.user_to_project_form')
-			->with('user', $user)
-			->with('user_roles', $user_roles);
-
-		// Set output
-		$result['user'] = $user;
-		$result['view'] = htmlentities($view);
-
-		return $result;
-	}
-
-
-	/**
-	 * Remove user from the project
-	 *
-	 * @return mixed
-	 */
-	public function removeUser($project_id)
-	{
-		$result = array();
-
-		$project_id = (int) $project_id;
-		$user_id = (int) Input::get('user_id', 0);
-		$user_role_id = (int) Input::get('user_role_id', 0);
-
-		$result['status'] = $this->project->removeUserFromProject($project_id, $user_id, $user_role_id);
-
-		return json_encode($result);
-	}
-
-
-	/**
-	 * Change user role of the project
-	 *
-	 * @return void
-	 */
-	public function changeUserRole($project_id)
-	{
-		$result = array();
-
-		$project_id = (int) $project_id;
-		$user_id = (int) Input::get('user_id', 0);
-		$user_role_id = (int) Input::get('user_role_id', 0);
-		$prev_user_role_id = (int) Input::get('prev_user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
-
-		$result['status'] = $this->project->changeUserProjectRole(
-			$project_id, 
-			$user_id, 
-			$user_role_id, 
-			$prev_user_role_id,
-			$user_payed_hours
-		);
-
-		return json_encode($result);
-	}
-
-
-	/**
-	 * Change user payed hours
-	 *
-	 * @return void
-	 */
-	public function changeUserPayedHours($project_id)
-	{
-		$result = array();
-
-		$project_id = (int) $project_id;
-		$user_id = (int) Input::get('user_id', 0);
-		$user_role_id = (int) Input::get('user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
-
-		$result['status'] = $this->project->changeUserProjectPayedHours(
-			$project_id, 
-			$user_id, 
-			$user_role_id, 
-			$user_payed_hours
-		);
-
-		return json_encode($result);
-	}
 
 }
