@@ -22,7 +22,7 @@
 			<span class="help-block"></span>
 		</div>
 
-		<div class="panel panel-default">
+		<div class="form-group panel panel-default">
 			<div class="panel-heading">Пользователи</div>
 
 			<div class="panel-body text-center">
@@ -57,9 +57,11 @@
 			</ul>
 		</div>
 
-		{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left close-task-form-btn')) }}
-		
-		<button class="save-task-btn btn btn-success pull-right">Сохранить</button>
+		<div class="form-group">
+			{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left close-task-form-btn')) }}
+			
+			<button class="save-task-btn btn btn-success pull-right">Сохранить</button>
+		</div>
 	{{ Form::close() }}
 
 	<div id="related-users-container-ajax"></div>

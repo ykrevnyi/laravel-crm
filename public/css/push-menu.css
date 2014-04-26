@@ -38,6 +38,7 @@
 }
 
 .cbp-spmenu-right.cbp-spmenu-open {
+	overflow-y: scroll;
 	left: 45%;
 }
 body.cbp-spmenu-push-toleft::after {
@@ -85,6 +86,7 @@ body.cbp-spmenu-push-toleft::after {
 }
 
 .cbp-spmenu-push-toleft {
+	overflow: hidden;
 	left: -240px;
 }
 

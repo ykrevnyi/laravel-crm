@@ -22,11 +22,13 @@
 			<span class="help-block"></span>
 		</div>
 
-		{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left close-task-form-btn')) }}
-		<button class="create-task-btn btn btn-success pull-right">
-			Далее
-			<span class="glyphicon glyphicon-chevron-right"></span>
-		</button>
+		<div class="form-group">
+			{{ Form::button('Отмена', array('class' => 'btn btn-default pull-left close-task-form-btn')) }}
+			<button class="create-task-btn btn btn-success pull-right">
+				Далее
+				<span class="glyphicon glyphicon-chevron-right"></span>
+			</button>
+		</div>
 	{{ Form::close() }}
 
 	<div id="related-users-container-ajax"></div>

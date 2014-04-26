@@ -68,6 +68,7 @@ body.loading::after, .slow-loader::after {
     text-align: left;
 }
 .task-create-wizzard {
+    margin-bottom: 180px;
 }
 .task-create-wizzard .task-submit-btn {
     z-index: 1001;
