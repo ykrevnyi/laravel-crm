@@ -70,6 +70,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	public function getUserProjects($user_id, $filter = NULL)
 	{
+		$projectModel = new Project(new RedmineUser);
+
 		$result = DB::table('user_to_task as UTT')
 			// Get task info
 			->join(
@@ -107,27 +109,90 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			->get();
 
 		$user_related_projects = $result;
+		$list = array();
 
 		// Get detail project info
-		foreach ($user_related_projects as & $project)
+		foreach ($user_related_projects as $project)
 		{
-			$project_info = $this->getProject($user_id, $project->project_id);
+			$related_user_roles = $this->getRelatedUsersTotal($project->project_id, $user_id);
 
-			// Get total price of the project
+			// Get total price
 			$total_price = 0;
-			foreach ($project_info as $project_info_item)
+			foreach ($related_user_roles as $role)
 			{
-				$total_price += $project_info_item->total;
+				$total_price += $role->period_total_price;
 			}
 
-			$project = (array) $project;
-			$project['total_price'] = $total_price;
-			$project = (object) $project;
-
-			$project->info = $project_info;
+			$list[] = array(
+				'name' => $project->name,
+				'total_price' => $total_price,
+				'related_user_roles' => $related_user_roles
+			);
 		}
 		
-		return $user_related_projects;
+		return $list;
+	}
+
+
+	/**
+	 * Get total user-to-project role payed hours
+	 * 
+	 * Example:
+	 * 1st project - [dev: 10$, sdev: 20$]
+	 * 2st project - [sdev: 30$]
+	 *
+	 * -> [dev: 10$, sdev: 50$]
+	 *
+	 * @return mixed
+	 */
+	public function getRelatedUsersTotal($project_id, $user_id)
+	{
+		$related_users = DB::table('task as T')
+			// Join related users
+			->join('user_to_task as UTT', 'UTT.task_id', '=', 'T.id')
+
+			// Join user info
+			->join('users as U', 'U.id', '=', 'UTT.user_id')
+
+			// Join user role info
+			->join(
+				'user_role as UR',
+				'UR.id',
+				'=',
+				'UTT.user_role_id'
+			)
+
+			// Join user role prices
+			->join(
+				'user_role_price as URP',
+				'URP.user_role_id',
+				'=',
+				'UR.id'
+			)
+
+			->select(
+				'UTT.user_id',
+				'UTT.user_role_id',
+				'UTT.payed_hours',
+				'U.email AS user_email',
+				'U.email AS user_email',
+				'UR.name as role_name',
+				'URP.price_per_hour as period_price_per_hour',
+				DB::raw('SUM(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				'URP.created_at as period_created_at',
+				'URP.deprecated_at as period_deprecated_at'
+			)
+			->where('T.project_id', '=', $project_id)
+			->where('UTT.user_id', '=', $user_id)
+
+			->whereRaw('T.created_at >= URP.created_at')
+			->whereRaw('T.created_at < URP.deprecated_at')
+
+			->groupBy('UTT.user_role_id')
+
+			->get();
+		
+		return $related_users;
 	}
 
 
@@ -200,52 +265,52 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function getTasks($user_id, $filter = NULL)
 	{
 		$result = DB::table('task as T')
+			// Join related users
+			->join('user_to_task as UTT', 'UTT.task_id', '=', 'T.id')
 
-			// Joint task info
-			->join(
-				'user_to_task AS UTT',
-				'UTT.task_id',
-				'=',
-				'T.id'
-			)
+			// Join user info
+			->join('users as U', 'U.id', '=', 'UTT.user_id')
 
-			// Joint user role info
+			// Join user role info
 			->join(
-				'user_role AS UR',
+				'user_role as UR',
 				'UR.id',
 				'=',
 				'UTT.user_role_id'
 			)
 
-			// Joint user role prices info
+			// Join user role prices
 			->join(
-				'user_role_price AS URP',
+				'user_role_price as URP',
 				'URP.user_role_id',
 				'=',
-				'UTT.user_role_id'
+				'UR.id'
 			)
 
 			->select(
 				'T.name',
-				'T.created_at',
+				'UTT.user_id',
 				'UTT.user_role_id',
 				'UTT.payed_hours',
-				'UR.name AS role_name',
-				'URP.price_per_hour_payable',
-				DB::raw('SUM(UTT.payed_hours) as total_hours'),
-				DB::raw('(SUM(UTT.payed_hours) * URP.price_per_hour_payable) as total')
+				'U.email AS user_email',
+				'U.email AS user_email',
+				'UR.name as role_name',
+				'URP.price_per_hour as period_price_per_hour',
+				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total'),
+				'URP.created_at as period_created_at',
+				'URP.deprecated_at as period_deprecated_at'
 			)
+			->where('UTT.user_id', '=', $user_id)
 
-			->where('UTT.user_id', $user_id);
+			->whereRaw('T.created_at >= URP.created_at')
+			->whereRaw('T.created_at < URP.deprecated_at');
 
 		if ($filter)
 		{
 			$result = $result->where($filter);
 		}
 
-		$result = $result
-			->groupBy('UTT.user_role_id', 'URP.id')
-			->get();
+		$result = $result->get();
 
 		return $result;
 	}

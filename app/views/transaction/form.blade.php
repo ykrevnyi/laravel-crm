@@ -17,7 +17,7 @@
 		<script type="text/javascript" src="/public/js/bootstrap-datepicker.js"></script>
 	</head>
 
-	<body>
+	<body style="margin-bottom: 0;">
 	<div class="container">
 		<form class="form-horizontal" id="transaction-form" action="{{ URL::route('transactionModalPost') }}" method="post">
 			<div class="modal-header">
@@ -124,26 +124,26 @@
 				@endif
 					<label class="col-sm-4 control-label">Привязка</label>
 					<div class="col-sm-8">
-						{{ Form::select('relation', $relation_types, $current_relation_object_type, array('id' => 'relation')); }}
+						{{ Form::select('relation', $relation_types, $current_relation_object_type, array('id' => 'relation', 'class' => 'pull-left')); }}
 
 						<!-- Show link to user select -->
 						@if (Input::old('relation') == 'user' OR $relation_object_type == 'user')
-							<div id="relation-user" class="col-md-6 relation-field">
+							<div id="relation-user" class="pull-left col-md-6 relation-field">
 								{{ Form::select('relation_to_user', $users, $current_relation_object_type_id) }}
 							</div>
 						@else
-							<div id="relation-user" class="col-md-6 relation-field" style="display: none">
+							<div id="relation-user" class="pull-left col-md-6 relation-field" style="display: none">
 								{{ Form::select('relation_to_user', $users) }}
 							</div>
 						@endif
 
 						<!-- Show link to project select -->
 						@if (Input::old('relation') == 'project' OR $relation_object_type == 'project')
-							<div id="relation-project" class="col-md-6 relation-field">
+							<div id="relation-project" class="pull-left col-md-6 relation-field">
 								{{ Form::select('relation_to_project', $projects, $current_relation_object_type_id) }}
 							</div>
 						@else
-							<div id="relation-project" class="col-md-6 relation-field" style="display: none">
+							<div id="relation-project" class="pull-left col-md-6 relation-field" style="display: none">
 								{{ Form::select('relation_to_project', $projects) }}
 							</div>
 						@endif

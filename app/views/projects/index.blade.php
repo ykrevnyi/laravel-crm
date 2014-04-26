@@ -52,7 +52,7 @@
 		<div class="col-lg-12">
 
 			@if (count($project_list))
-				<table class="table">
+				<table class="table vertical-aligned">
 					<tr>
 						<th width="50"></th>
 						<th>№</th>
@@ -86,7 +86,10 @@
 					@endforeach
 				</table>
 			@else
-				<h3 class="text-center">Нет проектов :(</h3>
+				<div class="empty-message text-center">
+					<span class="glyphicon glyphicon-briefcase"></span>
+					<h3>Нет проектов :(</h3>
+				</div>
 			@endif
 
 		</div>

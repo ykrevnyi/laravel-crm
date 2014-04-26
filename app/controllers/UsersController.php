@@ -102,6 +102,8 @@ class UsersController extends BaseController {
 			}
 		);
 
+		// print_r($tasks); die();
+
 		// Get user info
 		$user_info = RedmineUser::getById($id);
 

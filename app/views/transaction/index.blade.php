@@ -60,7 +60,10 @@
 				</div>
 
 				@if ( ! count($transactions))
-					<h3 class="text-center">Нет транзакций :.(</h3>
+					<div class="empty-message text-center">
+						<span class="glyphicon glyphicon-transfer"></span>
+						<h3>Нет транзакций :(</h3>
+					</div>
 				@else
 					<table class="vertical-aligned table table-bordered">
 						<tr>

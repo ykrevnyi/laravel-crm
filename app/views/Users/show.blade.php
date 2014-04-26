@@ -119,7 +119,10 @@
 	    <!-- Related transactions -->
 	    <div class="tab-pane" id="related-transactions">
 	    	@if ( ! count($transactions))
-				<h3 class="text-center">Нет транзакций :.(</h3>
+				<div class="empty-message text-center">
+					<span class="glyphicon glyphicon-transfer"></span>
+					<h3>Нет транзакций :(</h3>
+				</div>
 			@else
 				<table class="vertical-aligned table table-bordered">
 					<tr>
@@ -162,52 +165,66 @@
 	    <!-- Related projects -->
 	    <div class="tab-pane" id="related-projects">
 	    	@if ($projects)
+	    		<h3 class="text-center">Итого по проектам - {{ $total_price }} $</h3>
+
 				@foreach ($projects as $project)
 					<table class="table table-bordered">
 						<tr>
-							<th class="text-center active" colspan="4">{{ $project->name }}</th>
+							<th class="text-center active" colspan="4">{{ $project['name'] }}</th>
 						</tr>
 						<tr>
 							<th>Должность</th>
-							<th>Часов</th>
-							<th>Цена в час</th>
 							<th>Сума</th>
 						</tr>
-						@foreach ($project->info as $info)
+						@foreach ($project['related_user_roles'] as $role)
 							<tr>
-								<td>{{ $info->name }}</td>
-								<td>{{ $info->total_payed_hours }} ч.</td>
-								<td>{{ $info->price_per_hour_payable }} $</td>
-								<td>{{ $info->total }} $</td>
+								<td>{{ $role->role_name }}</td>
+								<td>{{ $role->period_total_price }} $</td>
 							</tr>
 						@endforeach
 
 						<tr>
-							<th class="text-right" colspan="3">Итого</th>
-							<th>{{ $project->total_price }} $</th>
+							<th class="text-right">Итого</th>
+							<th>{{ $project['total_price'] }} $</th>
 						</tr>
 					</table>
 				@endforeach
 			@else
-				Пусто
+				<div class="empty-message text-center">
+					<span class="glyphicon glyphicon-briefcase"></span>
+					<h3>Нет проектов :(</h3>
+				</div>
 			@endif
 	    </div>
 
 	    <!-- Related tasks -->
 	    <div class="tab-pane" id="related-tasks">
 	    	@if ($tasks)
+	    		<h3 class="text-center">Итого по задачам - {{ $total_price }} $</h3>
+
 	    		<table class="table table-bordered">
+	    			<tr>
+						<th>Задание</th>
+						<th>Должность</th>
+						<th>Время</th>
+						<th>Цена за час</th>
+						<th>Сума</th>
+					</tr>
 					@foreach ($tasks as $task)
 						<tr>
 							<td>{{ $task->name }}</td>
 							<td>{{ $task->role_name }}</td>
-							<td>{{ $task->total_hours }} ч.</td>
+							<td>{{ $task->payed_hours }} ч.</td>
+							<td>{{ $task->period_price_per_hour }} $</td>
 							<td>{{ $task->total }} $</td>
 						</tr>
 					@endforeach
 	    		</table>
 			@else
-				Пусто
+				<div class="empty-message text-center">
+					<span class="glyphicon glyphicon-tasks"></span>
+					<h3>Нет задач :(</h3>
+				</div>
 			@endif
 	    </div>
     </div>

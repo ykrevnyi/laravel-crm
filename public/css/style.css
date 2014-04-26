@@ -233,9 +233,17 @@ body.loading::after, .slow-loader::after {
 }
 .no-users > span {
     margin: 6px 0 0;
-    font-size: 3em;
+    font-size: 2.2em;
 }
 form.user-filter-form {
     margin: 0 auto;
     width: 340px;
+}
+.empty-message {
+    font-size: 2.2em;
+    margin: 10px 0 5px;
+}
+.empty-message span {}
+.empty-message h3 {
+    margin: 0;
 }

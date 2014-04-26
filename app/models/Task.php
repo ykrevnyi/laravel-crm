@@ -195,6 +195,7 @@ class Task extends Eloquent
 		// Get all of the tasks related to the project
 		$task_list = DB::table('task')
 			->where('project_id', '=', $project_id)
+			->orderBy('task.created_at', 'desc')
 			->get();
 
 		foreach ($task_list as & $task)

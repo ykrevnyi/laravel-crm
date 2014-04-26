@@ -1,4 +1,6 @@
-<h1 class="text-center">{{$project->proj_name}}</h1>
+<h1 class="text-center">
+	Проект: <span class="create-project-title">{{$project->proj_name}}</span>
+</h1>
 
 <div class="container">
 
@@ -25,7 +27,7 @@
 					<div class="form-group">
 						{{ Form::label('proj_name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 						<div class="col-sm-9">
-							{{ Form::text('proj_name', $project->proj_name, array('class' => 'form-control')) }}
+							{{ Form::text('proj_name', $project->proj_name, array('class' => '2way-binding form-control', 'data-binding' => 'create-project-title')) }}
 						</div>
 					</div>
 

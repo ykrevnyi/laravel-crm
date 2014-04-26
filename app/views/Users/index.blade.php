@@ -13,7 +13,9 @@
 			@foreach ($data['users'] as $user)
 				<tr>
 					<td>{{ $user->login }}</td>
-					<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
+					<td>
+						{{ HTML::linkRoute('users.show', $user->firstname . ' ' . $user->lastname, array('id' => $user->id)) }}
+					</td>
 					<td>{{ $user->mail }}</td>
 					<td>
 						@if (RedmineUser::user()->level == 'user')

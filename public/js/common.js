@@ -33,4 +33,6 @@ $(document).on('ready', function() {
 			$binding.html($binding.data('default'));
 		});
 	};
+
+	window.init2wayBinding();
 });

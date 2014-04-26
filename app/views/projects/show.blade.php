@@ -88,8 +88,8 @@
 						</table>
 					@else
 						<div class="no-users text-center">
-							<span class="glyphicon glyphicon-user"></span>
-							<h3>Нет пользователей</h3>
+							<span class="glyphicon glyphicon-usd"></span>
+							<h3>Пока ничего нет</h3>
 						</div>
 					@endif
 			    </div>
@@ -160,7 +160,10 @@
 		</div>
 
 		@if (empty($related_tasks))
-			<h3 class="text-center">Задач пока нет - можно отдыхать ^^</h3>
+			<div class="empty-message text-center">
+				<span class="glyphicon glyphicon-tasks"></span>
+				<h3>Задач пока нет - можно отдыхать ^^</h3>
+			</div>
 		@else
 			<table class="vertical-aligned table table-bordered">
 				<tr>
@@ -228,7 +231,10 @@
 		</div>
 
 		@if ( ! count($transactions))
-			<h3 class="text-center">Нет транзакций :.(</h3>
+			<div class="empty-message text-center">
+				<span class="glyphicon glyphicon-transfer"></span>
+				<h3>Нет транзакций :(</h3>
+			</div>
 		@else
 			<table class="vertical-aligned table table-bordered" id="transaction-container">
 				<tr>
