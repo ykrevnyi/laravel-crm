@@ -247,3 +247,6 @@ form.user-filter-form {
 .empty-message h3 {
     margin: 0;
 }
+.header-cog {
+    margin: 0 !important;
+}

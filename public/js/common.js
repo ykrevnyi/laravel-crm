@@ -6,6 +6,9 @@ $(document).on('ready', function() {
 	// Add datepicker
 	$('.datepicker').datepicker({ format: "yyyy-mm-dd" });
 
+	// Init dropdowns
+	$('.dropdown-toggle').dropdown();
+
 	// Two way data-binding (secondary type)
 	window.init2wayBinding = function() {
 		$('.2way-binding').each(function(index, el) {

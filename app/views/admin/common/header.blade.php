@@ -38,7 +38,20 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">CRM</a>
+				
+				<div class="dropdown pull-left">
+					<a data-toggle="dropdown" class="header-cog text-center navbar-brand" href="#">
+						<span class="glyphicon glyphicon-cog"></span>
+					</a>
+
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						<li><a href="/accounts"><span class="glyphicon glyphicon-credit-card"></span> Счета</a></li>
+						<li><a href="/priorities"><span class="glyphicon glyphicon-bookmark"></span> Приоритеты</a></li>
+						<li><a href="/transaction/destination"><span class="glyphicon glyphicon-transfer"></span> Назначения транзакций</a></li>
+						<li><a href="/user/posts"><span class="glyphicon glyphicon-stats"></span> Должности</a></li>
+						<li><a href="/user/prices"><span class="glyphicon glyphicon-usd"></span> Цены</a></li>
+					</ul>
+				</div>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
