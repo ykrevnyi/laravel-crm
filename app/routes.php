@@ -7,7 +7,8 @@
  *------------------------------------------------------------
  *------------------------------------------------------------
  */
-Route::group(array('before' => 'auth'), function () {
+// Route::group(array('before' => 'auth'), function () {
+Route::group(array(), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
@@ -33,6 +34,9 @@ Route::group(array('before' => 'auth'), function () {
 	Route::post("/tasks/{id}/removeUser", array('as' => 'removeUserFromTask', 'uses' => 'TasksController@removeUser'));
 	Route::post("/tasks/{id}/changeUserRole", array('as' => 'changeUserTaskRole', 'uses' => 'TasksController@changeUserRole'));
 	Route::post("/tasks/{id}/changeUserPayedHours", array('as' => 'changeUserTaskPayedHours', 'uses' => 'TasksController@changeUserPayedHours'));
+
+	// Accounts management
+	Route::resource('accounts', 'AccountsController');
 });
 
 
