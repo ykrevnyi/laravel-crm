@@ -7,8 +7,7 @@
  *------------------------------------------------------------
  *------------------------------------------------------------
  */
-// Route::group(array('before' => 'auth'), function () {
-Route::group(array(), function () {
+Route::group(array('before' => 'auth'), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
@@ -37,6 +36,10 @@ Route::group(array(), function () {
 
 	// Accounts management
 	Route::resource('accounts', 'AccountsController');
+
+	// Priorities management
+	Route::resource('priorities', 'PrioritiesController');
+	
 });
 
 

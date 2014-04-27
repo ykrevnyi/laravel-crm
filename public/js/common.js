@@ -9,6 +9,9 @@ $(document).on('ready', function() {
 	// Init dropdowns
 	$('.dropdown-toggle').dropdown();
 
+	// Init colorpicker
+	$('.color-picker').colorpicker();
+
 	// Two way data-binding (secondary type)
 	window.init2wayBinding = function() {
 		$('.2way-binding').each(function(index, el) {

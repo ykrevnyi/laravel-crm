@@ -14,6 +14,7 @@
 		<link href="/public/css/datepicker.css" rel="stylesheet">
 		<link href="/public/css/jquery.fancybox.css" rel="stylesheet">
 		<link href="/public/css/daterangepicker-bs3.css" rel="stylesheet">
+		<link href="/public/css/bootstrap-colorpicker.css" rel="stylesheet">
 		<link href="/public/css/push-menu.css" rel="stylesheet">
 		<link href="/public/css/style.css" rel="stylesheet">
 
@@ -22,6 +23,7 @@
 		<script type="text/javascript" src="/public/js/noty.js"></script>
 		<script type="text/javascript" src="/public/js/bootstrap.js"></script>
 		<script type="text/javascript" src="/public/js/select2.min.js"></script>
+		<script type="text/javascript" src="/public/js/bootstrap-colorpicker.min.js"></script>
 		<script type="text/javascript" src="/public/js/bootstrap-datepicker.js"></script>
 		<script type="text/javascript" src="/public/js/moment.js"></script>
 		<script type="text/javascript" src="/public/js/daterangepicker.js"></script>

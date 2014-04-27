@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="text-center">Создать новый счет</h1>
+			<h1 class="text-center">{{ $priority->name }}</h1>
 		</div>
 	</div>
 
@@ -20,11 +20,18 @@
 	<div class="row">
 		<div class="col-lg-12">
 			
-			{{ Form::open(array('route' => 'accounts.store', 'class' => 'form-horizontal')) }}
+			{{ Form::open(array('route' => array('priorities.update', $priority->id), 'method' => 'put', 'class' => 'form-horizontal')) }}
 				<div class="form-group">
 					{{ Form::label('name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
-						{{ Form::text('name', Input::old('name', ''), array('class' => 'form-control', 'autofocus')) }}
+						{{ Form::text('name', Input::old('name', $priority->name), array('class' => 'form-control', 'autofocus')) }}
+					</div>
+				</div>
+
+				<div class="form-group">
+					{{ Form::label('color', 'Цвет', array('class' => 'col-sm-3 control-label')) }}
+					<div class="col-sm-9">
+						{{ Form::text('color', Input::old('color', $priority->color), array('class' => 'color-picker form-control')) }}
 					</div>
 				</div>
 
