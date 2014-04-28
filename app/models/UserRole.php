@@ -98,7 +98,9 @@ class UserRole extends Eloquent
 		// Store basic user role and get its id
 		$role_id = DB::table('user_role')
 			->insertGetId(array(
-				'name' => $data['name']
+				'name' => $data['name'],
+				'created_at' => \Carbon\Carbon::now(),
+				'updated_at' => \Carbon\Carbon::now()
 			));
 
 		// Store role prices
@@ -155,6 +157,21 @@ class UserRole extends Eloquent
 			->get();
 
 		return $prise_history;
+	}
+
+
+	/**
+	 * Remove user role
+	 *
+	 * @return void
+	 */
+	public function remove($role_id)
+	{
+		self::find($role_id)->delete();
+
+		DB::table('user_role_price')
+			->where('user_role_id', $role_id)
+			->delete();
 	}
 
 

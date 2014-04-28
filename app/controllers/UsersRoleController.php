@@ -137,7 +137,8 @@ class UsersRoleController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		TransactionPurpose::find($id)->delete();
+		$rolesModel = new UserRole;
+		$rolesModel->remove($id);
 
 		return Redirect::route('users.roles.index');
 	}
