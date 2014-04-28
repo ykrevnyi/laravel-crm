@@ -49,9 +49,8 @@
 					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 						<li><a href="/accounts"><span class="glyphicon glyphicon-credit-card"></span> Счета</a></li>
 						<li><a href="/priorities"><span class="glyphicon glyphicon-bookmark"></span> Приоритеты</a></li>
-						<li><a href="/transaction/destination"><span class="glyphicon glyphicon-transfer"></span> Назначения транзакций</a></li>
-						<li><a href="/user/posts"><span class="glyphicon glyphicon-stats"></span> Должности</a></li>
-						<li><a href="/user/prices"><span class="glyphicon glyphicon-usd"></span> Цены</a></li>
+						<li><a href="/transactions/purposes"><span class="glyphicon glyphicon-transfer"></span> Назначения транзакций</a></li>
+						<li><a href="/users/roles"><span class="glyphicon glyphicon-stats"></span> Должности</a></li>
 					</ul>
 				</div>
 			</div>

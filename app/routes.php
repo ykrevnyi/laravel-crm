@@ -11,9 +11,15 @@ Route::group(array('before' => 'auth'), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
+	// User roles management
+	Route::resource('users/roles', 'UsersRoleController');
+
 	// Users
 	Route::resource('users', 'UsersController');
 	
+	// Transaction destination management
+	Route::resource('transactions/purposes', 'TransactionPurposeController');
+
 	// Transactions
 	Route::post("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModalPost', 'uses' => 'TransactionController@createTransaction'));
 	Route::get("/transactions/modal/{relation_object_type?}/{relation_object_type_id?}", array('as' => 'transactionModal', 'uses' => 'TransactionController@modal'));
@@ -36,6 +42,9 @@ Route::group(array('before' => 'auth'), function () {
 
 	// Accounts management
 	Route::resource('accounts', 'AccountsController');
+
+	// Priorities management
+	Route::resource('priorities', 'PrioritiesController');
 
 	// Priorities management
 	Route::resource('priorities', 'PrioritiesController');
