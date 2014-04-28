@@ -42,42 +42,77 @@
 				</button>
 				
 				<div class="dropdown pull-left">
-					<a data-toggle="dropdown" class="header-cog text-center navbar-brand" href="#">
+					@if ($routes['is_config'])
+						<a data-toggle="dropdown" class="active header-cog text-center navbar-brand" href="#">
+					@else
+						<a data-toggle="dropdown" class="header-cog text-center navbar-brand" href="#">
+					@endif
 						<span class="glyphicon glyphicon-cog"></span>
 					</a>
 
 					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-						<li><a href="/accounts"><span class="glyphicon glyphicon-credit-card"></span> Счета</a></li>
-						<li><a href="/priorities"><span class="glyphicon glyphicon-bookmark"></span> Приоритеты</a></li>
-						<li><a href="/transactions/purposes"><span class="glyphicon glyphicon-transfer"></span> Назначения транзакций</a></li>
-						<li><a href="/users/roles"><span class="glyphicon glyphicon-stats"></span> Должности</a></li>
+						<!-- Accounts -->
+						@if ($routes['is_accounts'])
+							<li class="active">
+						@else
+							<li>
+						@endif
+							<a href="/accounts"><span class="glyphicon glyphicon-credit-card"></span> Счета</a>
+						</li>
+
+						<!-- Priorities -->
+						@if ($routes['is_priorities'])
+							<li class="active">
+						@else
+							<li>
+						@endif
+							<a href="/priorities"><span class="glyphicon glyphicon-bookmark"></span> Приоритеты</a>
+						</li>
+
+						<!-- Transaction purposes -->
+						@if ($routes['is_transaction_purposes'])
+							<li class="active">
+						@else
+							<li>
+						@endif
+							<a href="/transactions/purposes"><span class="glyphicon glyphicon-transfer"></span> Назначения транзакций</a>
+						</li>
+
+						<!-- User roles -->
+						@if ($routes['is_user_roles'])
+							<li class="active">
+						@else
+							<li>
+						@endif
+							<a href="/users/roles"><span class="glyphicon glyphicon-stats"></span> Должности</a>
+						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					@if (preg_match("/^home.*/i", Route::currentRouteName()))
+					@if ($routes['is_home'])
 						<li class="active">
 					@else
 						<li>
 					@endif
 						<a href="/">Главная</a></li>
 
-					@if (preg_match("/^users\..+/i", Route::currentRouteName()))
+					@if ($routes['is_users'])
 						<li class="active">
 					@else
 						<li>
 					@endif
 						<a href="/users">Пользователи</a></li>
 
-					@if (preg_match("/^transactions\..+/i", Route::currentRouteName()))
+					@if ($routes['is_transactions'])
 						<li class="active">
 					@else
 						<li>
 					@endif
 						<a href="/transactions">Транзакции</a></li>
 
-					@if (preg_match("/^projects\..+/i", Route::currentRouteName()))
+					@if ($routes['is_projects'])
 						<li class="active">
 					@else
 						<li>

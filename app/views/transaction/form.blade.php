@@ -90,7 +90,7 @@
 				@else
 					<div class="form-group">
 				@endif
-					<label for="" class="col-sm-4 control-label">Тип валюты</label>
+					<label for="" class="col-sm-4 control-label">Счет</label>
 					<div class="col-sm-8">
 						<select name="money_account">
 							@foreach ($money_accounts as $account)

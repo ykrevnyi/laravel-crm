@@ -251,3 +251,6 @@ form.user-filter-form {
 .header-cog {
     margin: 0 !important;
 }
+.navbar-brand.active {
+    color: #fff;
+}
