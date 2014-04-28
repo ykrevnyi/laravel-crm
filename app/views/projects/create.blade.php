@@ -22,7 +22,7 @@
 						<div class="form-group">
 							{{ Form::label('proj_name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 							<div class="col-sm-9">
-								{{ Form::text('proj_name', '', array('class' => '2way-binding form-control', 'data-binding' => 'create-project-title')) }}
+								{{ Form::text('proj_name', '', array('class' => '2way-binding form-control', 'data-binding' => 'create-project-title', 'autofocus')) }}
 							</div>
 						</div>
 

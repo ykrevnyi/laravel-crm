@@ -1,7 +1,9 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="text-center">Создать новое назначение</h1>
+			<h1 class="text-center">
+				Назначение: <span class="create-purpose-title">новое назначение</span>
+			</h1>
 		</div>
 	</div>
 
@@ -24,7 +26,7 @@
 				<div class="form-group">
 					{{ Form::label('name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
-						{{ Form::text('name', Input::old('name', ''), array('class' => 'form-control', 'autofocus')) }}
+						{{ Form::text('name', Input::old('name', ''), array('class' => '2way-binding form-control', 'autofocus', 'data-binding' => 'create-purpose-title')) }}
 					</div>
 				</div>
 

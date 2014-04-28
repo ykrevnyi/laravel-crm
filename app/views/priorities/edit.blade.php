@@ -1,7 +1,9 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="text-center">{{ $priority->name }}</h1>
+			<h1 class="text-center">
+				Приоритет: <span class="create-priority-title">{{ $priority->name }}</span>
+			</h1>
 		</div>
 	</div>
 
@@ -24,7 +26,7 @@
 				<div class="form-group">
 					{{ Form::label('name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
-						{{ Form::text('name', Input::old('name', $priority->name), array('class' => 'form-control', 'autofocus')) }}
+						{{ Form::text('name', Input::old('name', $priority->name), array('class' => '2way-binding form-control', 'data-binding' => 'create-priority-title', 'autofocus')) }}
 					</div>
 				</div>
 

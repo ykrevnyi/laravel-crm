@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="text-center">{{ $account->name }}</h1>
+			<h1 class="text-center">Счет: <span class="create-account-title">{{ $account->name }}</span></h1>
 		</div>
 	</div>
 
@@ -24,7 +24,7 @@
 				<div class="form-group">
 					{{ Form::label('name', 'Название', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
-						{{ Form::text('name', Input::old('name', $account->name), array('class' => 'form-control')) }}
+						{{ Form::text('name', Input::old('name', $account->name), array('class' => '2way-binding form-control', 'autofocus', 'data-binding' => 'create-account-title')) }}
 					</div>
 				</div>
 
