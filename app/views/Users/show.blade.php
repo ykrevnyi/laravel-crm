@@ -215,8 +215,14 @@
 							<td>{{ $task->name }}</td>
 							<td>{{ $task->role_name }}</td>
 							<td>{{ $task->payed_hours }} ч.</td>
-							<td>{{ $task->period_price_per_hour }} $</td>
-							<td>{{ $task->total_task_price }} $</td>
+
+							@if ($task->percents)
+								<td>{{ $task->period_price_per_hour }} %</td>
+								<td>{{ $task->total_task_price * $task->period_price_per_hour / 100 }} $</td>
+							@else
+								<td>{{ $task->period_price_per_hour }} $</td>
+								<td>{{ $task->total_task_price }} $</td>
+							@endif
 						</tr>
 					@endforeach
 	    		</table>

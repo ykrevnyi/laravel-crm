@@ -241,7 +241,7 @@ class Task extends Eloquent
 	 *
 	 * @return mixed
 	 */
-	private function getTaskInvoice($task_id)
+	public function getTaskInvoice($task_id)
 	{
 		return DB::table('user_to_task as UTT')
 			// Join project info in case to get project creating date

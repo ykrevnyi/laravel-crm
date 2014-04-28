@@ -70,7 +70,7 @@ class UsersController extends BaseController {
 			}
 		);
 
-		// Get all the tasks related to the user
+		// Get all the tasks (related roles) related to the user
 		$tasks = $user->getTasks($id, 
 			function($query) use ($date_from_formated, $date_to_formated) {
 				return $query
@@ -83,6 +83,11 @@ class UsersController extends BaseController {
 					);
 			}
 		);
+
+		// Get user persents price (related to task)
+		// TODO: Передати параметри в `getTotalUserMoneyOfPersents` і просто вивести результат на сторінці
+		// Незабути передати фільтр `filter`
+		$user_persents_price = $user->getTotalUserMoneyOfPersents();
 
 		// Get user info
 		$user_info = RedmineUser::getById($id);
