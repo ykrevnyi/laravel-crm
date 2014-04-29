@@ -85,9 +85,20 @@ class UsersController extends BaseController {
 		);
 
 		// Get user persents price (related to task)
-		// TODO: Передати параметри в `getTotalUserMoneyOfPersents` і просто вивести результат на сторінці
-		// Незабути передати фільтр `filter`
-		$user_persents_price = $user->getTotalUserMoneyOfPersents();
+		$user_persents_price = $user->getTotalUserMoneyOfPersents($id, 
+			function($query) use ($date_from_formated, $date_to_formated) {
+				return $query
+					->whereBetween(
+						'T.created_at', 
+						array(
+							$date_from_formated->format('Y-m-d'),
+							$date_to_formated->format('Y-m-d')
+						)
+					)
+					->whereRaw('T.created_at >= URP.created_at')
+					->whereRaw('T.created_at < URP.deprecated_at');
+			}
+		);
 
 		// Get user info
 		$user_info = RedmineUser::getById($id);
@@ -124,6 +135,7 @@ class UsersController extends BaseController {
 			->with('total_price', $total_price)
 			->with('total_transaction_price', $total_transaction_price)
 			->with('user_balance', $user_balance)
+			->with('user_persents_price', $user_persents_price)
 
 			->with('user', $user_info)
 			->with('tasks', $tasks)

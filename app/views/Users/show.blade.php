@@ -85,6 +85,14 @@
 	    		<span class="badge">{{ count($tasks) }}</span>
     		</a>
 	    </li>
+	    @if (count($user_persents_price['tasks']))
+		    <li>
+		    	<a href="#user-percents" data-toggle="tab">
+		    		Проценты задач
+		    		<span class="badge">{{ count($user_persents_price['tasks']) }}</span>
+	    		</a>
+		    </li>
+	    @endif
 	</ul>
 
 	<!-- Tab panes -->
@@ -230,6 +238,59 @@
 				<div class="empty-message text-center">
 					<span class="glyphicon glyphicon-tasks"></span>
 					<h3>Нет задач :(</h3>
+				</div>
+			@endif
+	    </div>
+
+	    <!-- Calculated user percents -->
+	    <div class="tab-pane" id="user-percents">
+	    	@if (count($user_persents_price['tasks']))
+	    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} $</h3>
+
+	    		<table class="table table-bordered vertical-aligned">
+	    			<tr>
+						<th>Задача</th>
+						<th class="text-center">Ставка</th>
+						<th class="text-center">Сума</th>
+					</tr>
+					@foreach ($user_persents_price['tasks'] as $task)
+						<tr>
+							<td class="table-container-td">
+								@if (count($task['related_user_roles']))
+									<table class="table table-bordered">
+										<tr>
+											<th>Должность</th>
+											<th>Цена за час</th>
+											<th>Часов</th>
+											<th>Сума</th>
+										</tr>
+										@foreach ($task['related_user_roles'] as $related_role)
+											<tr>
+												<td>{{ $related_role->role_name }}</td>
+												<td>{{ $related_role->price_per_hour }} $</td>
+												<td>{{ $related_role->payed_hours }} ч.</td>
+												<td>{{ $related_role->total_price }} $</td>
+											</tr>
+										@endforeach
+
+										<tr>
+											<th class="text-right" colspan="3">Итого:</th>
+											<th>{{ $task['total_price'] }} $</th>
+										</tr>
+									</table>
+								@else
+									-
+								@endif
+							</td>
+							<td class="text-center">{{ $task['percents'] }} %</td>
+							<td class="text-center">{{ $task['total_percent_price'] }} $</td>
+						</tr>
+					@endforeach
+	    		</table>
+			@else
+				<div class="empty-message text-center">
+					<span class="glyphicon glyphicon-tasks"></span>
+					<h3>Нет задач %(</h3>
 				</div>
 			@endif
 	    </div>

@@ -309,9 +309,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return number
 	 */
-	private function getTasksWhereUserHasPercents()
+	private function getTasksWhereUserHasPercents($user_id, $filter = NULL)
 	{
-		return DB::table('user_to_task as UTT')
+		$result = DB::table('user_to_task as UTT')
 			->join(
 				'task as T',
 				'T.id',
@@ -336,11 +336,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'T.project_id',
 				'UTT.user_id',
 				'URP.price_per_hour as percents'
-			)
-			->where('UTT.user_id', 5)
-			->where('T.project_id', 55)
+			);
+
+		if ($filter)
+		{
+			$result = $result->where($filter);
+		}
+
+		$result = $result->where('UTT.user_id', $user_id)
 			->where('UR.percents', 1)
 			->get();
+
+		return $result;
 	}
 
 
@@ -349,31 +356,42 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return void
 	 */
-	public function getTotalUserMoneyOfPersents()
+	public function getTotalUserMoneyOfPersents($user_id, $filter)
 	{
-		$tasks_where_user_has_percents = $this->getTasksWhereUserHasPercents();
+		$tasks_where_user_has_percents = $this->getTasksWhereUserHasPercents($user_id, $filter);
 		$taskModel = new Task;
 
-		$result_tasks = array();
+		$result_tasks = array(
+			'tasks' => array(),
+			'total' => 0
+		);
 
 		foreach ($tasks_where_user_has_percents as $task)
 		{
-			$related_tasks = $taskModel->getTaskInvoice($task->task_id);
+			$task_key = 'task_' . $task->task_id;
+			$related_user_roles = $taskModel->getTaskInvoice($task->task_id);
 
-			$result_tasks['task_' . $task->task_id]['related_tasks'] = $related_tasks;
+			$result_tasks['tasks'][$task_key]['related_user_roles'] = $related_user_roles;
 
 			// Get total price of the task (in order to calculate user percents)
 			$total = 0;
-			foreach ($related_tasks as $related_task)
+			foreach ($related_user_roles as $related_task)
 			{
 				$total += $related_task->total_price;
 			}
 
 			// Get User percents
-			$result_tasks['percents'] = $task->percents;
-			$result_tasks['total_percent_price'] = $total * $task->percents / 100;
-		}
+			$total_percent_price_per_task = $total * $task->percents / 100;
+			$result_tasks['tasks'][$task_key]['percents'] = $task->percents;
+			$result_tasks['tasks'][$task_key]['total_percent_price'] = $total_percent_price_per_task;
+			$result_tasks['tasks'][$task_key]['task_name'] = $task->task_name;
+			$result_tasks['tasks'][$task_key]['total_price'] = $total;
 
+			// Calculate total price (sum all the tasks)
+			echo $total_percent_price_per_task . "	!	 ";
+			$result_tasks['total'] += $total_percent_price_per_task;
+		}
+		
 		return $result_tasks;
 	}
 	
