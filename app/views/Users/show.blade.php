@@ -273,6 +273,16 @@
 											</tr>
 										@endforeach
 
+										@if (count($task['percentable_roles']))
+											<tr>
+												<td class="text-right" colspan="3">
+													<b>Участвует в задаче, как:</b>
+													{{ implode(', ', $task['percentable_roles']) }}
+												</td>
+												<td>{{ $task['percents'] }} %</td>
+											</tr>
+										@endif
+
 										<tr>
 											<th class="text-right" colspan="3">Итого:</th>
 											<th>{{ $task['total_price'] }} $</th>

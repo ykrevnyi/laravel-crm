@@ -276,6 +276,7 @@ class Task extends Eloquent
 				'URP.created_at as user_role_price_created_at',
 				'URP.deprecated_at as user_role_price_deprecated_at',
 				'T.created_at as task_created_at',
+				'UR.percents',
 				'UTT.user_id',
 				'UTT.payed_hours',
 				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total_price')

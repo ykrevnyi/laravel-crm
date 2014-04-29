@@ -117,6 +117,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'URP.deprecated_at as period_deprecated_at'
 			)
 			->where('UTT.user_id', '=', $user_id)
+			->where('UR.percents', '0')
 
 			->whereRaw('T.created_at >= URP.created_at')
 			->whereRaw('T.created_at < URP.deprecated_at');
@@ -335,7 +336,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'T.name as task_name',
 				'T.project_id',
 				'UTT.user_id',
-				'URP.price_per_hour as percents'
+				DB::raw('SUM(URP.price_per_hour) as percents')
 			);
 
 		if ($filter)
@@ -345,6 +346,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 		$result = $result->where('UTT.user_id', $user_id)
 			->where('UR.percents', 1)
+			->groupBy('T.id')
 			->get();
 
 		return $result;
@@ -369,26 +371,44 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		foreach ($tasks_where_user_has_percents as $task)
 		{
 			$task_key = 'task_' . $task->task_id;
+			$task_percents = 0;
 			$related_user_roles = $taskModel->getTaskInvoice($task->task_id);
-
-			$result_tasks['tasks'][$task_key]['related_user_roles'] = $related_user_roles;
 
 			// Get total price of the task (in order to calculate user percents)
 			$total = 0;
-			foreach ($related_user_roles as $related_task)
+			foreach ($related_user_roles as $related_role)
 			{
-				$total += $related_task->total_price;
+				$total += $related_role->total_price;
 			}
 
+			// Ok guys, here we are going to loop through every related task role
+			// and check if that role has percents (TL, PM)
+			// If it has -> store to diffirent array and unset from original
+			$percentable_roles = array();
+			foreach ($related_user_roles as $key => $role)
+			{
+				if ($role->percents)
+				{
+					$percentable_roles[] = $role->role_name . ' (' . $role->price_per_hour . '%)';
+					unset($related_user_roles[$key]);
+
+					// Calculate total task percents
+					$task_percents += $role->price_per_hour;
+				}
+			}
+
+			// Store related user roles
+			$result_tasks['tasks'][$task_key]['related_user_roles'] = $related_user_roles;
+			$result_tasks['tasks'][$task_key]['percentable_roles'] = $percentable_roles;
+
 			// Get User percents
-			$total_percent_price_per_task = $total * $task->percents / 100;
-			$result_tasks['tasks'][$task_key]['percents'] = $task->percents;
+			$total_percent_price_per_task = $total * $task_percents / 100;
+			$result_tasks['tasks'][$task_key]['percents'] = $task_percents;
 			$result_tasks['tasks'][$task_key]['total_percent_price'] = $total_percent_price_per_task;
 			$result_tasks['tasks'][$task_key]['task_name'] = $task->task_name;
 			$result_tasks['tasks'][$task_key]['total_price'] = $total;
 
 			// Calculate total price (sum all the tasks)
-			echo $total_percent_price_per_task . "	!	 ";
 			$result_tasks['total'] += $total_percent_price_per_task;
 		}
 		
