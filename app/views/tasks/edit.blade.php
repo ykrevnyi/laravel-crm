@@ -6,7 +6,7 @@
 	{{ Form::open(array('route' => array('task.update', $project_id, $task_id), 'data-method' => 'put',  'class' => 'create-task-form form-horizontal', 'id' => 'create-task-form')) }}
 		<div class="form-group">
 			{{ Form::label('name', 'Название', array('class' => 'control-label')) }}
-			{{ Form::text('name', $task->name, array('class' => 'form-control input-sm 2way-binding', 'data-binding' => 'create-task-title')) }}
+			{{ Form::text('name', $task->name, array('class' => 'form-control input-sm 2way-binding', 'data-binding' => 'create-task-title', 'autofocus')) }}
 			<span class="help-block"></span>
 		</div>
 
@@ -73,6 +73,13 @@
 	$('#create-task-form').on('submit', submitTaskForm);
 	$('.create-task-btn').on('click', submitTaskFormCaller);
 	$('.close-task-form-btn').on('click', closeTask);
+
+	// Close task on `esc` key
+	$(document).on('keyup', function(e) {
+		if (e.keyCode == 27) {
+			closeTask();
+		};
+	});
 </script>
 
 <script type="text/javascript">

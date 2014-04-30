@@ -18,6 +18,9 @@ $(document).on('ready', function() {
 		offText: 'Нет'
 	});
 
+	// Enable tooltips
+	$('.has-tooltip').tooltip({container: 'body'});
+
 	// Two way data-binding (secondary type)
 	window.init2wayBinding = function() {
 		$('.2way-binding').each(function(index, el) {

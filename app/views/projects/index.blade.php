@@ -70,7 +70,13 @@
 						<tr>
 							<td style="background: {{$project->proj_priority_color}};"></td>
 							<td>{{$project->proj_id}}</td>
-							<td>{{$project->proj_status}}</td>
+							<td>
+								@if ($project->proj_status)
+									Готов
+								@else
+									В работе
+								@endif
+							</td>
 							<td>
 								{{ HTML::linkRoute('projects.show', $project->proj_name, array('id' => $project->proj_id)) }}
 							</td>

@@ -128,7 +128,7 @@ class ProjectsController extends BaseController {
 		$total_transaction_price = $transaction->calculateTotal($related_transactions);
 		$project_balance = $total_project_price - $total_transaction_price;
 
-		$this->layout->content = View::make('projects.show')
+		$content = View::make('projects.show')
 			->with('project', $project)
 			->with('related_users', $related_users)
 			->with('related_users_totals', $related_users_totals)
@@ -138,6 +138,17 @@ class ProjectsController extends BaseController {
 			->with('total_transaction_price', $total_transaction_price)
 			->with('project_balance', $project_balance)
 			->with('related_tasks', $related_tasks);
+
+		// If request was via ajax
+		// We will not be returning header + footer
+		if (Request::ajax())
+		{
+			return $content;
+		}
+		else
+		{
+			$this->layout->content = $content;
+		}
 	}
 
 

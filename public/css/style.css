@@ -19,6 +19,19 @@ body.loading::after, .slow-loader::after {
     background: rgba(255, 255, 255, 0.64) url(/public/img/loader.gif) no-repeat center center;
     z-index: 999;
 }
+#page-loading {
+    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.64) url(/public/img/loader.gif) no-repeat center center;
+    z-index: 999;
+}
+#header {
+    z-index: 1000;
+}
 .table.vertical-aligned td {
     vertical-align: middle;
 }
@@ -133,11 +146,18 @@ body.loading::after, .slow-loader::after {
 .task-create-wizzard.step-2 #related-users-container-ajax {
     display: block;
     opacity: 1;
-    bottom: 45px;
+    bottom: 60px;
 }
-.task-create-wizzard .create-task-btn {
+.task-create-wizzard .create-task-btn,
+.task-create-wizzard .task-action-bnt-group,
+.task-create-wizzard .task-action-bnt-group-title {
   position: relative;
   z-index: 101;
+}
+.task-create-wizzard .task-action-bnt-group-title {
+    margin-right: 10px;
+    position: relative;
+    top: 5px;
 }
 #user-selected-list li .user-payed-hours {
     width: 5%;
@@ -256,4 +276,15 @@ form.user-filter-form {
 }
 .fancybox-margin {
     margin-right: 17px !important;
+}
+#project-container-ajax {
+    position: relative;
+}
+#project-container-ajax.loading {
+    overflow: hidden;
+}
+.refresh-rpoject-action {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
 }

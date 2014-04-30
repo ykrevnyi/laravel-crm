@@ -34,7 +34,7 @@
 
 	<body class="cbp-spmenu-push">
 	
-	<div class="navbar navbar-inverse">
+	<div class="navbar navbar-inverse" id="header">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
