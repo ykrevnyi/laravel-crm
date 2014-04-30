@@ -384,6 +384,13 @@
 			$('#related-users-container-ajax').html('');
 			$taskForm.html('');
 
+			// Clear all user-to-task listeners
+			$('#submit-user-for-task').off('click');
+			$('body').off('click', '.remove-user-from-task');
+			$('body').off('change', '#user-select-form .user-role-id');
+			$('body').off('change', '#user-selected-list .user-role-id');
+			$('body').off('change', '#user-selected-list .update-user-payed-hours');
+
 			// Clear binding (from title)
 			window.drop2wayBinding();
 		};
