@@ -55,7 +55,7 @@ class TransactionPurposeController extends BaseController {
 	public function store()
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash'
+			'name' => 'required|unique:transaction_purpose|min:2|max:20'
 		));
 
 		if ($v->fails())
@@ -105,7 +105,7 @@ class TransactionPurposeController extends BaseController {
 	public function update($id)
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash'
+			'name' => "required|unique:transaction_purpose,name,$id|min:2|max:20"
 		));
 
 		if ($v->fails())

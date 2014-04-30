@@ -17,19 +17,17 @@
 		<div class="col-lg-12">
 			<table class="table">
 				<tr>
-					<th>№</th>
 					<th>Название</th>
 					<th class="text-right">Действие</th>
 				</tr>
 				@foreach ($purposes as $purpose)
 					<tr>
-						<td>{{ $purpose->id }}</td>
 						<td>{{ $purpose->name }}</td>
 						<td class="text-right">
 							{{ Form::open(array('route' => array('transactions.purposes.destroy', 'id' => $purpose->id), 'method' => 'delete')) }}
-							{{ HTML::linkRoute('transactions.purposes.edit', 'Редактировать', array('id' => $purpose->id), array('class' => 'btn btn-default')) }}
+								{{ HTML::linkRoute('transactions.purposes.edit', 'Редактировать', array('id' => $purpose->id), array('class' => 'btn btn-default')) }}
 							
-								{{ Form::submit('Удалить', array('class' => 'btn btn-danger')) }}
+								{{ Form::submit('Удалить', array('class' => 'btn btn-danger remove-action')) }}
 							{{ Form::close() }}
 						</td>
 					</tr>
@@ -38,3 +36,11 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('.remove-action').on('click', function(e) {
+		if ( ! confirm('Удалить?')) {
+			e.preventDefault();
+		}
+	})
+</script>

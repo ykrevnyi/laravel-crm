@@ -29,6 +29,8 @@
 				</div>
 
 				<div class="form-group text-center">
+					{{ HTML::linkRoute('accounts.index', 'Отменить', array(), array('class' => 'btn btn-default')) }}
+					
 					<button class="btn btn-success" type="submit">
 						Далее
 						<span class="glyphicon glyphicon-chevron-right"></span>

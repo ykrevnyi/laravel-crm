@@ -1,5 +1,5 @@
 <div class="container">
-	<h1>{{ $title }}</h1>
+	<h1>Список пользователей</h1>
 
 	<!-- List all users -->
 	@if (count($data['users']))

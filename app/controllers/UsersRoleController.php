@@ -56,9 +56,9 @@ class UsersRoleController extends BaseController {
 	public function store()
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash',
-			'price_per_hour' => 'required|numeric',
-			'price_per_hour_payable' => 'required|numeric'
+			'name' => "required|unique:user_role|min:2|max:20",
+			'price_per_hour' => 'required|numeric|min:1',
+			'price_per_hour_payable' => 'required|numeric|min:1'
 		));
 
 		if ($v->fails())
@@ -111,9 +111,9 @@ class UsersRoleController extends BaseController {
 	public function update($id)
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash',
-			'price_per_hour' => 'required|numeric',
-			'price_per_hour_payable' => 'required|numeric'
+			'name' => "required|unique:user_role,name,$id|min:2|max:20",
+			'price_per_hour' => 'required|numeric|min:1',
+			'price_per_hour_payable' => 'required|numeric|min:1'
 		));
 
 		if ($v->fails())

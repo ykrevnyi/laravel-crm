@@ -17,14 +17,12 @@
 		<div class="col-lg-12">
 			<table class="table">
 				<tr>
-					<th>№</th>
 					<th>Название</th>
 					<th>Цвет</th>
 					<th class="text-right">Действие</th>
 				</tr>
 				@foreach ($priorities as $priority)
 					<tr>
-						<td>{{ $priority->id }}</td>
 						<td>{{ $priority->name }}</td>
 						<td>
 							<div style="width: 20px; height: 20px; background: {{ $priority->color }}; float: left;"></div> 
@@ -34,7 +32,7 @@
 							{{ Form::open(array('route' => array('priorities.destroy', 'id' => $priority->id), 'method' => 'delete')) }}
 							{{ HTML::linkRoute('priorities.edit', 'Редактировать', array('id' => $priority->id), array('class' => 'btn btn-default')) }}
 							
-								{{ Form::submit('Удалить', array('class' => 'btn btn-danger')) }}
+								{{ Form::submit('Удалить', array('class' => 'btn btn-danger remove-action')) }}
 							{{ Form::close() }}
 						</td>
 					</tr>
@@ -43,3 +41,11 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('.remove-action').on('click', function(e) {
+		if ( ! confirm('Удалить?')) {
+			e.preventDefault();
+		}
+	})
+</script>

@@ -12,6 +12,12 @@ $(document).on('ready', function() {
 	// Init colorpicker
 	$('.color-picker').colorpicker();
 
+	// Set iphone checkboxes
+	$('.iphone-checkbox').bootstrapSwitch({
+		onText: 'Да',
+		offText: 'Нет'
+	});
+
 	// Two way data-binding (secondary type)
 	window.init2wayBinding = function() {
 		$('.2way-binding').each(function(index, el) {

@@ -52,7 +52,20 @@
 					</div>
 				</div>
 
+				<div class="form-group has-feedback">
+					{{ Form::label('percents', 'Цена зависит от процентов', array('class' => 'col-sm-2 control-label')) }}
+					<div class="col-sm-9">
+						@if (Input::old('percents') OR $role['percents'])
+							<input type="checkbox" name="percents" class="iphone-checkbox" value="Y" checked>
+						@else
+							<input type="checkbox" name="percents" class="iphone-checkbox" value="Y">
+						@endif
+					</div>
+				</div>
+
 				<div class="form-group text-center">
+					{{ HTML::linkRoute('users.roles.index', 'Отменить', array(), array('class' => 'btn btn-default')) }}
+					
 					<button class="btn btn-success" type="submit">
 						Далее
 						<span class="glyphicon glyphicon-chevron-right"></span>

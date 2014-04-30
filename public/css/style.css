@@ -254,3 +254,6 @@ form.user-filter-form {
 .navbar-brand.active {
     color: #fff;
 }
+.fancybox-margin {
+    margin-right: 17px !important;
+}

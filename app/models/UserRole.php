@@ -38,6 +38,7 @@ class UserRole extends Eloquent
 		return array(
 			'id' => $role_info->id,
 			'name' => $role_info->name,
+			'percents' => $role_info->percents,
 			'price_per_hour' => $role_price->price_per_hour,
 			'price_per_hour_payable' => $role_price->price_per_hour_payable
 		);
@@ -95,10 +96,21 @@ class UserRole extends Eloquent
 	 */
 	public function createRole($data)
 	{
+		// Check if user has percents
+		if ( ! empty($data['percents']) AND $data['percents'] == 'Y')
+		{
+			$data['percents'] = 1;
+		}
+		else
+		{
+			$data['percents'] = 0;
+		}
+
 		// Store basic user role and get its id
 		$role_id = DB::table('user_role')
 			->insertGetId(array(
 				'name' => $data['name'],
+				'percents' => $data['percents'],
 				'created_at' => \Carbon\Carbon::now(),
 				'updated_at' => \Carbon\Carbon::now()
 			));
@@ -118,9 +130,20 @@ class UserRole extends Eloquent
 	{
 		$date = \Carbon\Carbon::now();
 
+		// Check if user has percents
+		if ( ! empty($data['percents']) AND $data['percents'] == 'Y')
+		{
+			$data['percents'] = 1;
+		}
+		else
+		{
+			$data['percents'] = 0;
+		}
+
 		// Update basic role info
 		$role = self::find($role_id);
 		$role->name = $data['name'];
+		$role->percents = $data['percents'];
 		$role->save();
 
 		// Set new deprecated status to the latest role price

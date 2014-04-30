@@ -31,7 +31,7 @@
 							{{ Form::open(array('route' => array('users.roles.destroy', 'id' => $role['id']), 'method' => 'delete')) }}
 							{{ HTML::linkRoute('users.roles.edit', 'Редактировать', array('id' => $role['id']), array('class' => 'btn btn-default')) }}
 							
-								{{ Form::submit('Удалить', array('class' => 'btn btn-danger')) }}
+								{{ Form::submit('Удалить', array('class' => 'btn btn-danger remove-action')) }}
 							{{ Form::close() }}
 						</td>
 					</tr>
@@ -40,3 +40,11 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('.remove-action').on('click', function(e) {
+		if ( ! confirm('Удалить?')) {
+			e.preventDefault();
+		}
+	})
+</script>

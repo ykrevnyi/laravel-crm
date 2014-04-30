@@ -55,7 +55,7 @@ class PrioritiesController extends BaseController {
 	public function store()
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash',
+			'name' => 'required|unique:project_priority|min:2|max:20',
 			'color' => 'required'
 		));
 
@@ -107,7 +107,7 @@ class PrioritiesController extends BaseController {
 	public function update($id)
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => 'required|alpha_dash',
+			'name' => "required|unique:project_priority,name,$id|min:2|max:20",
 			'color' => 'required'
 		));
 

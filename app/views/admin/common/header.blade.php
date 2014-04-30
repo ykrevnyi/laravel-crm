@@ -15,6 +15,7 @@
 		<link href="/public/css/jquery.fancybox.css" rel="stylesheet">
 		<link href="/public/css/daterangepicker-bs3.css" rel="stylesheet">
 		<link href="/public/css/bootstrap-colorpicker.css" rel="stylesheet">
+		<link href="/public/css/bootstrap-switch.min.css" rel="stylesheet">
 		<link href="/public/css/push-menu.css" rel="stylesheet">
 		<link href="/public/css/style.css" rel="stylesheet">
 
@@ -27,6 +28,7 @@
 		<script type="text/javascript" src="/public/js/bootstrap-datepicker.js"></script>
 		<script type="text/javascript" src="/public/js/moment.js"></script>
 		<script type="text/javascript" src="/public/js/daterangepicker.js"></script>
+		<script type="text/javascript" src="/public/js/bootstrap-switch.min.js"></script>
 		<script type="text/javascript" src="/public/js/common.js"></script>
 	</head>
 
