@@ -63,10 +63,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getUserProjects($user_id, $filter = NULL)
+	public function getUserProjects($user_id, $date_from_formated, $date_to_formated)
 	{
-		$project_list_id_name = $this->getUserProjectsList($user_id, $filter);
-		$project_list = $this->getProjectListDetails($project_list_id_name, $user_id, $filter);
+		$project_list_id_name = $this->getUserProjectsList($user_id, $date_from_formated, $date_to_formated);
+		$project_list = $this->getProjectListDetails($project_list_id_name, $user_id, $date_from_formated, $date_to_formated);
 
 		return $project_list;
 	}
@@ -161,7 +161,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return mixed
 	 */
-	private function getUserProjectsList($user_id, $filter = NULL)
+	private function getUserProjectsList($user_id, $date_from_formated, $date_to_formated)
 	{
 		$result = DB::table('user_to_task as UTT')
 			// Get task info
@@ -186,15 +186,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			)
 
 			// Apply filters
-			->where('UTT.user_id', $user_id);
-
-		if ($filter)
-		{
-			$result = $result->where($filter);
-		}
-
-		// Group and order
-		$result = $result
+			->where('UTT.user_id', $user_id)
+			->whereBetween(
+				'T.created_at', 
+				array(
+					$date_from_formated->format('Y-m-d'),
+					$date_to_formated->format('Y-m-d')
+				)
+			)
 			->orderBy('T.project_id', 'desc')
 			->groupBy('T.project_id')
 			->get();
@@ -213,14 +212,43 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return mixed
 	 */
-	private function getProjectListDetails($project_list, $user_id, $filter)
+	private function getProjectListDetails($project_list, $user_id, $date_from_formated, $date_to_formated)
 	{
 		$result = array();
 
 		// Get detail project info
 		foreach ($project_list as $project)
 		{
-			$related_user_roles = $this->getRelatedUsersTotal($project->project_id, $user_id, $filter);
+			$related_user_roles = $this->getRelatedUsersTotal($project->project_id, $user_id, 
+				function($query) use ($date_from_formated, $date_to_formated) {
+					return $query
+						->whereBetween(
+							'T.created_at', 
+							array(
+								$date_from_formated->format('Y-m-d'),
+								$date_to_formated->format('Y-m-d')
+							)
+						);
+				}
+			);
+
+			// Get user persents price (related to task)
+			$user_persents_price = $this->getTotalUserMoneyOfPersents(
+				$user_id, 
+				function($query) use ($date_from_formated, $date_to_formated, $project) {
+					return $query
+						->whereBetween(
+							'T.created_at', 
+							array(
+								$date_from_formated->format('Y-m-d'),
+								$date_to_formated->format('Y-m-d')
+							)
+						)
+						->whereRaw('T.created_at >= URP.created_at')
+						->whereRaw('T.created_at < URP.deprecated_at')
+						->where('T.project_id', $project->project_id);
+				}
+			);
 
 			// Get total price
 			$total_price = 0;
@@ -232,7 +260,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$result[] = array(
 				'name' => $project->name,
 				'total_price' => $total_price,
-				'related_user_roles' => $related_user_roles
+				'total_price_percents' => $user_persents_price['total'],
+				'total_price_common' => $total_price + $user_persents_price['total'],
+				'related_user_roles' => $related_user_roles,
+				'related_tasks' => $user_persents_price
 			);
 		}
 		
@@ -290,6 +321,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			)
 			->where('T.project_id', '=', $project_id)
 			->where('UTT.user_id', '=', $user_id)
+			->where('UR.percents', '0f')
 
 			->whereRaw('T.created_at >= URP.created_at')
 			->whereRaw('T.created_at < URP.deprecated_at');
@@ -387,9 +419,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$percentable_roles = array();
 			foreach ($related_user_roles as $key => $role)
 			{
-				if ($role->percents)
+				if ($role->percents AND $role->user_id == $user_id)
 				{
-					$percentable_roles[] = $role->role_name . ' (' . $role->price_per_hour . '%)';
+					$percentable_roles[] = $role->role_name . ' ('  . $role->price_per_hour . '%)';
 					unset($related_user_roles[$key]);
 
 					// Calculate total task percents
@@ -413,6 +445,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		}
 		
 		return $result_tasks;
+	}
+
+
+	/**
+	 * Calculate all the user percents price
+	 *
+	 * @return number
+	 */
+	public function calculateUserPercentsPrice($projects)
+	{
+		$total = 0;
+
+		foreach ($projects as $project)
+		{
+			$total += $project['total_price_percents'];
+		}
+
+		return $total;
 	}
 	
 

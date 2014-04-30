@@ -103,7 +103,7 @@
 	    	<table class="table table-bordered">
 	    		<tr>
 	    			<td class="text-right" width="50%"><b>Сума</b></td>
-	    			<td>{{ $total_price }} $</td>
+	    			<td>{{ $total_price_common }} $</td>
 	    		</tr>
 	    		<tr>
 	    			<td class="text-right" width="50%"><b>Оплачено</b></td>
@@ -173,10 +173,10 @@
 	    <!-- Related projects -->
 	    <div class="tab-pane" id="related-projects">
 	    	@if ($projects)
-	    		<h3 class="text-center">Итого по проектам - {{ $total_price }} $</h3>
+	    		<h3 class="text-center">Итого по проектам - {{ $total_price_common }} $</h3>
 
 				@foreach ($projects as $project)
-					<table class="table table-bordered">
+					<table class="vertical-aligned table table-bordered">
 						<tr>
 							<th class="text-center active" colspan="4">{{ $project['name'] }}</th>
 						</tr>
@@ -191,9 +191,78 @@
 							</tr>
 						@endforeach
 
+						@if ($project['total_price_percents'] > 0)
+							<tr>
+								<th class="text-right">Сума</th>
+								<th>{{ $project['total_price'] }} $</th>
+							</tr>
+
+							<tr>
+								<th class="text-right">
+									Проценты за проект
+									(<i><a href="#" class="user-project-invoice-action">показать инвойс</a></i>):
+
+									<div class="hidden user-project-invoice">
+										<h3 class="text-center">Проект: {{ $project['name'] }}</h3>
+										<table class="table table-bordered vertical-aligned">
+											<tr>
+												<th>Задача</th>
+												<th class="text-center">Ставка</th>
+												<th class="text-center">Сума</th>
+											</tr>
+											@foreach ($project['related_tasks']['tasks'] as $task)
+												<tr>
+													<td class="table-container-td">
+														@if (count($task['related_user_roles']))
+															<table class="table table-bordered">
+																<tr>
+																	<th>Должность</th>
+																	<th>Цена за час</th>
+																	<th>Часов</th>
+																	<th>Сума</th>
+																</tr>
+																@foreach ($task['related_user_roles'] as $related_role)
+																	<tr>
+																		<td>{{ $related_role->role_name }}</td>
+																		<td>{{ $related_role->price_per_hour }} $</td>
+																		<td>{{ $related_role->payed_hours }} ч.</td>
+																		<td>{{ $related_role->total_price }} $</td>
+																	</tr>
+																@endforeach
+
+																@if (count($task['percentable_roles']))
+																	<tr>
+																		<td class="text-right" colspan="3">
+																			<b>Участвует в задаче, как:</b>
+																			{{ implode(', ', $task['percentable_roles']) }}
+																		</td>
+																		<td>{{ $task['percents'] }} %</td>
+																	</tr>
+																@endif
+
+																<tr>
+																	<th class="text-right" colspan="3">Итого:</th>
+																	<th>{{ $task['total_price'] }} $</th>
+																</tr>
+															</table>
+														@else
+															-
+														@endif
+													</td>
+													<td class="text-center">{{ $task['percents'] }} %</td>
+													<td class="text-center">{{ $task['total_percent_price'] }} $</td>
+												</tr>
+											@endforeach
+										</table>
+									</div>
+								</th>
+								<th>{{ $project['total_price_percents'] }} $</th>
+							</tr>
+						@endif
+
 						<tr>
 							<th class="text-right">Итого</th>
-							<th>{{ $project['total_price'] }} $</th>
+							<th>{{ $project['total_price_common'] }} $</th>
 						</tr>
 					</table>
 				@endforeach
@@ -334,4 +403,19 @@ var monthStart = moment().startOf('month'),
 	        $('#date_to').val(end.format('DD-MM-YYYY'));
 	    }
 	);
+
+// Show project invoice
+$('.user-project-invoice-action').on('click', function(e) {
+	var invoice = $(this).closest('th').find('.user-project-invoice').html();
+
+	$.fancybox.open({
+		content: invoice,
+		autoWidth: false,
+		autoHeight: true,
+		autoSize: false,
+		width: 750
+	});
+
+	e.preventDefault();
+});
 </script>

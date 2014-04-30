@@ -57,18 +57,7 @@ class UsersController extends BaseController {
 		$user = new User;
 
 		// Get all the projects related to the user
-		$projects = $user->getUserProjects($id, 
-			function($query) use ($date_from_formated, $date_to_formated) {
-				return $query
-					->whereBetween(
-						'T.created_at', 
-						array(
-							$date_from_formated->format('Y-m-d'),
-							$date_to_formated->format('Y-m-d')
-						)
-					);
-			}
-		);
+		$projects = $user->getUserProjects($id, $date_from_formated, $date_to_formated);
 
 		// Get all the tasks (related roles) related to the user
 		$tasks = $user->getTasks($id, 
@@ -123,8 +112,10 @@ class UsersController extends BaseController {
 		// Get totals
 		// Get total price of all of the tasks
 		$total_price = $task->calculateTotal($tasks);
+		$total_price_percents = $user->calculateUserPercentsPrice($projects);
+		$total_price_common = $total_price + $total_price_percents;
 		$total_transaction_price = abs($transaction->calculateTotal($transactions));
-		$user_balance = $total_price - $total_transaction_price;
+		$user_balance = $total_price_common - $total_transaction_price;
 
 		$this->layout->content = View::make('users.show')
 			->with('date_from', $date_from)
@@ -133,6 +124,7 @@ class UsersController extends BaseController {
 			->with('date_to_formated', $date_to_formated)
 			
 			->with('total_price', $total_price)
+			->with('total_price_common', $total_price_common)
 			->with('total_transaction_price', $total_transaction_price)
 			->with('user_balance', $user_balance)
 			->with('user_persents_price', $user_persents_price)

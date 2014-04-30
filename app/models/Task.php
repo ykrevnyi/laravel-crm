@@ -268,6 +268,14 @@ class Task extends Eloquent
 				'UR.id'
 			)
 
+			// Joint basic user info
+			->join(
+				'users as U',
+				'U.id',
+				'=',
+				'UTT.user_id'
+			)
+
 			// Get selected info
 			->select(
 				'UR.name as role_name',
@@ -277,7 +285,8 @@ class Task extends Eloquent
 				'URP.deprecated_at as user_role_price_deprecated_at',
 				'T.created_at as task_created_at',
 				'UR.percents',
-				'UTT.user_id',
+				'U.id as user_id',
+				'U.email as user_email',
 				'UTT.payed_hours',
 				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total_price')
 			)
