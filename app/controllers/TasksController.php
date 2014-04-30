@@ -81,10 +81,22 @@ class TasksController extends \BaseController {
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
 
+		// Get roles with percents (we will ban them if frontend)
+		$persentable_roles = array();
+
+		foreach (UserRole::all() as $role)
+		{
+			if ($role->percents)
+			{
+				$persentable_roles[] = $role->id;
+			}
+		}
+
 		// Show form for adding users to that task
 		$view = View::make('tasks.add_users')
 			->with('task_id', $task_id)
 			->with('users', $all_users_selectable)
+			->with('persentable_roles', $persentable_roles)
 			->with('user_roles', $user_roles);
 
 		$result['view'] = htmlentities($view);
@@ -125,11 +137,23 @@ class TasksController extends \BaseController {
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
 
+		// Get roles with percents (we will ban them if frontend)
+		$persentable_roles = array();
+
+		foreach (UserRole::all() as $role)
+		{
+			if ($role->percents)
+			{
+				$persentable_roles[] = $role->id;
+			}
+		}
+
 		return View::make('tasks.edit')
 			->with('project_id', $project_id)
 			->with('users', $all_users_selectable)
 			->with('related_users', $related_users)
 			->with('user_roles', $user_roles)
+			->with('persentable_roles', $persentable_roles)
 			->with('task_id', $task_id)
 			->with('task', $taskInfo);
 	}
@@ -211,8 +235,20 @@ class TasksController extends \BaseController {
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
 
+		// Get roles with percents (we will ban them if frontend)
+		$persentable_roles = array();
+
+		foreach (UserRole::all() as $role)
+		{
+			if ($role->percents)
+			{
+				$persentable_roles[] = $role->id;
+			}
+		}
+
 		$view = View::make('tasks.user_to_project_form')
 			->with('user', $user)
+			->with('persentable_roles', $persentable_roles)
 			->with('user_roles', $user_roles);
 
 		// Set output

@@ -123,7 +123,7 @@ Version: 3.4.6 Timestamp: Sat Mar 22 22:30:15 EDT 2014
     height: auto;
     width: auto;
     opacity: 0;
-    z-index: 9998;
+    z-index: 999998;
     /* styles required for IE to work */
     background-color: #fff;
     filter: alpha(opacity=0);

@@ -23,6 +23,9 @@
 
 
 <script type="text/javascript">
+	// Set roles to ban
+	window.persentableRoles = [ {{ implode(',', $persentable_roles) }} ];
+
 	$('select').select2();
 
 	var $userSelectList = $('#user-selected-list'),
@@ -105,6 +108,25 @@
 		e.preventDefault();
 	});
 
+	// Check if user role is `percentable` -> hide hour input field
+	$('body').on('change', '#user-select-form .user-role-id', function(e) {
+		var $this = $(this),
+			val = $this.select2('val');
+
+		// If selected role is `percentable`, we will disable it
+		if( !! ~ window.persentableRoles.indexOf(Number(val)))
+		{
+			$('#user-select-form .user-payed-hours')
+				.val('')
+				.attr('disabled', 'disabled');
+		}
+		else
+		{
+			$('#user-select-form .user-payed-hours')
+				.removeAttr('disabled');
+		}
+	});
+
 
 	// Change user role
 	$('body').on('change', '#user-selected-list .user-role-id', function(e) {
@@ -116,6 +138,7 @@
 		$this.data('current-val', currentVal);
 		$this.attr('disabled', 'disabled');
 		$this.siblings('.remove-user-prom-task').attr('disabled', 'disabled');
+		$this.siblings('.user-payed-hours').attr('disabled', 'disabled');
 
 		$.ajax({
 			url: url,
@@ -130,6 +153,7 @@
 		.done(function(data) {
 			if (data.status != true) {
 				$this.select2('val', prevVal);
+				$this.data('current-val', prevVal);
 
 				noty({
 					text: "Данный пользователь с таким статусом уже существует!", 
@@ -141,6 +165,14 @@
 
 			$this.removeAttr('disabled');
 			$this.siblings('.remove-user-prom-task').removeAttr('disabled');
+
+			// If selected role is not `percentable`, we will enable it
+			if( !! ~ window.persentableRoles.indexOf(Number(currentVal))) {
+				$this.siblings('.user-payed-hours').val('0').trigger('change');
+			}
+			else {
+				$this.siblings('.user-payed-hours').removeAttr('disabled');
+			}
 		});
 
 		e.preventDefault();
@@ -168,9 +200,12 @@
 			}
 		})
 		.done(function(data) {
-			$this.removeAttr('disabled');
 			$select.removeAttr('disabled');
 			$this.siblings('.remove-user-prom-task').removeAttr('disabled');
+
+			if( ! !! ~ window.persentableRoles.indexOf(Number($select.select2('val')))) {
+				$this.removeAttr('disabled');
+			}
 		});
 
 		e.preventDefault();
