@@ -210,9 +210,16 @@
 											<tr>
 												<td>{{ $task_user->firstname }} {{ $task_user->lastname }}</td>
 												<td>{{ $task_user->role_name }}</td>
-												<td>{{ $task_user->price_per_hour }} $</td>
-												<td>{{ $task_user->payed_hours }} ч.</td>
-												<td>{{ $task_user->total_price }} $</td>
+
+												@if ($task_user->percents)
+													<td colspan="3">
+														<i>Процентная ставка: {{ $task_user->price_per_hour }} %</i>
+													</td>
+												@else
+													<td>{{ $task_user->price_per_hour }} $</td>
+													<td>{{ $task_user->payed_hours }} ч.</td>
+													<td>{{ $task_user->total_price }} $</td>
+												@endif
 											</tr>
 										@endforeach
 

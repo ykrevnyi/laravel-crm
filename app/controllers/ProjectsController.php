@@ -86,9 +86,21 @@ class ProjectsController extends BaseController {
 	public function store()
 	{
 		$result = array();
-		$data = Input::all();
 
-		$project_id = $this->project->createProject($data);
+		$v = Validator::make(Input::all(), array(
+			'proj_name' => array("required", "min:2", "max:20"),
+			'proj_desc_short' => array("required", "min:10"),
+			'proj_persents' => array("regex:/^(100|[1-9]\d?)$/")
+		));
+
+		if ($v->fails())
+		{
+			return Redirect::route('projects.create')
+				->withInput()
+				->withErrors($v);
+		}
+
+		$project_id = $this->project->createProject(Input::all());
 		
 		$result['link_to_project'] = URL::route('projects.show', $project_id);
 
@@ -180,9 +192,22 @@ class ProjectsController extends BaseController {
 	 */
 	public function update($project_id)
 	{
+		$v = Validator::make(Input::all(), array(
+			'proj_name' => array("required", "min:2", "max:20"),
+			'proj_desc_short' => array("required", "min:10"),
+			'proj_persents' => array("regex:/^(100|[1-9]\d?)$/")
+		));
+
+		if ($v->fails())
+		{
+			return Redirect::route('projects.edit', $project_id)
+				->withInput()
+				->withErrors($v);
+		}
+
 		$this->project->saveProject(Input::all(), $project_id);
 		
-		return Redirect::back();
+		return Redirect::route('projects.show', $project_id);
 	}
 	
 

@@ -164,6 +164,7 @@ class Project extends Eloquent
 				'URP.deprecated_at as period_deprecated_at'
 			)
 			->where('T.project_id', '=', $project_id)
+			->where('UR.percents', '0')
 
 			->whereRaw('T.created_at >= URP.created_at')
 			->whereRaw('T.created_at < URP.deprecated_at')

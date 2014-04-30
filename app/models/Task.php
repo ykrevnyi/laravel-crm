@@ -296,6 +296,8 @@ class Task extends Eloquent
 			->whereRaw('T.created_at >= URP.created_at')
 			->whereRaw('T.created_at < URP.deprecated_at')
 
+			->orderBy('UR.percents')
+
 			->get();
 	}
 
@@ -336,7 +338,6 @@ class Task extends Eloquent
 
 		// Get users information
 		$users = array();
-
 
 		foreach ($related_users as & $user)
 		{

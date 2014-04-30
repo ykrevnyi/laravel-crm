@@ -4,6 +4,18 @@
 
 <div class="container">
 
+	@if ($errors->count())
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="alert alert-danger">
+					@foreach ($errors->all() as $error)
+						{{ $error }} <br>
+					@endforeach
+				</div>
+			</div>
+		</div>
+	@endif
+
 	<div class="row">
 		<div class="col-lg-12">
 
@@ -74,6 +86,8 @@
 					</div>
 
 					<div class="text-center">
+						{{ HTML::linkRoute('projects.index', 'Отменить', array(), array('class' => 'btn btn-default')) }}
+						
 						{{ Form::submit('Сохранить', array('class' => 'btn btn-success')) }}
 					</div>
 				{{ Form::close() }}
