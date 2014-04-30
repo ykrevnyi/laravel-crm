@@ -65,13 +65,6 @@
 					</div>
 
 					<div class="form-group">
-						{{ Form::label('proj_actual_hours', 'Реальное затраченое время', array('class' => 'col-sm-3 control-label')) }}
-						<div class="col-sm-3">
-							{{ Form::text('proj_actual_hours', $project->proj_actual_hours, array('class' => 'form-control')) }}
-						</div>
-					</div>
-
-					<div class="form-group">
 						{{ Form::label('proj_end_date', 'Дата сдачи', array('class' => 'col-sm-3 control-label')) }}
 						<div class="col-sm-3">
 							{{ Form::text('proj_end_date', $project->proj_end_date, array('class' => 'form-control datepicker')) }}

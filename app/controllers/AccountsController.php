@@ -134,5 +134,6 @@ class AccountsController extends BaseController {
 
 		return Redirect::route('accounts.index');
 	}
+	
 
 }

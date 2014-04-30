@@ -40,6 +40,10 @@
 				<button type="submit" class="filter-search-btn btn btn-info">
 					<span class="glyphicon glyphicon-search"></span>
 				</button>
+
+				<a href="{{ URL::route('transactions.index') }}" class="btn btn-default">
+					<span class="glyphicon glyphicon-remove"></span>
+				</a>
 			</form>
 		</div>
 		<div class="col-lg-5 text-right">
@@ -165,7 +169,7 @@
 			'Последние 7 дней': [moment().subtract('days', 6), moment()],
 			'Последние 30 дней': [moment().subtract('days', 29), moment()],
 			'Этот месяц': [moment().startOf('month'), moment().endOf('month')],
-			'Последний месяц': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+			'Предыдущий месяц': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 	      },
 	      format: 'DD-MM-YYYY',
 	      startDate: "{{ $date_from }}",

@@ -90,7 +90,8 @@ class ProjectsController extends BaseController {
 		$v = Validator::make(Input::all(), array(
 			'proj_name' => array("required", "min:2", "max:20"),
 			'proj_desc_short' => array("required", "min:10"),
-			'proj_persents' => array("regex:/^(100|[1-9]\d?)$/")
+			'proj_end_date' => array("required"),
+			'proj_persents' => array("regex:/^(100|0|[1-9]\d?)$/")
 		));
 
 		if ($v->fails())
@@ -195,7 +196,8 @@ class ProjectsController extends BaseController {
 		$v = Validator::make(Input::all(), array(
 			'proj_name' => array("required", "min:2", "max:20"),
 			'proj_desc_short' => array("required", "min:10"),
-			'proj_persents' => array("regex:/^(100|[1-9]\d?)$/")
+			'proj_end_date' => array("required"),
+			'proj_persents' => array("regex:/^(100|0|[1-9]\d?)$/")
 		));
 
 		if ($v->fails())

@@ -35,7 +35,6 @@ class Project extends Eloquent
 				'P.id as proj_id',
 				'P.status as proj_status',
 				'P.done_percents as proj_persents',
-				'P.actual_hours as proj_actual_hours',
 				'P.end_date as proj_end_date',
 				'P.created_at as proj_created_at',
 				'P.updated_at as proj_updated_at',
@@ -102,7 +101,6 @@ class Project extends Eloquent
 				'P.id as proj_id',
 				'P.status as proj_status',
 				'P.done_percents as proj_persents',
-				'P.actual_hours as proj_actual_hours',
 				'P.end_date as proj_end_date',
 				'P.created_at as proj_created_at',
 				'P.updated_at as proj_updated_at',
@@ -305,7 +303,6 @@ class Project extends Eloquent
 				'status' => $project_info['proj_status'],
 				'project_priority_id' => $project_info['proj_priority_id'],
 				'done_percents' => $project_info['proj_persents'],
-				'actual_hours' => $project_info['proj_actual_hours'],
 				'end_date' => $project_info['proj_end_date'],
 				'created_at' => \Carbon\Carbon::now(),
 				'updated_at' => \Carbon\Carbon::now()
@@ -355,7 +352,6 @@ class Project extends Eloquent
 				'status' => $project_info['proj_status'],
 				'project_priority_id' => $project_info['proj_priority_id'],
 				'done_percents' => $project_info['proj_persents'],
-				'actual_hours' => $project_info['proj_actual_hours'],
 				'end_date' => $project_info['proj_end_date'],
 				'updated_at' => \Carbon\Carbon::now()
 			));
