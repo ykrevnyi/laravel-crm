@@ -88,6 +88,15 @@
 						@endif
 							<a href="/users/roles"><span class="glyphicon glyphicon-stats"></span> Должности</a>
 						</li>
+
+						<!-- User roles -->
+						@if ($routes['is_exchange'])
+							<li class="active">
+						@else
+							<li>
+						@endif
+							<a href="/exchange"><span class="glyphicon glyphicon-euro"></span> Валюты</a>
+						</li>
 					</ul>
 				</div>
 			</div>
