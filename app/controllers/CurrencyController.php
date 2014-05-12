@@ -56,7 +56,8 @@ class CurrencyController extends BaseController {
 	{
 		$v = Validator::make(Input::all(), array(
 			'name' => 'required|unique:currencies|min:2|max:20',
-			'price' => 'required'
+			'unit' => 'required',
+			'price' => 'required',
 		));
 
 		if ($v->fails())
@@ -68,6 +69,7 @@ class CurrencyController extends BaseController {
 
 		$currency = new Currency;
 		$currency->name = Input::get('name');
+		$currency->unit = Input::get('unit');
 		$currency->price = Input::get('price');
 		$currency->save();
 
@@ -87,6 +89,7 @@ class CurrencyController extends BaseController {
 
 	/**
 	 * Show the form for editing the specified resource.
+	 *,
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -108,6 +111,7 @@ class CurrencyController extends BaseController {
 	{
 		$v = Validator::make(Input::all(), array(
 			'name' => "required|unique:currencies,name,$id|min:2|max:20",
+			'unit' => 'required',
 			'price' => 'required'
 		));
 
@@ -120,6 +124,7 @@ class CurrencyController extends BaseController {
 
 		$currency = Currency::find($id);
 		$currency->name = Input::get('name');
+		$currency->unit = Input::get('unit');
 		$currency->price = Input::get('price');
 		$currency->save();
 

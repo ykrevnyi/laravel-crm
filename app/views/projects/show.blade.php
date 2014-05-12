@@ -78,24 +78,24 @@
 									@if ($user->period_total_price)
 										<tr>
 											<td>{{ $user->role_name }}</td>
-											<td>{{ $user->period_total_price }} $</td>
+											<td>{{ $user->period_total_price }} {{ CURRENCY }}</td>
 										</tr>
 									@endif
 								@endforeach
 
 								<tr>
 									<th class="text-right">Итого:</th>
-									<th>{{ $total_project_price }} $</th>
+									<th>{{ $total_project_price }} {{ CURRENCY }}</th>
 								</tr>
 
 								<tr>
 									<th class="text-right">Оплачено:</th>
-									<th>{{ $total_transaction_price }} $</th>
+									<th>{{ $total_transaction_price }} {{ CURRENCY }}</th>
 								</tr>
 
 								<tr>
 									<th class="text-right">Остаток:</th>
-									<th>{{ $project_balance }} $</th>
+									<th>{{ $project_balance }} {{ CURRENCY }}</th>
 								</tr>
 							</table>
 						@else
@@ -124,15 +124,15 @@
 										<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
 										<td>{{ $user->role_name }}</td>
 										<td>с <i>{{ $user->period_created_at }}</i> по <i>{{ $user->period_deprecated_at }}</i></td>
-										<td>{{ $user->period_price_per_hour }} $</td>
+										<td>{{ $user->period_price_per_hour }} {{ CURRENCY }}</td>
 										<td>{{ $user->payed_hours }} ч.</td>
-										<td>{{ $user->period_total_price }} $</td>
+										<td>{{ $user->period_total_price }} {{ CURRENCY }}</td>
 									</tr>
 								@endforeach
 
 								<tr>
 									<th colspan="5" class="text-right">Итого:</th>
-									<th>{{ $total_project_price }} $</th>
+									<th>{{ $total_project_price }} {{ CURRENCY }}</th>
 								</tr>
 							</table>
 						@else
@@ -216,16 +216,16 @@
 														<i>Процентная ставка: {{ $task_user->price_per_hour }} %</i>
 													</td>
 												@else
-													<td>{{ $task_user->price_per_hour }} $</td>
+													<td>{{ $task_user->price_per_hour }} {{ CURRENCY }}</td>
 													<td>{{ $task_user->payed_hours }} ч.</td>
-													<td>{{ $task_user->total_price }} $</td>
+													<td>{{ $task_user->total_price }} {{ CURRENCY }}</td>
 												@endif
 											</tr>
 										@endforeach
 
 										<tr>
 											<th colspan="4" class="text-right">Итого</th>
-											<th>{{ $task->total_task_price }} $</th>
+											<th>{{ $task->total_task_price }} {{ CURRENCY }}</th>
 										</tr>
 									</table>
 								@else
@@ -279,7 +279,7 @@
 							
 							<td>{{ $transaction->trans_id }}</td>
 							<td>{{ $transaction->trans_name }}</td>
-							<td>{{ $transaction->trans_value }}</td>
+							<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
 							<td>{{ $transaction->trans_purpose }}</td>
 							<td>{{ $transaction->money_account_name }}</td>
 							<td>{{ $transaction->trans_created_at }}</td>

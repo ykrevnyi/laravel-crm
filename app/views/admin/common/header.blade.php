@@ -90,12 +90,12 @@
 						</li>
 
 						<!-- User roles -->
-						@if ($routes['is_exchange'])
+						@if ($routes['is_currencies'])
 							<li class="active">
 						@else
 							<li>
 						@endif
-							<a href="/exchange"><span class="glyphicon glyphicon-euro"></span> Валюты</a>
+							<a href="/currencies"><span class="glyphicon glyphicon-euro"></span> Валюты</a>
 						</li>
 					</ul>
 				</div>

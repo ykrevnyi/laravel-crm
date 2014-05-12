@@ -79,7 +79,7 @@ class BaseController extends Controller {
 			'is_users' => false,
 			'is_transactions' => false,
 			'is_projects' => false,
-			'is_exchange' => false
+			'is_currencies' => false
 		);
 
 		if (preg_match("/^accounts\.[^.]+$/i", Route::currentRouteName()))
@@ -88,10 +88,10 @@ class BaseController extends Controller {
 			$routes['is_accounts'] = true;
 		}
 
-		if (preg_match("/^exchange\.[^.]+$/i", Route::currentRouteName()))
+		if (preg_match("/^currencies\.[^.]+$/i", Route::currentRouteName()))
 		{
 			$routes['is_config'] = true;
-			$routes['is_exchange'] = true;
+			$routes['is_currencies'] = true;
 		}
 
 		if (preg_match("/^priorities\.[^.]+$/i", Route::currentRouteName()))

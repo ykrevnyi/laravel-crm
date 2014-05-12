@@ -30,7 +30,8 @@ class AccountsController extends BaseController {
 	 */
 	public function index()
 	{
-		$accounts = MoneyAccount::all();
+		$accounts_model = new MoneyAccount();
+		$accounts = $accounts_model->getList();
 
 		$this->layout->content = View::make('accounts.index', compact('accounts'));
 	}
@@ -43,7 +44,10 @@ class AccountsController extends BaseController {
 	 */
 	public function create()
 	{
-		$this->layout->content = View::make('accounts.create');
+		// Get list of all currencies
+		$currencies = Currency::allForSelect();
+
+		$this->layout->content = View::make('accounts.create', compact('currencies'));
 	}
 
 
@@ -55,7 +59,9 @@ class AccountsController extends BaseController {
 	public function store()
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => "required|unique:money_account|min:2|max:20"
+			'name' => "required|unique:money_account|min:2|max:20",
+			'losses' => "required|numeric",
+			'currency_id' => "required|numeric"
 		));
 
 		if ($v->fails())
@@ -67,6 +73,8 @@ class AccountsController extends BaseController {
 
 		$account = new MoneyAccount;
 		$account->name = Input::get('name');
+		$account->losses = Input::get('losses');
+		$account->currency_id = Input::get('currency_id');
 		$account->save();
 
 		return Redirect::route('accounts.index');
@@ -93,7 +101,12 @@ class AccountsController extends BaseController {
 	{
 		$account = MoneyAccount::find($id);
 
-		$this->layout->content = View::make('accounts.edit', compact('account'));
+		// Get list of all currencies
+		$currencies = Currency::allForSelect();
+
+		$this->layout->content = View::make('accounts.edit')
+			->with('account', $account)
+			->with('currencies', $currencies);
 	}
 
 	/**
@@ -105,7 +118,9 @@ class AccountsController extends BaseController {
 	public function update($id)
 	{
 		$v = Validator::make(Input::all(), array(
-			'name' => "required|unique:money_account,name,$id|min:2|max:20"
+			'name' => "required|unique:money_account,name,$id|min:2|max:20",
+			'losses' => "required|numeric",
+			'currency_id' => "required|numeric"
 		));
 
 		if ($v->fails())
@@ -117,6 +132,8 @@ class AccountsController extends BaseController {
 
 		$account = MoneyAccount::find($id);
 		$account->name = Input::get('name');
+		$account->losses = Input::get('losses');
+		$account->currency_id = Input::get('currency_id');
 		$account->save();
 
 		return Redirect::route('accounts.index');

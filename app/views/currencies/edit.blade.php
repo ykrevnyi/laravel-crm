@@ -38,6 +38,13 @@
 					</div>
 				</div>
 
+				<div class="form-group">
+					{{ Form::label('unit', 'Подпись', array('class' => 'col-sm-3 control-label')) }}
+					<div class="col-sm-9">
+						{{ Form::text('unit', Input::old('unit', $currency->unit), array('class' => 'unit-picker form-control')) }}
+					</div>
+				</div>
+
 				<div class="form-group text-center">
 					{{ HTML::linkRoute('currencies.index', 'Отменить', array(), array('class' => 'btn btn-default')) }}
 					

@@ -28,6 +28,21 @@
 					</div>
 				</div>
 
+				<div class="form-group has-feedback">
+					{{ Form::label('losses', 'Процент потерь', array('class' => 'col-sm-3 control-label')) }}
+					<div class="col-sm-9">
+						{{ Form::text('losses', Input::old('losses', $account->losses), array('class' => 'form-control')) }}
+						<span class="form-control-feedback">%</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					{{ Form::label('currency_id', 'Валюта', array('class' => 'col-sm-3 control-label')) }}
+					<div class="col-sm-9">
+						{{ Form::select('currency_id', $currencies, $account->currency_id) }}
+					</div>
+				</div>
+
 				<div class="form-group text-center">
 					{{ HTML::linkRoute('accounts.index', 'Отменить', array(), array('class' => 'btn btn-default')) }}
 
