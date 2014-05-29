@@ -129,6 +129,7 @@ class ProjectsController extends BaseController {
 		
 		// Get related transactions
 		$related_transactions = $this->project->getRelatedTransacitons($project_id);
+		// $related_transactions = $this->project->getRelatedTransacitonsPrices($project_id);
 
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
@@ -138,7 +139,7 @@ class ProjectsController extends BaseController {
 
 		// Get the rest balance of the payments
 		$total_project_price = $task->calculateTotal($related_tasks);
-		$total_transaction_price = $transaction->calculateTotal($related_transactions);
+		$total_transaction_price = $transaction->calculateTotalConverted($related_transactions);
 		$project_balance = $total_project_price - $total_transaction_price;
 
 		$content = View::make('projects.show')

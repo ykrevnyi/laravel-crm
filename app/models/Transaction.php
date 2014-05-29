@@ -12,6 +12,20 @@ class Transaction extends Eloquent
 	 */
 	public function getAll($filter = null)
 	{
+		// Get currency price (rate) that 
+		// misses the period of time of transaction `created_at` date
+		$currency_filer = "(
+			SELECT price 
+			FROM currency_history 
+			WHERE 
+				currency_id = currencies.id AND 
+				transaction.created_at >= created_at AND 
+				transaction.created_at < deprecated_at 
+			ORDER BY 
+				created_at DESC 
+			LIMIT 1)";
+
+
 		$transactions = DB::table('transaction')
 			// join transaction description
 			->join(
@@ -49,6 +63,8 @@ class Transaction extends Eloquent
 				'transaction.updated_at AS trans_updated_at',
 				'transaction_description.name AS trans_name',
 				'transaction_description.value AS trans_value',
+				DB::raw('(' . $currency_filer . ') AS currency_price'),
+				DB::raw('(transaction_description.value * ' . $currency_filer . ') AS trans_value_converted'),
 				'transaction_description.is_expense AS trans_is_expense',
 				'transaction_purpose.name AS trans_purpose',
 				'money_account.name AS money_account_name',
@@ -127,6 +143,31 @@ class Transaction extends Eloquent
 			else
 			{
 				$total += $transaction->trans_value;
+			}
+		}
+
+		return $total;
+	}
+
+
+	/**
+	 * Get total converted price of al the transactions
+	 *
+	 * @return void
+	 */
+	public function calculateTotalConverted($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ($transaction->trans_is_expense)
+			{
+				$total -= $transaction->trans_value_converted;
+			}
+			else
+			{
+				$total += $transaction->trans_value_converted;
 			}
 		}
 

@@ -289,7 +289,7 @@ class Project extends Eloquent
 		return $transaction_list;
 	}
 
-
+	
 	/**
 	 * Create new project
 	 *

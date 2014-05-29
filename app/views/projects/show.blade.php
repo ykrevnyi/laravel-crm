@@ -279,7 +279,17 @@
 							
 							<td>{{ $transaction->trans_id }}</td>
 							<td>{{ $transaction->trans_name }}</td>
-							<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
+							<td>
+								{{ $transaction->trans_value . ' ' . $transaction->currency }}
+								({{ $transaction->trans_value_converted . ' ' . CURRENCY }})
+								
+								<span 
+									class="has-tooltip glyphicon glyphicon-question-sign" 
+									data-toggle="tooltip" 
+									data-placement="right" 
+									data-original-title="Курс 1 {{ CURRENCY }} = {{ $transaction->currency_price . ' ' . $transaction->currency }} " 
+								></span>
+							</td>
 							<td>{{ $transaction->trans_purpose }}</td>
 							<td>{{ $transaction->money_account_name }}</td>
 							<td>{{ $transaction->trans_created_at }}</td>
