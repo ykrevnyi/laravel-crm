@@ -30,7 +30,8 @@ class CurrencyController extends BaseController {
 	 */
 	public function index()
 	{
-		$currencies = Currency::all();
+		$currencyModel = new Currency;
+		$currencies = $currencyModel->getList();
 
 		$this->layout->content = View::make('currencies.index', compact('currencies'));
 	}
@@ -67,11 +68,8 @@ class CurrencyController extends BaseController {
 				->withErrors($v);
 		}
 
-		$currency = new Currency;
-		$currency->name = Input::get('name');
-		$currency->unit = Input::get('unit');
-		$currency->price = Input::get('price');
-		$currency->save();
+		$currencyModel = new Currency;
+		$currencyModel->createCurrency(Input::all());
 
 		return Redirect::route('currencies.index');
 	}
@@ -96,7 +94,8 @@ class CurrencyController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$currency = Currency::find($id);
+		$currencyModel = new Currency;
+		$currency = $currencyModel->getCurrency($id);
 
 		$this->layout->content = View::make('currencies.edit', compact('currency'));
 	}
@@ -122,11 +121,8 @@ class CurrencyController extends BaseController {
 				->withErrors($v);
 		}
 
-		$currency = Currency::find($id);
-		$currency->name = Input::get('name');
-		$currency->unit = Input::get('unit');
-		$currency->price = Input::get('price');
-		$currency->save();
+		$currencyModel = new Currency;
+		$currencyModel->updateCurrency($id, Input::all());
 
 		return Redirect::route('currencies.index');
 	}

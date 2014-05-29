@@ -23,11 +23,11 @@
 				</tr>
 				@foreach ($currencies as $currency)
 					<tr>
-						<td>{{ $currency->name }}</td>
-						<td>{{ $currency->price }} {{ CURRENCY }}</td>
+						<td>{{ $currency['name'] }}</td>
+						<td>{{ $currency['price'] }} {{ CURRENCY }}</td>
 						<td class="text-right">
-							{{ Form::open(array('route' => array('currencies.destroy', 'id' => $currency->id), 'method' => 'delete')) }}
-							{{ HTML::linkRoute('currencies.edit', 'Редактировать', array('id' => $currency->id), array('class' => 'btn btn-default')) }}
+							{{ Form::open(array('route' => array('currencies.destroy', 'id' => $currency['id']), 'method' => 'delete')) }}
+							{{ HTML::linkRoute('currencies.edit', 'Редактировать', array('id' => $currency['id']), array('class' => 'btn btn-default')) }}
 							
 								{{ Form::submit('Удалить', array('class' => 'btn btn-danger remove-action')) }}
 							{{ Form::close() }}

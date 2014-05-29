@@ -40,8 +40,8 @@ class MoneyAccount extends Eloquent
 
 			->select(
 				DB::raw('sum(TD.value) as transaction_total'),
-				DB::raw('(sum(TD.value) * C.price * MA.losses / 100) as total_losses'),
-				DB::raw('(sum(TD.value) * C.price) as transaction_total_uah'),
+				DB::raw('TRUNCATE((sum(TD.value) * C.price * MA.losses / 100), 2) as total_losses'),
+				DB::raw('TRUNCATE((sum(TD.value) * C.price), 2) as transaction_total_uah'),
 				'MA.id as money_account_id',
 				'MA.name',
 				'MA.losses',

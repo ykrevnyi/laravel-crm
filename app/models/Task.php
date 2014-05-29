@@ -287,8 +287,8 @@ class Task extends Eloquent
 				'UR.percents',
 				'U.id as user_id',
 				'U.email as user_email',
-				'UTT.payed_hours',
-				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total_price')
+				DB::raw('TRUNCATE(UTT.payed_hours, 2) as payed_hours'),
+				DB::raw('TRUNCATE((UTT.payed_hours * URP.price_per_hour), 2) as total_price')
 			)
 			->where('UTT.task_id', '=', $task_id)
 
@@ -327,8 +327,7 @@ class Task extends Eloquent
 			->select(
 				'UTT.user_id',
 				'UTT.user_role_id',
-				'UTT.payed_hours',
-				'U.email AS user_email',
+				DB::raw('TRUNCATE(UTT.payed_hours, 2) as payed_hours'),
 				'U.email AS user_email',
 				'UR.name as role_name'
 			)

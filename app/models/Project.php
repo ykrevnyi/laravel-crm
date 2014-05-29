@@ -152,12 +152,12 @@ class Project extends Eloquent
 			->select(
 				'UTT.user_id',
 				'UTT.user_role_id',
-				'UTT.payed_hours',
+				DB::raw('TRUNCATE(UTT.payed_hours, 2) as payed_hours'),
 				'U.email AS user_email',
 				'U.email AS user_email',
 				'UR.name as role_name',
 				'URP.price_per_hour as period_price_per_hour',
-				DB::raw('(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				DB::raw('TRUNCATE((UTT.payed_hours * URP.price_per_hour), 2) as period_total_price'),
 				'URP.created_at as period_created_at',
 				'URP.deprecated_at as period_deprecated_at'
 			)
@@ -222,12 +222,12 @@ class Project extends Eloquent
 			->select(
 				'UTT.user_id',
 				'UTT.user_role_id',
-				'UTT.payed_hours',
+				DB::raw('TRUNCATE(UTT.payed_hours, 2) as payed_hours'),
 				'U.email AS user_email',
 				'U.email AS user_email',
 				'UR.name as role_name',
 				'URP.price_per_hour as period_price_per_hour',
-				DB::raw('SUM(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				DB::raw('TRUNCATE(SUM(UTT.payed_hours * URP.price_per_hour), 2) as period_total_price'),
 				'URP.created_at as period_created_at',
 				'URP.deprecated_at as period_deprecated_at'
 			)
