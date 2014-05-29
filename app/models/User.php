@@ -111,8 +111,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'U.email AS user_email',
 				'UR.name as role_name',
 				'UR.percents',
-				'URP.price_per_hour as period_price_per_hour',
-				DB::raw('(UTT.payed_hours * URP.price_per_hour) as total_task_price'),
+				'URP.price_per_hour_payable as period_price_per_hour',
+				DB::raw('(UTT.payed_hours * URP.price_per_hour_payable) as total_task_price'),
 				'URP.created_at as period_created_at',
 				'URP.deprecated_at as period_deprecated_at'
 			)
@@ -314,8 +314,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'U.email AS user_email',
 				'U.email AS user_email',
 				'UR.name as role_name',
-				'URP.price_per_hour as period_price_per_hour',
-				DB::raw('SUM(UTT.payed_hours * URP.price_per_hour) as period_total_price'),
+				'URP.price_per_hour_payable as period_price_per_hour',
+				DB::raw('SUM(UTT.payed_hours * URP.price_per_hour_payable) as period_total_price'),
 				'URP.created_at as period_created_at',
 				'URP.deprecated_at as period_deprecated_at'
 			)

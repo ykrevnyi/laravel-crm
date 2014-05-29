@@ -157,7 +157,7 @@ body.loading::after, .slow-loader::after {
 .task-create-wizzard .task-action-bnt-group-title {
     margin-right: 10px;
     position: relative;
-    top: 5px;
+    top: 9px;
 }
 #user-selected-list li .user-payed-hours {
     width: 5%;

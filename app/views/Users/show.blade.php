@@ -180,10 +180,14 @@
 						<tr>
 							<th class="text-center active" colspan="4">{{ $project['name'] }}</th>
 						</tr>
-						<tr>
-							<th>Должность</th>
-							<th>Сума</th>
-						</tr>
+
+						@if ($project['total_price'])
+							<tr>
+								<th>Должность</th>
+								<th>Сума</th>
+							</tr>
+						@endif
+						
 						@foreach ($project['related_user_roles'] as $role)
 							<tr>
 								<td>{{ $role->role_name }}</td>
@@ -192,10 +196,12 @@
 						@endforeach
 
 						@if ($project['total_price_percents'] > 0)
-							<tr>
-								<th class="text-right">Сума</th>
-								<th>{{ $project['total_price'] }} $</th>
-							</tr>
+							@if ($project['total_price'])
+								<tr>
+									<th class="text-right">Сума</th>
+									<th>{{ $project['total_price'] }} $</th>
+								</tr>
+							@endif
 
 							<tr>
 								<th class="text-right">
@@ -260,10 +266,12 @@
 							</tr>
 						@endif
 
-						<tr>
-							<th class="text-right">Итого</th>
-							<th>{{ $project['total_price_common'] }} $</th>
-						</tr>
+						@if ($project['total_price_common'] > 0)
+							<tr>
+								<th class="text-right">Итого</th>
+								<th>{{ $project['total_price_common'] }} $</th>
+							</tr>
+						@endif
 					</table>
 				@endforeach
 			@else

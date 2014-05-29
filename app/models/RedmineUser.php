@@ -94,21 +94,19 @@ class RedmineUser extends Eloquent
 		$redmineUser = self::getRedmineUser($credentials['email']);
 
 		// There no user in redmine at all
-		if (empty($redmineUser))
+		if (isset($redmineUser->id) AND $redmineUser->id)
 		{
-			return false;
-		}
+			// Ok, redmine has that user
+			// Now we should check credentials
+			$inputPassword = sha1($redmineUser->salt . sha1($credentials['password']));
 
-		// Ok, redmine has that user
-		// Now we should check credentials
-		$inputPassword = sha1($redmineUser->salt . sha1($credentials['password']));
+			// Check passwords
+			if ($redmineUser->hashed_password === $inputPassword)
+			{
+				$this->authLocalUser($redmineUser);
 
-		// Check passwords
-		if ($redmineUser->hashed_password === $inputPassword)
-		{
-			$this->authLocalUser($redmineUser);
-
-			return true;
+				return true;
+			}
 		}
 
 		return false;
