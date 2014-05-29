@@ -34,7 +34,7 @@
 					{{ Form::label('price_per_hour', 'Цена в час', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
 						{{ Form::text('price_per_hour', Input::old('price_per_hour', ''), array('class' => 'form-control')) }}
-						<span class="glyphicon glyphicon-usd form-control-feedback"></span>
+						<span class="form-control-feedback">{{ CURRENCY }}</span>
 					</div>
 				</div>
 
@@ -42,7 +42,7 @@
 					{{ Form::label('price_per_hour_payable', 'Цена в час (сотрудника)', array('class' => 'col-sm-3 control-label')) }}
 					<div class="col-sm-9">
 						{{ Form::text('price_per_hour_payable', Input::old('price_per_hour_payable', ''), array('class' => 'form-control')) }}
-						<span class="glyphicon glyphicon-usd form-control-feedback"></span>
+						<span class="form-control-feedback">{{ CURRENCY }}</span>
 					</div>
 				</div>
 

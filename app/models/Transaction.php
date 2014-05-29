@@ -34,6 +34,15 @@ class Transaction extends Eloquent
 				'=', 
 				'money_account.id'
 			)
+
+			// Join currencies
+			->join(
+				'currencies',
+				'currencies.id',
+				'=',
+				'money_account.currency_id'
+			)
+
 			->select(
 				'transaction.id AS trans_id',
 				'transaction.created_at AS trans_created_at',
@@ -42,7 +51,8 @@ class Transaction extends Eloquent
 				'transaction_description.value AS trans_value',
 				'transaction_description.is_expense AS trans_is_expense',
 				'transaction_purpose.name AS trans_purpose',
-				'money_account.name AS money_account_name'
+				'money_account.name AS money_account_name',
+				'currencies.unit AS currency'
 			)
 			->orderBy('trans_id', 'desc');
 

@@ -1,5 +1,8 @@
 <?php
 
+define('CURRENCY', 'грн.');
+
+
 /*
  *------------------------------------------------------------
  *------------------------------------------------------------
@@ -11,6 +14,9 @@ Route::group(array('before' => 'auth'), function () {
 	Route::get('logout', array('as' => 'logout', 'uses' => 'HomeController@logout'));
 	Route::get('/', array('as' => 'home', 'uses' => 'AdminController@index'));
 	
+	// Exchange rates management
+	Route::resource('currencies', 'CurrencyController');
+
 	// User roles management
 	Route::resource('users/roles', 'UsersRoleController');
 

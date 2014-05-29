@@ -103,11 +103,11 @@
 	    	<table class="table table-bordered">
 	    		<tr>
 	    			<td class="text-right" width="50%"><b>Сума</b></td>
-	    			<td>{{ $total_price_common }} $</td>
+	    			<td>{{ $total_price_common }} {{ CURRENCY }}</td>
 	    		</tr>
 	    		<tr>
 	    			<td class="text-right" width="50%"><b>Оплачено</b></td>
-	    			<td>{{ $total_transaction_price }} $</td>
+	    			<td>{{ $total_transaction_price }} {{ CURRENCY }}</td>
 	    		</tr>
 	    		<tr>
 	    			<td class="text-right" width="50%"><b>
@@ -119,7 +119,7 @@
 	    					Дебет
 	    				@endif
 	    			</b></td>
-	    			<td>{{ abs($user_balance) }} $</td>
+	    			<td>{{ abs($user_balance) }} {{ CURRENCY }}</td>
 	    		</tr>
 	    	</table>
 	    </div>
@@ -156,7 +156,7 @@
 							
 							<td>{{ $transaction->trans_id }}</td>
 							<td>{{ $transaction->trans_name }}</td>
-							<td>{{ $transaction->trans_value }}</td>
+							<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
 							<td>{{ $transaction->trans_purpose }}</td>
 							<td>{{ $transaction->money_account_name }}</td>
 							<td>{{ $transaction->trans_created_at }}</td>
@@ -173,7 +173,7 @@
 	    <!-- Related projects -->
 	    <div class="tab-pane" id="related-projects">
 	    	@if ($projects)
-	    		<h3 class="text-center">Итого по проектам - {{ $total_price_common }} $</h3>
+	    		<h3 class="text-center">Итого по проектам - {{ $total_price_common }} {{ CURRENCY }}</h3>
 
 				@foreach ($projects as $project)
 					<table class="vertical-aligned table table-bordered">
@@ -191,17 +191,15 @@
 						@foreach ($project['related_user_roles'] as $role)
 							<tr>
 								<td>{{ $role->role_name }}</td>
-								<td>{{ $role->period_total_price }} $</td>
+								<td>{{ $role->period_total_price }} {{ CURRENCY }}</td>
 							</tr>
 						@endforeach
 
 						@if ($project['total_price_percents'] > 0)
-							@if ($project['total_price'])
-								<tr>
-									<th class="text-right">Сума</th>
-									<th>{{ $project['total_price'] }} $</th>
-								</tr>
-							@endif
+							<tr>
+								<th class="text-right">Сума</th>
+								<th>{{ $project['total_price'] }} {{ CURRENCY }}</th>
+							</tr>
 
 							<tr>
 								<th class="text-right">
@@ -230,9 +228,9 @@
 																@foreach ($task['related_user_roles'] as $related_role)
 																	<tr>
 																		<td>{{ $related_role->role_name }}</td>
-																		<td>{{ $related_role->price_per_hour }} $</td>
+																		<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
 																		<td>{{ $related_role->payed_hours }} ч.</td>
-																		<td>{{ $related_role->total_price }} $</td>
+																		<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
 																	</tr>
 																@endforeach
 
@@ -248,7 +246,7 @@
 
 																<tr>
 																	<th class="text-right" colspan="3">Итого:</th>
-																	<th>{{ $task['total_price'] }} $</th>
+																	<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
 																</tr>
 															</table>
 														@else
@@ -256,22 +254,21 @@
 														@endif
 													</td>
 													<td class="text-center">{{ $task['percents'] }} %</td>
-													<td class="text-center">{{ $task['total_percent_price'] }} $</td>
+													<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
 												</tr>
 											@endforeach
 										</table>
 									</div>
 								</th>
-								<th>{{ $project['total_price_percents'] }} $</th>
+								<th>{{ $project['total_price_percents'] }} {{ CURRENCY }}</th>
 							</tr>
 						@endif
 
-						@if ($project['total_price_common'] > 0)
-							<tr>
-								<th class="text-right">Итого</th>
-								<th>{{ $project['total_price_common'] }} $</th>
-							</tr>
-						@endif
+						<tr>
+							<th class="text-right">Итого</th>
+							<th>{{ $project['total_price_common'] }} {{ CURRENCY }}</th>
+						</tr>
+						
 					</table>
 				@endforeach
 			@else
@@ -285,7 +282,7 @@
 	    <!-- Related tasks -->
 	    <div class="tab-pane" id="related-tasks">
 	    	@if ($tasks)
-	    		<h3 class="text-center">Итого по задачам - {{ $total_price }} $</h3>
+	    		<h3 class="text-center">Итого по задачам - {{ $total_price }} {{ CURRENCY }}</h3>
 
 	    		<table class="table table-bordered">
 	    			<tr>
@@ -303,10 +300,10 @@
 
 							@if ($task->percents)
 								<td>{{ $task->period_price_per_hour }} %</td>
-								<td>{{ $task->total_task_price * $task->period_price_per_hour / 100 }} $</td>
+								<td>{{ $task->total_task_price * $task->period_price_per_hour / 100 }} {{ CURRENCY }}</td>
 							@else
-								<td>{{ $task->period_price_per_hour }} $</td>
-								<td>{{ $task->total_task_price }} $</td>
+								<td>{{ $task->period_price_per_hour }} {{ CURRENCY }}</td>
+								<td>{{ $task->total_task_price }} {{ CURRENCY }}</td>
 							@endif
 						</tr>
 					@endforeach
@@ -322,7 +319,7 @@
 	    <!-- Calculated user percents -->
 	    <div class="tab-pane" id="user-percents">
 	    	@if (count($user_persents_price['tasks']))
-	    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} $</h3>
+	    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} {{ CURRENCY }}</h3>
 
 	    		<table class="table table-bordered vertical-aligned">
 	    			<tr>
@@ -344,9 +341,9 @@
 										@foreach ($task['related_user_roles'] as $related_role)
 											<tr>
 												<td>{{ $related_role->role_name }}</td>
-												<td>{{ $related_role->price_per_hour }} $</td>
+												<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
 												<td>{{ $related_role->payed_hours }} ч.</td>
-												<td>{{ $related_role->total_price }} $</td>
+												<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
 											</tr>
 										@endforeach
 
@@ -362,7 +359,7 @@
 
 										<tr>
 											<th class="text-right" colspan="3">Итого:</th>
-											<th>{{ $task['total_price'] }} $</th>
+											<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
 										</tr>
 									</table>
 								@else
@@ -370,7 +367,7 @@
 								@endif
 							</td>
 							<td class="text-center">{{ $task['percents'] }} %</td>
-							<td class="text-center">{{ $task['total_percent_price'] }} $</td>
+							<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
 						</tr>
 					@endforeach
 	    		</table>

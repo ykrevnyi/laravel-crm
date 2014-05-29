@@ -93,7 +93,7 @@
 								
 								<td>{{ $transaction->trans_id }}</td>
 								<td>{{ $transaction->trans_name }}</td>
-								<td>{{ $transaction->trans_value }}</td>
+								<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
 								<td>{{ $transaction->trans_purpose }}</td>
 								<td>{{ $transaction->money_account_name }}</td>
 								<td>{{ $transaction->trans_created_at }}</td>
