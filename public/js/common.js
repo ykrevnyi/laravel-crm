@@ -1,25 +1,28 @@
 $(document).on('ready', function() {
 	
-	// Transform every single <select> into the select2 plugin
-	$('select').select2();
+	// Init page scripts and plugins
+	window.initPageScripts = function() {
+		// Transform every single <select> into the select2 plugin
+		$('select').select2();
 
-	// Add datepicker
-	$('.datepicker').datepicker({ format: "yyyy-mm-dd" });
+		// Add datepicker
+		$('.datepicker').datepicker({ format: "yyyy-mm-dd" });
 
-	// Init dropdowns
-	$('.dropdown-toggle').dropdown();
+		// Init dropdowns
+		$('.dropdown-toggle').dropdown();
 
-	// Init colorpicker
-	$('.color-picker').colorpicker();
+		// Init colorpicker
+		$('.color-picker').colorpicker();
 
-	// Set iphone checkboxes
-	$('.iphone-checkbox').bootstrapSwitch({
-		onText: 'Да',
-		offText: 'Нет'
-	});
+		// Set iphone checkboxes
+		$('.iphone-checkbox').bootstrapSwitch({
+			onText: 'Да',
+			offText: 'Нет'
+		});
 
-	// Enable tooltips
-	$('.has-tooltip').tooltip({container: 'body'});
+		// Enable tooltips
+		$('.has-tooltip').tooltip({container: 'body'});
+	};
 
 	// Two way data-binding (secondary type)
 	window.init2wayBinding = function() {

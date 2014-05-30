@@ -99,7 +99,7 @@ class TasksController extends \BaseController {
 			->with('persentable_roles', $persentable_roles)
 			->with('user_roles', $user_roles);
 
-		$result['view'] = htmlentities($view);
+		$result['view'] = htmlentities($view, ENT_COMPAT, 'UTF-8');
 
 		return json_encode($result, true);
 	}
@@ -253,7 +253,7 @@ class TasksController extends \BaseController {
 
 		// Set output
 		$result['user'] = $user;
-		$result['view'] = htmlentities($view);
+		$result['view'] = htmlentities($view, ENT_COMPAT, 'UTF-8');
 
 		return json_encode($result);
 	}

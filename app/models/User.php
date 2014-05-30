@@ -104,6 +104,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 			->select(
 				'T.name',
+				'T.project_id as task_project_id',
 				'UTT.user_id',
 				'UTT.user_role_id',
 				DB::raw('TRUNCATE(UTT.payed_hours, 2) as payed_hours'),
@@ -258,6 +259,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			}
 
 			$result[] = array(
+				'project_id' => $project->project_id,
 				'name' => $project->name,
 				'total_price' => $total_price,
 				'total_price_percents' => $user_persents_price['total'],
@@ -321,7 +323,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			)
 			->where('T.project_id', '=', $project_id)
 			->where('UTT.user_id', '=', $user_id)
-			->where('UR.percents', '0f')
+			->where('UR.percents', '0')
 
 			->whereRaw('T.created_at >= URP.created_at')
 			->whereRaw('T.created_at < URP.deprecated_at');
@@ -434,7 +436,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$result_tasks['tasks'][$task_key]['percentable_roles'] = $percentable_roles;
 
 			// Get User percents
-			$total_percent_price_per_task = $total * $task_percents / 100;
+			$total_percent_price_per_task = number_format($total * $task_percents / 100, 2, '.', '');
 			$result_tasks['tasks'][$task_key]['percents'] = $task_percents;
 			$result_tasks['tasks'][$task_key]['total_percent_price'] = $total_percent_price_per_task;
 			$result_tasks['tasks'][$task_key]['task_name'] = $task->task_name;

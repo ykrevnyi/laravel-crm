@@ -178,7 +178,13 @@
 				@foreach ($projects as $project)
 					<table class="vertical-aligned table table-bordered">
 						<tr>
-							<th class="text-center active" colspan="4">{{ $project['name'] }}</th>
+							<th class="text-center active" colspan="4">
+								{{ $project['name'] }}
+
+								<a href="{{ URL::route('projects.show', $project['project_id']) }}">
+									<span class="glyphicon glyphicon-info-sign"></span>
+								</a>
+							</th>
 						</tr>
 
 						@if ($project['total_price'])
@@ -196,10 +202,12 @@
 						@endforeach
 
 						@if ($project['total_price_percents'] > 0)
-							<tr>
-								<th class="text-right">Сума</th>
-								<th>{{ $project['total_price'] }} {{ CURRENCY }}</th>
-							</tr>
+							@if ($project['total_price'])
+								<tr>
+									<th class="text-right">Сума</th>
+									<th>{{ $project['total_price'] }} {{ CURRENCY }}</th>
+								</tr>
+							@endif
 
 							<tr>
 								<th class="text-right">
@@ -294,7 +302,13 @@
 					</tr>
 					@foreach ($tasks as $task)
 						<tr>
-							<td>{{ $task->name }}</td>
+							<td>
+								{{ $task->name }}
+
+								<a href="{{ URL::route('projects.show', $task->task_project_id) }}">
+									<span class="glyphicon glyphicon-info-sign"></span>
+								</a>
+							</td>
 							<td>{{ $task->role_name }}</td>
 							<td>{{ $task->payed_hours }} ч.</td>
 

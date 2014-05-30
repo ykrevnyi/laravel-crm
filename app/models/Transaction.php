@@ -59,6 +59,8 @@ class Transaction extends Eloquent
 
 			->select(
 				'transaction.id AS trans_id',
+				'transaction.transaction_object_type AS trans_obj_type',
+				'transaction.transaction_object_id AS trans_obj_id',
 				'transaction.created_at AS trans_created_at',
 				'transaction.updated_at AS trans_updated_at',
 				'transaction_description.name AS trans_name',

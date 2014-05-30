@@ -92,7 +92,24 @@
 							@endif
 								
 								<td>{{ $transaction->trans_id }}</td>
-								<td>{{ $transaction->trans_name }}</td>
+								<td>
+									@if ($transaction->trans_obj_type == 'project')
+										{{ $transaction->trans_name }}
+
+										<a href="{{ URL::route('projects.show', $transaction->trans_obj_id) }}">
+											<span class="glyphicon glyphicon-info-sign"></span>
+										</a>
+									@elseif ($transaction->trans_obj_type == 'user')
+										{{ $transaction->trans_name }}
+
+										<a href="{{ URL::route('users.show', $transaction->trans_obj_id) }}">
+											<span class="glyphicon glyphicon-info-sign"></span>
+										</a>
+									@else
+										{{ $transaction->trans_name }}
+									@endif
+									
+								</td>
 								<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
 								<td>{{ $transaction->trans_purpose }}</td>
 								<td>{{ $transaction->money_account_name }}</td>

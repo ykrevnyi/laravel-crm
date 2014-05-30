@@ -445,13 +445,16 @@
 				dataType: 'html',
 				url: "{{ URL::route('projects.show', $project->proj_id) }}"
 			}).done(function(html) {
-				$projectContainer.html(html);
+				$projectContainer.replaceWith(html);
 
 				// Enable body/html
 				$('html, body').css('overflow', 'auto');
 				
 				// Remove loading
 				$('#page-loading').remove();
+
+				// Update page scripts
+				window.initPageScripts();
 			});
 		};
 
