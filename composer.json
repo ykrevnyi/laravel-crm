@@ -7,6 +7,9 @@
 		"laravel/framework": "4.1.*"
 	},
 	"autoload": {
+		"psr-4": {
+			"CRM\\": "app/CRM"
+		},
 		"classmap": [
 			"app/commands",
 			"app/controllers",
@@ -16,7 +19,7 @@
 			"app/tests/TestCase.php"
 		],
 		"files": [
-			"/vendor/rusdate/rusdate/src/Date/HumanDiff/Locale/ru.php"
+			"vendor/rusdate/rusdate/src/ru.php"
 		]
 	},
 	"scripts": {

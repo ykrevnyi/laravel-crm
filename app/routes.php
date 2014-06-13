@@ -81,3 +81,5 @@ Route::group(array('before' => 'guest'), function () {
  *------------------------------------------------------------
  */
 // Route::get('/', array('as' => 'home', 'uses' => 'HomeController@index'));
+Route::get('/api/roles/all.json', array('as' => 'api.getUserRoles', 'uses' => '\CRM\Api\ApiUserRoleController@json'));
+Route::get('/api/roles/all.jsonp', array('as' => 'api.getUserRoles', 'uses' => '\CRM\Api\ApiUserRoleController@jsonp'));
