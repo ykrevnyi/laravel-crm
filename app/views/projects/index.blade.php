@@ -4,6 +4,9 @@
 	    5 => 'Мая', 6 => 'Июня', 7 => 'Июля', 8 => 'Августа',
 	    9 => 'Сентября', 10 => 'Октября', 11 => 'Ноября', 12 => 'Декабря'
 	);
+
+	$dh = new Date_HumanDiff();
+	$dh->setTranslator(new Date_HumanDiff_Locale_ru);
 ?>
 
 <div class="container">
@@ -86,8 +89,8 @@
 							</td>
 							<td>{{$project->proj_desc_short}}</td>
 
-							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_created_at))->diffForHumans() }}</td>
-							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_end_date))->diffForHumans() }}</td>
+							<td>{{ $project->proj_created_at }}</td>
+							<td>{{ $project->proj_end_date }}</td>
 
 							<td class="text-right">
 								{{ HTML::linkRoute('projects.edit', 'Редактировать', array('id' => $project->proj_id), array('class' => 'btn btn-default')) }}

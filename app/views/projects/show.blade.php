@@ -123,7 +123,13 @@
 									<tr>
 										<td>{{ $user->firstname . ' ' . $user->lastname }}</td>
 										<td>{{ $user->role_name }}</td>
-										<td>с <i>{{ $user->period_created_at }}</i> по <i>{{ $user->period_deprecated_at }}</i></td>
+										<td>
+											с <i>{{ $user->period_created_at }}</i> 
+
+											@if ($user->period_deprecated_at)
+												по <i>{{ $user->period_deprecated_at }}</i>
+											@endif
+										</td>
 										<td>{{ $user->period_price_per_hour }} {{ CURRENCY }}</td>
 										<td>{{ $user->payed_hours }} ч.</td>
 										<td>{{ $user->period_total_price }} {{ CURRENCY }}</td>
@@ -152,9 +158,9 @@
 								<th>Обновлено</th>
 							</tr>
 							<tr>
-								<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_end_date))->diffForHumans() }} <i>({{ $project->proj_end_date }})</i></td>
-								<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_created_at))->diffForHumans() }} <i>({{ $project->proj_created_at }})</i></td>
-								<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($project->proj_updated_at))->diffForHumans() }} <i>({{ $project->proj_updated_at }})</i></td>
+								<td>{{ $project->proj_end_date_human }} <i>({{ $project->proj_end_date }})</i></td>
+								<td>{{ $project->proj_created_at_human }} <i>({{ $project->proj_created_at }})</i></td>
+								<td>{{ $project->proj_updated_at_human }} <i>({{ $project->proj_updated_at }})</i></td>
 							</tr>
 						</table>
 				    </div>
@@ -194,7 +200,7 @@
 								<a href="#" class="edit-task-action" data-id="{{ $task->id }}">{{ $task->name }}</a>
 							</td>
 							<td>{{ $task->short_description }}</td>
-							<td>{{ \Carbon\Carbon::createFromTimeStamp(strtotime($task->created_at))->diffForHumans() }}</td>
+							<td>{{ $task->created_at }}</td>
 							
 							<td class="table-container-td">
 								@if (count($task->related_users))
@@ -264,7 +270,6 @@
 						<th>Назначение</th>
 						<th>Счет</th>
 						<th>Создана</th>
-						<th>Обновлена</th>
 						<th>Удалить</th>
 					</tr>
 
@@ -281,19 +286,21 @@
 							<td>{{ $transaction->trans_name }}</td>
 							<td>
 								{{ $transaction->trans_value . ' ' . $transaction->currency }}
-								({{ $transaction->trans_value_converted . ' ' . CURRENCY }})
 								
-								<span 
-									class="has-tooltip glyphicon glyphicon-question-sign" 
-									data-toggle="tooltip" 
-									data-placement="right" 
-									data-original-title="Курс 1 {{ CURRENCY }} = {{ $transaction->currency_price . ' ' . $transaction->currency }} " 
-								></span>
+								@if ($transaction->currency != CURRENCY)
+									({{ $transaction->trans_value_converted . ' ' . CURRENCY }})
+								
+									<span 
+										class="has-tooltip glyphicon glyphicon-question-sign" 
+										data-toggle="tooltip" 
+										data-placement="right" 
+										data-original-title="Курс 1 {{ CURRENCY }} = {{ $transaction->currency_price . ' ' . $transaction->currency }} " 
+									></span>
+								@endif
 							</td>
 							<td>{{ $transaction->trans_purpose }}</td>
 							<td>{{ $transaction->money_account_name }}</td>
 							<td>{{ $transaction->trans_created_at }}</td>
-							<td>{{ $transaction->trans_updated_at }}</td>
 							<td class="text-center">
 								<a href="#" class="delete-transaction btn btn-danger btn-sm" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
 							</td>

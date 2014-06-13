@@ -57,342 +57,344 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<h2>Проекты</h2>
+	@if ($can_view)
+		<div class="row">
+			<div class="col-lg-12">
+				<h2>Проекты</h2>
+			</div>
 		</div>
-	</div>
 
-	<ul class="nav nav-tabs">
-		<li class="active">
-			<a href="#basic" data-toggle="tab">Информация</a>
-	    </li>
-	    <li>
-	    	<a href="#related-transactions" data-toggle="tab">
-	    		Транзакции
-	    		<span class="badge">{{ count($transactions) }}</span>
-    		</a>
-	    </li>
-	    <li>
-	    	<a href="#related-projects" data-toggle="tab">
-	    		Проекты
-	    		<span class="badge">{{ count($projects) }}</span>
-    		</a>
-	    </li>
-	    <li>
-	    	<a href="#related-tasks" data-toggle="tab">
-	    		Задания
-	    		<span class="badge">{{ count($tasks) }}</span>
-    		</a>
-	    </li>
-	    @if (count($user_persents_price['tasks']))
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#basic" data-toggle="tab">Информация</a>
+		    </li>
 		    <li>
-		    	<a href="#user-percents" data-toggle="tab">
-		    		Проценты задач
-		    		<span class="badge">{{ count($user_persents_price['tasks']) }}</span>
+		    	<a href="#related-transactions" data-toggle="tab">
+		    		Транзакции
+		    		<span class="badge">{{ count($transactions) }}</span>
 	    		</a>
 		    </li>
-	    @endif
-	</ul>
+		    <li>
+		    	<a href="#related-projects" data-toggle="tab">
+		    		Проекты
+		    		<span class="badge">{{ count($projects) }}</span>
+	    		</a>
+		    </li>
+		    <li>
+		    	<a href="#related-tasks" data-toggle="tab">
+		    		Задания
+		    		<span class="badge">{{ count($tasks) }}</span>
+	    		</a>
+		    </li>
+		    @if (count($user_persents_price['tasks']))
+			    <li>
+			    	<a href="#user-percents" data-toggle="tab">
+			    		Проценты задач
+			    		<span class="badge">{{ count($user_persents_price['tasks']) }}</span>
+		    		</a>
+			    </li>
+		    @endif
+		</ul>
 
-	<!-- Tab panes -->
-	<div class="tab-content">
+		<!-- Tab panes -->
+		<div class="tab-content">
 
-	    <!-- Basic info -->
-	    <div class="tab-pane active" id="basic">
-	    	<table class="table table-bordered">
-	    		<tr>
-	    			<td class="text-right" width="50%"><b>Сума</b></td>
-	    			<td>{{ $total_price_common }} {{ CURRENCY }}</td>
-	    		</tr>
-	    		<tr>
-	    			<td class="text-right" width="50%"><b>Оплачено</b></td>
-	    			<td>{{ $total_transaction_price }} {{ CURRENCY }}</td>
-	    		</tr>
-	    		<tr>
-	    			<td class="text-right" width="50%"><b>
-	    				@if ($user_balance > 0)
-	    					Кредит
-	    				@elseif ($user_balance == 0)
-	    					Остаток
-	    				@else
-	    					Дебет
-	    				@endif
-	    			</b></td>
-	    			<td>{{ abs($user_balance) }} {{ CURRENCY }}</td>
-	    		</tr>
-	    	</table>
-	    </div>
+		    <!-- Basic info -->
+		    <div class="tab-pane active" id="basic">
+		    	<table class="table table-bordered">
+		    		<tr>
+		    			<td class="text-right" width="50%"><b>Сума</b></td>
+		    			<td>{{ $total_price_common }} {{ CURRENCY }}</td>
+		    		</tr>
+		    		<tr>
+		    			<td class="text-right" width="50%"><b>Оплачено</b></td>
+		    			<td>{{ $total_transaction_price }} {{ CURRENCY }}</td>
+		    		</tr>
+		    		<tr>
+		    			<td class="text-right" width="50%"><b>
+		    				@if ($user_balance > 0)
+		    					Кредит
+		    				@elseif ($user_balance == 0)
+		    					Остаток
+		    				@else
+		    					Дебет
+		    				@endif
+		    			</b></td>
+		    			<td>{{ abs($user_balance) }} {{ CURRENCY }}</td>
+		    		</tr>
+		    	</table>
+		    </div>
 
-	    <!-- Related transactions -->
-	    <div class="tab-pane" id="related-transactions">
-	    	@if ( ! count($transactions))
-				<div class="empty-message text-center">
-					<span class="glyphicon glyphicon-transfer"></span>
-					<h3>Нет транзакций :(</h3>
-				</div>
-			@else
-				<table class="vertical-aligned table table-bordered">
-					<tr>
-						<th></th>
-						<th>№</th>
-						<th>Название</th>
-						<th>Кол-во</th>
-						<th>Назначение</th>
-						<th>Счет</th>
-						<th>Создана</th>
-						<th>Обновлена</th>
-						<th></th>
-					</tr>
-
-					@foreach ($transactions as $transaction)
-						@if ($transaction->trans_is_expense)
-							<tr class="active">
-								<td class="text-center"><span class="glyphicon glyphicon-arrow-left"></span></td>
-						@else
-							<tr class="success">
-								<td class="text-center"><span class="glyphicon glyphicon-arrow-right"></span></td>
-						@endif
-							
-							<td>{{ $transaction->trans_id }}</td>
-							<td>{{ $transaction->trans_name }}</td>
-							<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
-							<td>{{ $transaction->trans_purpose }}</td>
-							<td>{{ $transaction->money_account_name }}</td>
-							<td>{{ $transaction->trans_created_at }}</td>
-							<td>{{ $transaction->trans_updated_at }}</td>
-							<td class="text-center">
-								<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
-							</td>
-						</tr>
-					@endforeach
-				</table>
-			@endif
-	    </div>
-
-	    <!-- Related projects -->
-	    <div class="tab-pane" id="related-projects">
-	    	@if ($projects)
-	    		<h3 class="text-center">Итого по проектам - {{ $total_price_common }} {{ CURRENCY }}</h3>
-
-				@foreach ($projects as $project)
+		    <!-- Related transactions -->
+		    <div class="tab-pane" id="related-transactions">
+		    	@if ( ! count($transactions))
+					<div class="empty-message text-center">
+						<span class="glyphicon glyphicon-transfer"></span>
+						<h3>Нет транзакций :(</h3>
+					</div>
+				@else
 					<table class="vertical-aligned table table-bordered">
 						<tr>
-							<th class="text-center active" colspan="4">
-								{{ $project['name'] }}
-
-								<a href="{{ URL::route('projects.show', $project['project_id']) }}">
-									<span class="glyphicon glyphicon-info-sign"></span>
-								</a>
-							</th>
+							<th></th>
+							<th>№</th>
+							<th>Название</th>
+							<th>Кол-во</th>
+							<th>Назначение</th>
+							<th>Счет</th>
+							<th>Создана</th>
+							<th>Обновлена</th>
+							<th></th>
 						</tr>
 
-						@if ($project['total_price'])
-							<tr>
-								<th>Должность</th>
-								<th>Сума</th>
-							</tr>
-						@endif
-						
-						@foreach ($project['related_user_roles'] as $role)
-							<tr>
-								<td>{{ $role->role_name }}</td>
-								<td>{{ $role->period_total_price }} {{ CURRENCY }}</td>
+						@foreach ($transactions as $transaction)
+							@if ($transaction->trans_is_expense)
+								<tr class="active">
+									<td class="text-center"><span class="glyphicon glyphicon-arrow-left"></span></td>
+							@else
+								<tr class="success">
+									<td class="text-center"><span class="glyphicon glyphicon-arrow-right"></span></td>
+							@endif
+								
+								<td>{{ $transaction->trans_id }}</td>
+								<td>{{ $transaction->trans_name }}</td>
+								<td>{{ $transaction->trans_value . ' ' . $transaction->currency }}</td>
+								<td>{{ $transaction->trans_purpose }}</td>
+								<td>{{ $transaction->money_account_name }}</td>
+								<td>{{ $transaction->trans_created_at }}</td>
+								<td>{{ $transaction->trans_updated_at }}</td>
+								<td class="text-center">
+									<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
+								</td>
 							</tr>
 						@endforeach
+					</table>
+				@endif
+		    </div>
 
-						@if ($project['total_price_percents'] > 0)
+		    <!-- Related projects -->
+		    <div class="tab-pane" id="related-projects">
+		    	@if ($projects)
+		    		<h3 class="text-center">Итого по проектам - {{ $total_price_common }} {{ CURRENCY }}</h3>
+
+					@foreach ($projects as $project)
+						<table class="vertical-aligned table table-bordered">
+							<tr>
+								<th class="text-center active" colspan="4">
+									{{ $project['name'] }}
+
+									<a href="{{ URL::route('projects.show', $project['project_id']) }}">
+										<span class="glyphicon glyphicon-info-sign"></span>
+									</a>
+								</th>
+							</tr>
+
 							@if ($project['total_price'])
 								<tr>
-									<th class="text-right">Сума</th>
-									<th>{{ $project['total_price'] }} {{ CURRENCY }}</th>
+									<th>Должность</th>
+									<th>Сума</th>
+								</tr>
+							@endif
+							
+							@foreach ($project['related_user_roles'] as $role)
+								<tr>
+									<td>{{ $role->role_name }}</td>
+									<td>{{ $role->period_total_price }} {{ CURRENCY }}</td>
+								</tr>
+							@endforeach
+
+							@if ($project['total_price_percents'] > 0)
+								@if ($project['total_price'])
+									<tr>
+										<th class="text-right">Сума</th>
+										<th>{{ $project['total_price'] }} {{ CURRENCY }}</th>
+									</tr>
+								@endif
+
+								<tr>
+									<th class="text-right">
+										Проценты за проект
+										(<i><a href="#" class="user-project-invoice-action">показать инвойс</a></i>):
+
+										<div class="hidden user-project-invoice">
+											<h3 class="text-center">Проект: {{ $project['name'] }}</h3>
+											<table class="table table-bordered vertical-aligned">
+												<tr>
+													<th>Задача</th>
+													<th class="text-center">Ставка</th>
+													<th class="text-center">Сума</th>
+												</tr>
+												@foreach ($project['related_tasks']['tasks'] as $task)
+													<tr>
+														<td class="table-container-td">
+															@if (count($task['related_user_roles']))
+																<table class="table table-bordered">
+																	<tr>
+																		<th>Должность</th>
+																		<th>Цена за час</th>
+																		<th>Часов</th>
+																		<th>Сума</th>
+																	</tr>
+																	@foreach ($task['related_user_roles'] as $related_role)
+																		<tr>
+																			<td>{{ $related_role->role_name }}</td>
+																			<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
+																			<td>{{ $related_role->payed_hours }} ч.</td>
+																			<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
+																		</tr>
+																	@endforeach
+
+																	@if (count($task['percentable_roles']))
+																		<tr>
+																			<td class="text-right" colspan="3">
+																				<b>Участвует в задаче, как:</b>
+																				{{ implode(', ', $task['percentable_roles']) }}
+																			</td>
+																			<td>{{ $task['percents'] }} %</td>
+																		</tr>
+																	@endif
+
+																	<tr>
+																		<th class="text-right" colspan="3">Итого:</th>
+																		<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
+																	</tr>
+																</table>
+															@else
+																-
+															@endif
+														</td>
+														<td class="text-center">{{ $task['percents'] }} %</td>
+														<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
+													</tr>
+												@endforeach
+											</table>
+										</div>
+									</th>
+									<th>{{ $project['total_price_percents'] }} {{ CURRENCY }}</th>
 								</tr>
 							@endif
 
 							<tr>
-								<th class="text-right">
-									Проценты за проект
-									(<i><a href="#" class="user-project-invoice-action">показать инвойс</a></i>):
+								<th class="text-right">Итого</th>
+								<th>{{ $project['total_price_common'] }} {{ CURRENCY }}</th>
+							</tr>
+							
+						</table>
+					@endforeach
+				@else
+					<div class="empty-message text-center">
+						<span class="glyphicon glyphicon-briefcase"></span>
+						<h3>Нет проектов :(</h3>
+					</div>
+				@endif
+		    </div>
 
-									<div class="hidden user-project-invoice">
-										<h3 class="text-center">Проект: {{ $project['name'] }}</h3>
-										<table class="table table-bordered vertical-aligned">
+		    <!-- Related tasks -->
+		    <div class="tab-pane" id="related-tasks">
+		    	@if ($tasks)
+		    		<h3 class="text-center">Итого по задачам - {{ $total_price }} {{ CURRENCY }}</h3>
+
+		    		<table class="table table-bordered">
+		    			<tr>
+							<th>Задание</th>
+							<th>Должность</th>
+							<th>Время</th>
+							<th>Цена за час</th>
+							<th>Сума</th>
+						</tr>
+						@foreach ($tasks as $task)
+							<tr>
+								<td>
+									{{ $task->name }}
+
+									<a href="{{ URL::route('projects.show', $task->task_project_id) }}">
+										<span class="glyphicon glyphicon-info-sign"></span>
+									</a>
+								</td>
+								<td>{{ $task->role_name }}</td>
+								<td>{{ $task->payed_hours }} ч.</td>
+
+								@if ($task->percents)
+									<td>{{ $task->period_price_per_hour }} %</td>
+									<td>{{ $task->total_task_price * $task->period_price_per_hour / 100 }} {{ CURRENCY }}</td>
+								@else
+									<td>{{ $task->period_price_per_hour }} {{ CURRENCY }}</td>
+									<td>{{ $task->total_task_price }} {{ CURRENCY }}</td>
+								@endif
+							</tr>
+						@endforeach
+		    		</table>
+				@else
+					<div class="empty-message text-center">
+						<span class="glyphicon glyphicon-tasks"></span>
+						<h3>Нет задач :(</h3>
+					</div>
+				@endif
+		    </div>
+
+		    <!-- Calculated user percents -->
+		    <div class="tab-pane" id="user-percents">
+		    	@if (count($user_persents_price['tasks']))
+		    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} {{ CURRENCY }}</h3>
+
+		    		<table class="table table-bordered vertical-aligned">
+		    			<tr>
+							<th>Задача</th>
+							<th class="text-center">Ставка</th>
+							<th class="text-center">Сума</th>
+						</tr>
+						@foreach ($user_persents_price['tasks'] as $task)
+							<tr>
+								<td class="table-container-td">
+									@if (count($task['related_user_roles']))
+										<table class="table table-bordered">
 											<tr>
-												<th>Задача</th>
-												<th class="text-center">Ставка</th>
-												<th class="text-center">Сума</th>
+												<th>Должность</th>
+												<th>Цена за час</th>
+												<th>Часов</th>
+												<th>Сума</th>
 											</tr>
-											@foreach ($project['related_tasks']['tasks'] as $task)
+											@foreach ($task['related_user_roles'] as $related_role)
 												<tr>
-													<td class="table-container-td">
-														@if (count($task['related_user_roles']))
-															<table class="table table-bordered">
-																<tr>
-																	<th>Должность</th>
-																	<th>Цена за час</th>
-																	<th>Часов</th>
-																	<th>Сума</th>
-																</tr>
-																@foreach ($task['related_user_roles'] as $related_role)
-																	<tr>
-																		<td>{{ $related_role->role_name }}</td>
-																		<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
-																		<td>{{ $related_role->payed_hours }} ч.</td>
-																		<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
-																	</tr>
-																@endforeach
-
-																@if (count($task['percentable_roles']))
-																	<tr>
-																		<td class="text-right" colspan="3">
-																			<b>Участвует в задаче, как:</b>
-																			{{ implode(', ', $task['percentable_roles']) }}
-																		</td>
-																		<td>{{ $task['percents'] }} %</td>
-																	</tr>
-																@endif
-
-																<tr>
-																	<th class="text-right" colspan="3">Итого:</th>
-																	<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
-																</tr>
-															</table>
-														@else
-															-
-														@endif
-													</td>
-													<td class="text-center">{{ $task['percents'] }} %</td>
-													<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
+													<td>{{ $related_role->role_name }}</td>
+													<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
+													<td>{{ $related_role->payed_hours }} ч.</td>
+													<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
 												</tr>
 											@endforeach
+
+											@if (count($task['percentable_roles']))
+												<tr>
+													<td class="text-right" colspan="3">
+														<b>Участвует в задаче, как:</b>
+														{{ implode(', ', $task['percentable_roles']) }}
+													</td>
+													<td>{{ $task['percents'] }} %</td>
+												</tr>
+											@endif
+
+											<tr>
+												<th class="text-right" colspan="3">Итого:</th>
+												<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
+											</tr>
 										</table>
-									</div>
-								</th>
-								<th>{{ $project['total_price_percents'] }} {{ CURRENCY }}</th>
+									@else
+										-
+									@endif
+								</td>
+								<td class="text-center">{{ $task['percents'] }} %</td>
+								<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
 							</tr>
-						@endif
-
-						<tr>
-							<th class="text-right">Итого</th>
-							<th>{{ $project['total_price_common'] }} {{ CURRENCY }}</th>
-						</tr>
-						
-					</table>
-				@endforeach
-			@else
-				<div class="empty-message text-center">
-					<span class="glyphicon glyphicon-briefcase"></span>
-					<h3>Нет проектов :(</h3>
-				</div>
-			@endif
+						@endforeach
+		    		</table>
+				@else
+					<div class="empty-message text-center">
+						<span class="glyphicon glyphicon-tasks"></span>
+						<h3>Нет задач %(</h3>
+					</div>
+				@endif
+		    </div>
 	    </div>
-
-	    <!-- Related tasks -->
-	    <div class="tab-pane" id="related-tasks">
-	    	@if ($tasks)
-	    		<h3 class="text-center">Итого по задачам - {{ $total_price }} {{ CURRENCY }}</h3>
-
-	    		<table class="table table-bordered">
-	    			<tr>
-						<th>Задание</th>
-						<th>Должность</th>
-						<th>Время</th>
-						<th>Цена за час</th>
-						<th>Сума</th>
-					</tr>
-					@foreach ($tasks as $task)
-						<tr>
-							<td>
-								{{ $task->name }}
-
-								<a href="{{ URL::route('projects.show', $task->task_project_id) }}">
-									<span class="glyphicon glyphicon-info-sign"></span>
-								</a>
-							</td>
-							<td>{{ $task->role_name }}</td>
-							<td>{{ $task->payed_hours }} ч.</td>
-
-							@if ($task->percents)
-								<td>{{ $task->period_price_per_hour }} %</td>
-								<td>{{ $task->total_task_price * $task->period_price_per_hour / 100 }} {{ CURRENCY }}</td>
-							@else
-								<td>{{ $task->period_price_per_hour }} {{ CURRENCY }}</td>
-								<td>{{ $task->total_task_price }} {{ CURRENCY }}</td>
-							@endif
-						</tr>
-					@endforeach
-	    		</table>
-			@else
-				<div class="empty-message text-center">
-					<span class="glyphicon glyphicon-tasks"></span>
-					<h3>Нет задач :(</h3>
-				</div>
-			@endif
-	    </div>
-
-	    <!-- Calculated user percents -->
-	    <div class="tab-pane" id="user-percents">
-	    	@if (count($user_persents_price['tasks']))
-	    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} {{ CURRENCY }}</h3>
-
-	    		<table class="table table-bordered vertical-aligned">
-	    			<tr>
-						<th>Задача</th>
-						<th class="text-center">Ставка</th>
-						<th class="text-center">Сума</th>
-					</tr>
-					@foreach ($user_persents_price['tasks'] as $task)
-						<tr>
-							<td class="table-container-td">
-								@if (count($task['related_user_roles']))
-									<table class="table table-bordered">
-										<tr>
-											<th>Должность</th>
-											<th>Цена за час</th>
-											<th>Часов</th>
-											<th>Сума</th>
-										</tr>
-										@foreach ($task['related_user_roles'] as $related_role)
-											<tr>
-												<td>{{ $related_role->role_name }}</td>
-												<td>{{ $related_role->price_per_hour }} {{ CURRENCY }}</td>
-												<td>{{ $related_role->payed_hours }} ч.</td>
-												<td>{{ $related_role->total_price }} {{ CURRENCY }}</td>
-											</tr>
-										@endforeach
-
-										@if (count($task['percentable_roles']))
-											<tr>
-												<td class="text-right" colspan="3">
-													<b>Участвует в задаче, как:</b>
-													{{ implode(', ', $task['percentable_roles']) }}
-												</td>
-												<td>{{ $task['percents'] }} %</td>
-											</tr>
-										@endif
-
-										<tr>
-											<th class="text-right" colspan="3">Итого:</th>
-											<th>{{ $task['total_price'] }} {{ CURRENCY }}</th>
-										</tr>
-									</table>
-								@else
-									-
-								@endif
-							</td>
-							<td class="text-center">{{ $task['percents'] }} %</td>
-							<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
-						</tr>
-					@endforeach
-	    		</table>
-			@else
-				<div class="empty-message text-center">
-					<span class="glyphicon glyphicon-tasks"></span>
-					<h3>Нет задач %(</h3>
-				</div>
-			@endif
-	    </div>
-    </div>
+    @endif
 
 </div>
 

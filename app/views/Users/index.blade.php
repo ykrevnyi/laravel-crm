@@ -18,19 +18,19 @@
 					</td>
 					<td>{{ $user->mail }}</td>
 					<td>
-						@if (RedmineUser::user()->level == 'user')
+						@if ($user->level == 'user')
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="0" class="action-change-perm btn btn-default active">user</a>
 						@else
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="0" class="action-change-perm btn btn-default">user</a>
 						@endif
 
-						@if (RedmineUser::user()->level == 'teammate')
+						@if ($user->level == 'teammate')
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="500" class="action-change-perm btn btn-default active">teammate</a>
 						@else
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="500" class="action-change-perm btn btn-default">teammate</a>
 						@endif
 
-						@if (RedmineUser::user()->level == 'admin')
+						@if ($user->level == 'admin')
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="5000" class="action-change-perm btn btn-default active">admin</a>
 						@else
 							<a href="#" data-user-id="{{ $user->id }}" data-perm="5000" class="action-change-perm btn btn-default">admin</a>

@@ -78,7 +78,6 @@
 							<th>Назначение</th>
 							<th>Счет</th>
 							<th>Создана</th>
-							<th>Обновлена</th>
 							<th></th>
 						</tr>
 
@@ -114,7 +113,6 @@
 								<td>{{ $transaction->trans_purpose }}</td>
 								<td>{{ $transaction->money_account_name }}</td>
 								<td>{{ $transaction->trans_created_at }}</td>
-								<td>{{ $transaction->trans_updated_at }}</td>
 								<td class="text-center">
 									<a href="#" class="delete-transaction btn btn-danger" data-id="{{ $transaction->trans_id }}"><span class="glyphicon glyphicon-remove"></span></a>
 								</td>

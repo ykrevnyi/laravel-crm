@@ -223,7 +223,7 @@ class TasksController extends \BaseController {
 		$task_id = (int) $task_id;
 		$user_id = (int) Input::get('user_id', 0);
 		$user_role_id = (int) Input::get('user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
+		$user_payed_hours = Input::get('user_payed_hours', 0);
 
 		$result['status'] = Task::addUserToTask($task_id, $user_id, $user_role_id, $user_payed_hours);
 
@@ -291,7 +291,7 @@ class TasksController extends \BaseController {
 		$user_id = (int) Input::get('user_id', 0);
 		$user_role_id = (int) Input::get('user_role_id', 0);
 		$prev_user_role_id = (int) Input::get('prev_user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
+		$user_payed_hours = Input::get('user_payed_hours', 0);
 
 		$result['status'] = Task::changeUserTaskRole(
 			$task_id, 
@@ -317,7 +317,7 @@ class TasksController extends \BaseController {
 		$task_id = (int) $task_id;
 		$user_id = (int) Input::get('user_id', 0);
 		$user_role_id = (int) Input::get('user_role_id', 0);
-		$user_payed_hours = (int) Input::get('user_payed_hours', 0);
+		$user_payed_hours = Input::get('user_payed_hours', 0);
 
 		$result['status'] = Task::changeUserTaskPayedHours(
 			$task_id, 

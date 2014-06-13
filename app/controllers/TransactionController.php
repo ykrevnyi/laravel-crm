@@ -25,12 +25,38 @@ class TransactionController extends BaseController {
 
 
 	/**
+	 * Check user permissions
+	 *
+	 * @return void
+	 */
+	function checkPermissions()
+	{
+		// Security
+		if ( ! empty(RedmineUser::user()->level) AND RedmineUser::user()->level != 'admin')
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
 	public function index()
 	{
+		// Security
+		if ( ! $this->checkPermissions())
+		{
+			Redirect::route('home')
+				->with('error', 'У вас недостаточно прав для просмотра транзакций!');
+		}
+
+		$tools = new Tools;
+
 		// Get projects from specified dates.
 		// Or from last month (by default)
 		$date_from = Input::get('date_from', date("d-m-Y", strtotime('-29 day')));
@@ -53,6 +79,9 @@ class TransactionController extends BaseController {
 					->where('transaction_description.name', 'LIKE', '%' . $filter_name . '%');
 			}
 		)->get();
+
+		// Convert dates like '2014-01-01' to 'today'
+		$transactions = $tools->convertDates($transactions, 'trans_created_at', null, null);
 
 		// Get money accounts
 		$accounts = MoneyAccount::all();
@@ -102,6 +131,12 @@ class TransactionController extends BaseController {
 	 */
 	public function store()
 	{
+		// Security
+		if ( ! $this->checkPermissions())
+		{
+			echo "У вас не достаточно прав для данного действия!"; die();
+		}
+
 		$rules = array(
 			'is_expense' => 'required',
 			'name' => 'required',
@@ -158,6 +193,12 @@ class TransactionController extends BaseController {
 	 */
 	public function destroy($id)
 	{
+		// Security
+		if ( ! $this->checkPermissions())
+		{
+			echo "У вас не достаточно прав для данного действия!"; die();
+		}
+
 		// Removed without any problems
 		if ($this->transaction->removeByID($id))
 		{
@@ -183,6 +224,12 @@ class TransactionController extends BaseController {
 	 */
 	public function modal($relation_object_type = 'none', $relation_object_type_id = NULL)
 	{
+		// Security
+		if ( ! $this->checkPermissions())
+		{
+			echo "У вас не достаточно прав для данного действия!"; die();
+		}
+
 		if (empty($relation_object_type))
 		{
 			$relation_object_type = 'none';
@@ -259,6 +306,12 @@ class TransactionController extends BaseController {
 	 */
 	public function createTransaction()
 	{
+		// Security
+		if ( ! $this->checkPermissions())
+		{
+			echo "У вас не достаточно прав для данного действия!"; die();
+		}
+
 		$input = Input::all();
 
 		$filter = array(

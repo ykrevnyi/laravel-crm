@@ -21,7 +21,9 @@ $(document).on('ready', function() {
 		});
 
 		// Enable tooltips
-		$('.has-tooltip').tooltip({container: 'body'});
+		$('.has-tooltip')
+			.tooltip('destroy')
+			.tooltip({container: 'html'});
 	};
 
 	// Two way data-binding (secondary type)
@@ -52,5 +54,6 @@ $(document).on('ready', function() {
 		});
 	};
 
+	window.initPageScripts();
 	window.init2wayBinding();
 });

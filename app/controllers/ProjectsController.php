@@ -50,6 +50,10 @@ class ProjectsController extends BaseController {
 			$filter_name
 		);
 
+		// Here we are going to conver dates like '2014-01-01' to 'today'
+		$tools = new Tools;
+		$project_list = $tools->convertDates($project_list, 'proj_created_at', null, 'proj_end_date');
+
 		$this->layout->content = View::make('projects.index')
 			->with('project_list', $project_list)
 			->with('date_from', $date_from)
@@ -118,24 +122,30 @@ class ProjectsController extends BaseController {
 	public function show($project_id)
 	{
 		$transaction = new Transaction;
+		$tools = new Tools;
 		$task = new Task;
 
 		// Basic project info
 		$project = $this->project->getProjectInfo($project_id);
+		$project->proj_end_date_human = $tools->resolveDate($project->proj_end_date);
+		$project->proj_created_at_human = $tools->resolveDate($project->proj_created_at);
+		$project->proj_updated_at_human = $tools->resolveDate($project->proj_updated_at);
 
 		// Get total related users (with total project price)
 		$related_users = $this->project->getRelatedUsers($project_id);
+		$related_users = $tools->checkUserRolePeriod($related_users, 'period_deprecated_at');
 		$related_users_totals = $this->project->getRelatedUsersTotal($project_id);
 		
-		// Get related transactions
+		// Get related transactions AND convert dates like '2014-01-01' to 'today'
 		$related_transactions = $this->project->getRelatedTransacitons($project_id);
-		// $related_transactions = $this->project->getRelatedTransacitonsPrices($project_id);
+		$related_transactions = $tools->convertDates($related_transactions, 'trans_created_at', null, null);
 
 		// Get user roles
 		$user_roles = UserRole::allForSelect();
 
-		// Get related tasks
+		// Get related tasks AND convert dates like '2014-01-01' to 'today'
 		$related_tasks = $task->getList($project_id);
+		$related_tasks = $tools->convertDates($related_tasks, 'created_at', null, null);
 
 		// Get the rest balance of the payments
 		$total_project_price = $task->calculateTotal($related_tasks);

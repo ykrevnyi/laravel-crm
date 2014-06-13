@@ -117,7 +117,20 @@ class UsersController extends BaseController {
 		$total_transaction_price = abs($transaction->calculateTotal($transactions));
 		$user_balance = $total_price_common - $total_transaction_price;
 
+		// Security
+		$can_view = false;
+		
+		if (
+			$this->redmineUser->getLocalUserID(RedmineUser::user()->mail)->id == $id OR 
+			RedmineUser::user()->level == 'admin'
+			)
+		{
+			$can_view = true;
+		}
+
 		$this->layout->content = View::make('users.show')
+			->with('can_view', $can_view)
+
 			->with('date_from', $date_from)
 			->with('date_to', $date_to)
 			->with('date_from_formated', $date_from_formated)

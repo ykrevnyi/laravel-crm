@@ -198,7 +198,7 @@ class RedmineUser extends Eloquent
 	 *
 	 * @return mixed
 	 */
-	private function getLocalUserID($email)
+	public function getLocalUserID($email)
 	{
 		return DB::table('users')
 			->where('email', '=', $email)
