@@ -19,7 +19,8 @@
 			"app/tests/TestCase.php"
 		],
 		"files": [
-			"vendor/rusdate/rusdate/src/ru.php"
+			"vendor/rusdate/rusdate/src/ru.php",
+			"vendor/rusdate/rusdate/src/Date/HumanDiff.php"
 		]
 	},
 	"scripts": {
