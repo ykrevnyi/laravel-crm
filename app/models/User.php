@@ -440,6 +440,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$result_tasks['tasks'][$task_key]['percents'] = $task_percents;
 			$result_tasks['tasks'][$task_key]['total_percent_price'] = $total_percent_price_per_task;
 			$result_tasks['tasks'][$task_key]['task_name'] = $task->task_name;
+			$result_tasks['tasks'][$task_key]['project_id'] = $task->project_id;
 			$result_tasks['tasks'][$task_key]['total_price'] = $total;
 
 			// Calculate total price (sum all the tasks)

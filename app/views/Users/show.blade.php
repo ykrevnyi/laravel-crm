@@ -336,13 +336,18 @@
 		    	@if (count($user_persents_price['tasks']))
 		    		<h3 class="text-center">Итого по процентным ставкам - {{ $user_persents_price['total'] }} {{ CURRENCY }}</h3>
 
-		    		<table class="table table-bordered vertical-aligned">
-		    			<tr>
-							<th>Задача</th>
-							<th class="text-center">Ставка</th>
-							<th class="text-center">Сума</th>
-						</tr>
-						@foreach ($user_persents_price['tasks'] as $task)
+					@foreach ($user_persents_price['tasks'] as $task)
+			    		<table class="table table-bordered vertical-aligned">
+			    			<tr>
+								<th>
+									Задача - {{ $task['task_name'] }}
+									<a href="{{ URL::route('projects.show', $task['project_id']) }}">
+										<span class="glyphicon glyphicon-info-sign"></span>
+									</a>
+								</th>
+								<th class="text-center">Ставка</th>
+								<th class="text-center">Сума</th>
+							</tr>
 							<tr>
 								<td class="table-container-td">
 									@if (count($task['related_user_roles']))
@@ -384,8 +389,8 @@
 								<td class="text-center">{{ $task['percents'] }} %</td>
 								<td class="text-center">{{ $task['total_percent_price'] }} {{ CURRENCY }}</td>
 							</tr>
-						@endforeach
-		    		</table>
+			    		</table>
+					@endforeach
 				@else
 					<div class="empty-message text-center">
 						<span class="glyphicon glyphicon-tasks"></span>

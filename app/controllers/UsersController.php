@@ -72,7 +72,7 @@ class UsersController extends BaseController {
 					);
 			}
 		);
-
+// echo "\n\n\n----------------\n\n\n";
 		// Get user persents price (related to task)
 		$user_persents_price = $user->getTotalUserMoneyOfPersents($id, 
 			function($query) use ($date_from_formated, $date_to_formated) {
@@ -88,7 +88,8 @@ class UsersController extends BaseController {
 					->whereRaw('T.created_at < URP.deprecated_at');
 			}
 		);
-
+// 		print_r($user_persents_price);
+// die();
 		// Get user info
 		$user_info = RedmineUser::getById($id);
 
