@@ -37,16 +37,12 @@ class ProjectsController extends BaseController {
 	{
 		// Get projects from specified dates.
 		// Or from last month (by default)
-		$date_from = Input::get('date_from', date("d-m-Y", strtotime('-29 day')));
-		$date_to = Input::get('date_to', date('d-m-Y', time()));
+		$dates = $this->parseDates();
 		$filter_name = Input::get('filter_name', '');
 
-		$date_from_formated = new DateTime($date_from);
-		$date_to_formated = new DateTime($date_to);
-
 		$project_list = $this->project->getProjects(
-			$date_from_formated, 
-			$date_to_formated, 
+			($dates['ignore_dates']) ? null : $dates['date_from'], 
+			($dates['ignore_dates']) ? null : $dates['date_to'], 
 			$filter_name
 		);
 
@@ -56,11 +52,41 @@ class ProjectsController extends BaseController {
 
 		$this->layout->content = View::make('projects.index')
 			->with('project_list', $project_list)
-			->with('date_from', $date_from)
-			->with('date_to', $date_to)
-			->with('date_from_formated', $date_from_formated)
-			->with('date_to_formated', $date_to_formated);
+			->with('ignore_dates', $dates['ignore_dates'])
+			->with('date_from', $dates['date_from'])
+			->with('date_to', $dates['date_to']);
 	}
+
+
+	/**
+	 * Parse date from URL or create date for the last month
+	 *
+	 * @return string
+	 */
+	private function parseDates()
+	{
+		// Get filter dates OR take a date from last month
+		if (Input::has('date_from'))
+		{
+			$date_from = \Carbon\Carbon::createFromFormat('d-m-Y', Input::get('date_from'));
+			$date_to = \Carbon\Carbon::createFromFormat('d-m-Y', Input::get('date_to'));
+		}
+		else
+		{
+			$date_from = \Carbon\Carbon::create();
+			$date_to = \Carbon\Carbon::create();
+
+			$date_from = $date_from->startOfMonth();
+			$date_to = $date_to->endOfMonth();
+		}
+
+		return array(
+			'ignore_dates' => Input::get('ignore_dates', false),
+			'date_from' => $date_from,
+			'date_to' => $date_to
+		);
+	}
+
 
 
 	/**

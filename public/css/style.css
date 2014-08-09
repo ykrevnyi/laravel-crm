@@ -192,12 +192,24 @@ body.loading::after, .slow-loader::after {
     line-height: 18px;
     cursor: pointer;
 }
+#reportrange.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
 #reportrange .caret {
 }
 #reportrange span {
     padding-left: 3px;
 }
 .page-filter {
+}
+.page-filter .ignore-date-checkbox-checkbox {
+    margin: 6px 0px 0px 10px;
+    float: left;
+}
+.page-filter .ignore-date-checkbox-checkbox input[type="checkbox"] {
+    position: relative;
+    top: 1px;
 }
 .page-filter .filter-name-field {
     display: inline-block;

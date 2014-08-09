@@ -18,25 +18,34 @@
 	</div>
 
 	<div class="row page-filter">
-		<div class="col-lg-7">
+		<div class="col-lg-9">
 			<form action="">
 				<div class="pull-left filter-name-container">
 					{{ Form::label('filter_name', 'Фильтр', array('class' => 'filter-name-field-label')) }}
 					{{ Form::text('filter_name', Input::get('filter_name', ''), array('id' => 'filter_name', 'class' => 'filter-name-field form-control')) }}
 				</div>
 
-				<div id="reportrange" class="pull-left">
+				@if ($ignore_dates)
+					<div id="reportrange" class="disabled pull-left">
+				@else
+					<div id="reportrange" class="pull-left">
+				@endif
 				    <i class="glyphicon glyphicon-time"></i>
 				    <span>
-				    	<?php echo($date_from_formated->format('j ') . $monthes[ $date_from_formated->format('n') ] . $date_from_formated->format(' Y')); ?>
+				    	<?php echo($date_from->format('j ') . $monthes[ $date_from->format('n') ] . $date_from->format(' Y')); ?>
 				    	 - 
-				    	<?php echo($date_to_formated->format('j ') . $monthes[ $date_to_formated->format('n') ] . $date_to_formated->format(' Y')); ?>
+				    	<?php echo($date_to->format('j ') . $monthes[ $date_to->format('n') ] . $date_to->format(' Y')); ?>
 			    	</span>
 				    <b class="caret"></b>
 				</div>
 
-				<input type="hidden" name="date_from" id="date_from" value="{{ $date_from }}">
-				<input type="hidden" name="date_to" id="date_to" value="{{ $date_to }}">
+				<input type="hidden" name="date_from" id="date_from" value="{{ $date_from->format('d-m-Y') }}">
+				<input type="hidden" name="date_to" id="date_to" value="{{ $date_to->format('d-m-Y') }}">
+
+				<label class="ignore-date-checkbox-checkbox">
+					{{ Form::checkbox('ignore_dates', 'Y', $ignore_dates, array('id' => 'ignore-dates')) }} 
+					Игнорировать дату
+				</label>
 
 				<button type="submit" class="filter-search-btn btn btn-info">
 					<span class="glyphicon glyphicon-search"></span>
@@ -47,7 +56,7 @@
 				</a>
 			</form>
 		</div>
-		<div class="col-lg-5 text-right">
+		<div class="col-lg-3 text-right">
 			{{ HTML::linkRoute('projects.create', 'Создать проект', array(), array('class' => 'btn btn-info')) }}
 		</div>
 	</div>
@@ -110,20 +119,30 @@
 </div>
 
 <script type="text/javascript">
+	// Ignore dates
+	$('#ignore-dates').on('change', function() {
+		var $this = $(this);
+
+		if ($this.is(':checked')) {
+			$('#reportrange').addClass('disabled');
+		} else {
+			$('#reportrange').removeClass('disabled');
+		};
+	});
+
 	// Init date range filter
 	$('#reportrange').daterangepicker(
 	    {
 	      ranges: {
-			'Сегодня': [moment(), moment()],
-			'Вчера': [moment().subtract('days', 1), moment().subtract('days', 1)],
-			'Последние 7 дней': [moment().subtract('days', 6), moment()],
-			'Последние 30 дней': [moment().subtract('days', 29), moment()],
 			'Этот месяц': [moment().startOf('month'), moment().endOf('month')],
-			'Предыдущий месяц': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+			'3 месяца назад': [moment().startOf('month').subtract('month', 3), moment().endOf('month')],
+			'6 месяцев назад': [moment().startOf('month').subtract('month', 6), moment().endOf('month')],
+			'1 год назад': [moment().startOf('month').subtract('month', 12), moment().endOf('month')],
+			'2 года назад': [moment().startOf('month').subtract('month', 24), moment().endOf('month')],
 	      },
 	      format: 'DD-MM-YYYY',
-	      startDate: "{{ $date_from }}",
-	      endDate: "{{ $date_to }}"
+	      startDate: "{{ $date_from->format('d-m-Y') }}",
+	      endDate: "{{ $date_to->format('d-m-Y') }}"
 	    },
 	    function(start, end) {
 	        $('#reportrange span').html(start.format('D MMMM YYYY') + ' - ' + end.format('D MMMM YYYY'));
