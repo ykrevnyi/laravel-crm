@@ -177,4 +177,46 @@ class Transaction extends Eloquent
 	}
 
 
+	/**
+	 * Calculate profit
+	 *
+	 * @return Number
+	 */
+	public function calculateProfit($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ( ! $transaction->trans_is_expense)
+			{
+				$total += $transaction->trans_value_converted;
+			}
+		}
+
+		return $total;
+	}
+
+
+	/**
+	 * Calculate expance
+	 *
+	 * @return Number
+	 */
+	public function calculateExpence($transactions)
+	{
+		$total = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			if ($transaction->trans_is_expense)
+			{
+				$total += $transaction->trans_value_converted;
+			}
+		}
+
+		return $total;
+	}
+
+
 }

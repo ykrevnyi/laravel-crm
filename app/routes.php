@@ -55,6 +55,9 @@ Route::group(array('before' => 'auth'), function () {
 
 	// Priorities management
 	Route::resource('priorities', 'PrioritiesController');
+
+	// Budget reports
+	Route::resource('reports', '\CRM\Controllers\ReportsController');
 	
 });
 

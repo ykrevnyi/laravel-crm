@@ -129,6 +129,13 @@
 						<li>
 					@endif
 						<a href="/projects">Проекты</a></li>
+
+					@if ($routes['is_reports'])
+						<li class="active">
+					@else
+						<li>
+					@endif
+						<a href="/reports">Отчеты</a></li>
 				</ul>
 			</div><!--/.navbar-collapse -->
 		</div>
